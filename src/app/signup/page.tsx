@@ -4,36 +4,39 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-14rem)] py-12">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="font-headline text-2xl">Login</CardTitle>
-          <CardDescription>Enter your email below to login to your account.</CardDescription>
+          <CardTitle className="font-headline text-2xl">Sign Up</CardTitle>
+          <CardDescription>Enter your information to create an account.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="name">Name</Label>
+            <Input id="name" placeholder="John Doe" required />
+          </div>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" placeholder="m@example.com" required />
           </div>
           <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <Link href="#" className="ml-auto inline-block text-sm underline">
-                Forgot your password?
-              </Link>
-            </div>
+            <Label htmlFor="password">Password</Label>
             <Input id="password" type="password" required />
           </div>
+           <div className="grid gap-2">
+            <Label htmlFor="confirm-password">Confirm Password</Label>
+            <Input id="confirm-password" type="password" required />
+          </div>
           <Button type="submit" className="w-full">
-            Login
+            Create Account
           </Button>
         </CardContent>
         <CardFooter className="text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup" className="underline ml-1">
-              Sign up
+            Already have an account?{' '}
+            <Link href="/login" className="underline ml-1">
+              Login
             </Link>
         </CardFooter>
       </Card>
