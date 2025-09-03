@@ -10,6 +10,15 @@ import { useCart } from '@/context/cart-context';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import React from 'react';
+
 
 function ProductRating({ rating, reviews }: { rating: number; reviews: number }) {
   const fullStars = Math.floor(rating);
@@ -36,12 +45,21 @@ export default function ProductDetailPage() {
   const params = useParams();
   const product = products.find((p) => p.id === params.id);
   const { addToCart } = useCart();
+  const [selectedAroma, setSelectedAroma] = React.useState<string | undefined>(product?.aromas?.[0]);
 
   if (!product) {
     notFound();
   }
   
   const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+
+  const handleAddToCart = () => {
+    let productToAdd = { ...product };
+    if (selectedAroma) {
+      productToAdd.name = `${product.name} - ${selectedAroma}`;
+    }
+    addToCart(productToAdd);
+  };
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-16">
@@ -83,8 +101,20 @@ export default function ProductDetailPage() {
             <p>{product.description}</p>
           </div>
 
-          <div className="mt-8">
-            <Button size="lg" className="w-full md:w-auto" onClick={() => addToCart(product)}>
+          <div className="mt-8 flex items-center gap-4">
+            {product.aromas && product.aromas.length > 0 && (
+                <Select value={selectedAroma} onValueChange={setSelectedAroma}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select Aroma" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {product.aromas.map(aroma => (
+                      <SelectItem key={aroma} value={aroma}>{aroma}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+            )}
+            <Button size="lg" className="w-full md:w-auto" onClick={handleAddToCart}>
               Add to Cart
             </Button>
           </div>

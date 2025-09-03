@@ -8,6 +8,7 @@ export type Product = {
   rating: number;
   reviews: number;
   fragrance?: string;
+  aromas?: string[];
   brand?: string;
   onSale?: boolean;
   originalPrice?: number;

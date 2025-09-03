@@ -12,6 +12,7 @@ export const products: Product[] = [
     reviews: 120,
     fragrance: 'Sandalwood',
     brand: 'ZenScents',
+    aromas: ['Sandalwood', 'Nag Champa', 'Dragon\'s Blood'],
   },
   {
     id: '2',
@@ -74,6 +75,7 @@ export const products: Product[] = [
     rating: 4.4,
     reviews: 80,
     brand: 'AuraMist',
+    aromas: ['Ocean Breeze', 'Vanilla Bean', 'Fresh Linen'],
   },
    {
     id: '7',
