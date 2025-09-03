@@ -160,6 +160,11 @@ export default function AdminDashboardPage() {
                               <DialogTrigger asChild>
                                 <Button variant="outline" size="sm" onClick={() => setSelectedProduct(product)}>Edit</Button>
                               </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Edit Product</DialogTitle>
+                                </DialogHeader>
+                              </DialogContent>
                            </Dialog>
                            <AlertDialog>
                               <AlertDialogTrigger asChild>
@@ -213,6 +218,11 @@ export default function AdminDashboardPage() {
                             <DialogTrigger asChild>
                               <Button variant="outline" size="sm" onClick={() => setSelectedUser(user)}>Edit</Button>
                             </DialogTrigger>
+                             <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Edit User</DialogTitle>
+                                </DialogHeader>
+                              </DialogContent>
                           </Dialog>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
@@ -316,6 +326,11 @@ export default function AdminDashboardPage() {
                                <DialogTrigger asChild>
                                   <Button variant="outline" size="sm" onClick={() => setSelectedOrder(order)}>Edit</Button>
                                </DialogTrigger>
+                               <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Edit Order</DialogTitle>
+                                </DialogHeader>
+                               </DialogContent>
                             </Dialog>
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
