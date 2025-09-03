@@ -1,0 +1,126 @@
+import type { Product, BlogArticle } from './types';
+
+export const products: Product[] = [
+  {
+    id: '1',
+    name: 'Sandalwood Incense Sticks',
+    description: 'Classic, woody, and calming. Perfect for meditation and relaxation. Hand-rolled with natural ingredients.',
+    price: 12.99,
+    image: 'https://picsum.photos/600/400?random=1',
+    category: 'incense',
+    rating: 4.5,
+    reviews: 120,
+  },
+  {
+    id: '2',
+    name: 'Ceramic Ultrasonic Diffuser',
+    description: 'An elegant ceramic diffuser that uses ultrasonic technology to disperse essential oils. Features multiple timer settings and ambient light.',
+    price: 49.99,
+    image: 'https://picsum.photos/600/400?random=2',
+    category: 'diffusers',
+    rating: 4.8,
+    reviews: 250,
+  },
+  {
+    id: '3',
+    name: 'Pure Lavender Essential Oil',
+    description: '100% pure, therapeutic-grade lavender oil. Known for its relaxing properties, it promotes restful sleep and soothes skin.',
+    price: 18.50,
+    image: 'https://picsum.photos/600/400?random=3',
+    category: 'oils',
+    rating: 4.9,
+    reviews: 450,
+  },
+  {
+    id: '4',
+    name: 'Palo Santo Sticks',
+    description: 'Ethically harvested "holy wood" from South America. Used for spiritual cleansing and creating a calming atmosphere.',
+    price: 15.00,
+    image: 'https://picsum.photos/600/400?random=4',
+    category: 'incense',
+    rating: 4.7,
+    reviews: 95,
+  },
+  {
+    id: '5',
+    name: 'Eucalyptus Essential Oil',
+    description: 'Invigorating and clarifying. Ideal for steam inhalation to support respiratory health and clear congestion.',
+    price: 14.99,
+    image: 'https://picsum.photos/600/400?random=5',
+    category: 'oils',
+    rating: 4.6,
+    reviews: 310,
+  },
+  {
+    id: '6',
+    name: 'Glass Reed Diffuser Set',
+    description: 'A stylish and long-lasting way to fragrance your home. Includes a glass bottle, natural reeds, and a bottle of our signature fragrance oil.',
+    price: 35.00,
+    image: 'https://picsum.photos/600/400?random=6',
+    category: 'diffusers',
+    rating: 4.4,
+    reviews: 80,
+  },
+   {
+    id: '7',
+    name: 'Frankincense & Myrrh Resin',
+    description: 'Traditional resin incense for a deep, meditative scent. Burn on charcoal discs for an authentic experience.',
+    price: 22.00,
+    image: 'https://picsum.photos/600/400?random=7',
+    category: 'incense',
+    rating: 4.8,
+    reviews: 75,
+  },
+  {
+    id: '8',
+    name: 'Portable USB Diffuser',
+    description: 'Enjoy aromatherapy on the go. This compact diffuser fits in your car or on your desk, powered by any USB port.',
+    price: 25.99,
+    image: 'https://picsum.photos/600/400?random=8',
+    category: 'diffusers',
+    rating: 4.3,
+    reviews: 150,
+  },
+  {
+    id: '9',
+    name: 'Peppermint Essential Oil',
+    description: 'Energizing and refreshing. Helps to boost focus, relieve headaches, and soothe sore muscles.',
+    price: 13.50,
+    image: 'https://picsum.photos/600/400?random=9',
+    category: 'oils',
+    rating: 4.7,
+    reviews: 380,
+  },
+];
+
+export const featuredProducts = products.slice(0, 3);
+
+export const blogArticles: BlogArticle[] = [
+  {
+    slug: 'beginners-guide-to-aromatherapy',
+    title: 'A Beginner\'s Guide to Aromatherapy',
+    summary: 'Discover the basics of aromatherapy, from what it is to how you can incorporate it into your daily life for enhanced well-being.',
+    author: 'Jane Doe',
+    date: 'October 26, 2023',
+    image: 'https://picsum.photos/800/600?random=10',
+    content: '<p>Aromatherapy is a holistic healing treatment that uses natural plant extracts to promote health and well-being. Sometimes called essential oil therapy, aromatherapy uses aromatic essential oils medicinally to improve the health of the body, mind, and spirit. It enhances both physical and emotional health.</p><p>Aromatherapy is thought of as both an art and a science. Recently, aromatherapy has gained more recognition in the fields of science and medicine.</p><h3>How does aromatherapy work?</h3><p>Researchers believe that inhaling essential oil molecules, or absorbing essential oils through the skin, transmits messages to the limbic system — a brain region responsible for controlling emotions and influencing the nervous system. These messages can affect biological factors such as heart rate, stress levels, blood pressure, breathing, and immune function.</p>'
+  },
+  {
+    slug: 'top-5-essential-oils-for-relaxation',
+    title: 'Top 5 Essential Oils for Relaxation',
+    summary: 'Unwind and de-stress with our top five essential oils known for their calming and soothing properties. Find your perfect scent for peace.',
+    author: 'John Smith',
+    date: 'November 5, 2023',
+    image: 'https://picsum.photos/800/600?random=11',
+    content: '<p>In our fast-paced world, finding moments of calm is essential. Essential oils can be a powerful tool for relaxation. Here are our top 5 picks:</p><ol><li><strong>Lavender:</strong> The king of relaxation, lavender is renowned for its ability to calm the nervous system and promote sleep.</li><li><strong>Chamomile:</strong> With its gentle, soothing aroma, chamomile is perfect for easing anxiety and creating a peaceful environment.</li><li><strong>Bergamot:</strong> This citrus oil has an uplifting yet calming effect, helping to reduce stress and improve mood.</li><li><strong>Ylang Ylang:</strong> A sweet, floral scent that can help alleviate stress and promote a sense of well-being.</li><li><strong>Frankincense:</strong> An earthy, grounding oil that is excellent for meditation and quieting a busy mind.</li></ol>'
+  },
+  {
+    slug: 'creating-a-mindful-space-with-incense',
+    title: 'Creating a Mindful Space with Incense',
+    summary: 'Learn how the ancient practice of burning incense can help you create a mindful, meditative space in your own home.',
+    author: 'Emily White',
+    date: 'November 15, 2023',
+    image: 'https://picsum.photos/800/600?random=12',
+    content: '<p>The ritual of burning incense has been used for centuries across various cultures to sanctify spaces and elevate consciousness. The simple act of lighting an incense stick and watching the smoke curl can be a powerful anchor for mindfulness.</p><h3>Choosing Your Scent</h3><p>Different scents evoke different moods. For a calming space, try Sandalwood or Lavender. For an energizing and cleansing atmosphere, Palo Santo or Sage are excellent choices. Experiment to find what resonates with you.</p><h3>The Ritual</h3><p>Find a quiet corner in your home. Place your incense in a proper holder. As you light it, set an intention for your practice, whether it\'s for meditation, creative work, or simply to unwind. Allow the aroma to fill your space and your senses, bringing you into the present moment.</p>'
+  },
+];
