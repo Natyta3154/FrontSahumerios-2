@@ -29,39 +29,39 @@ export default function Home() {
   const benefits = [
     {
       icon: <Wind className="h-10 w-10 text-primary" />,
-      title: "Relaxation",
-      description: "Our products help calm the mind and body, reducing stress and anxiety.",
+      title: "Relajación",
+      description: "Nuestros productos ayudan a calmar la mente y el cuerpo, reduciendo el estrés y la ansiedad.",
     },
     {
       icon: <Leaf className="h-10 w-10 text-primary" />,
-      title: "Natural Ingredients",
-      description: "Crafted from the finest, ethically sourced botanicals and essential oils.",
+      title: "Ingredientes Naturales",
+      description: "Elaborados con los mejores botánicos y aceites esenciales de origen ético.",
     },
     {
       icon: <Brain className="h-10 w-10 text-primary" />,
-      title: "Enhanced Focus",
-      description: "Certain scents can sharpen your focus and boost your cognitive performance.",
+      title: "Concentración Mejorada",
+      description: "Ciertos aromas pueden agudizar tu enfoque y potenciar tu rendimiento cognitivo.",
     },
   ];
 
   // Datos para la sección de testimonios. Idealmente, estos vendrían de tu base de datos.
   const testimonials = [
     {
-      name: "Sarah L.",
+      name: "Ana L.",
       rating: 5,
-      comment: "Absolutely in love with the lavender oil. It has completely transformed my sleep routine. The quality is unmatched!",
+      comment: "Totalmente enamorada del aceite de lavanda. Ha transformado por completo mi rutina de sueño. ¡La calidad es inigualable!",
       image: "https://picsum.photos/100/100?random=13"
     },
     {
-      name: "Michael B.",
+      name: "Miguel B.",
       rating: 5,
-      comment: "The ceramic diffuser is not only beautiful but works perfectly. My home has never felt so serene. Highly recommended.",
+      comment: "El difusor de cerámica no solo es hermoso, sino que funciona a la perfección. Mi hogar nunca se ha sentido tan sereno. Muy recomendado.",
       image: "https://picsum.photos/100/100?random=14"
     },
     {
-      name: "Jessica P.",
+      name: "Jéssica P.",
       rating: 4,
-      comment: "Great selection of incense. The sandalwood is my favorite for my morning yoga sessions. The scent is so authentic.",
+      comment: "Gran selección de inciensos. El de sándalo es mi favorito para mis sesiones de yoga matutinas. El aroma es tan auténtico.",
       image: "https://picsum.photos/100/100?random=15"
     }
   ];
@@ -97,7 +97,7 @@ export default function Home() {
               <div className="relative h-full w-full">
                 <Image
                   src="https://picsum.photos/1600/900"
-                  alt="Glowing incense stick"
+                  alt="Varita de incienso brillante"
                   data-ai-hint="incense stick"
                   fill
                   className="object-cover"
@@ -110,7 +110,7 @@ export default function Home() {
               <div className="relative h-full w-full">
                 <Image
                   src="https://picsum.photos/1600/901"
-                  alt="Aromatic oil diffuser"
+                  alt="Difusor de aceite aromático"
                   data-ai-hint="oil diffuser"
                   fill
                   className="object-cover"
@@ -122,7 +122,7 @@ export default function Home() {
               <div className="relative h-full w-full">
                 <Image
                   src="https://picsum.photos/1600/902"
-                  alt="Essential oil bottles"
+                  alt="Botellas de aceite esencial"
                   data-ai-hint="essential oils"
                   fill
                   className="object-cover"
@@ -140,13 +140,13 @@ export default function Home() {
         {/* Contenido de texto superpuesto en el carrusel. */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
           <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl text-white drop-shadow-lg">
-            Find Your Inner Peace
+            Encuentra Tu Paz Interior
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-gray-200">
-            Discover the art of aromatherapy with our curated collection of incenses, diffusers, and essential oils.
+            Descubre el arte de la aromaterapia con nuestra colección curada de inciensos, difusores y aceites esenciales.
           </p>
           <Button asChild size="lg" className="mt-8 bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Link href="/products">Shop Now</Link>
+            <Link href="/products">Comprar Ahora</Link>
           </Button>
         </div>
       </section>
@@ -156,9 +156,9 @@ export default function Home() {
       <section className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
-            <h2 className="font-headline text-3xl md:text-4xl text-foreground">Our Philosophy</h2>
+            <h2 className="font-headline text-3xl md:text-4xl text-foreground">Nuestra Filosofía</h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              At AromaZen, we believe in the power of scent to transform spaces and elevate moods. We are dedicated to providing high-quality, natural products that promote wellness and serenity in your daily life.
+              En AromaZen, creemos en el poder del aroma para transformar espacios y elevar el ánimo. Nos dedicamos a ofrecer productos naturales de alta calidad que promueven el bienestar y la serenidad en tu vida diaria.
             </p>
           </div>
         </div>
@@ -169,8 +169,8 @@ export default function Home() {
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-headline text-3xl md:text-4xl">Featured Products</h2>
-            <p className="mt-2 text-lg text-muted-foreground">Handpicked selections to begin your journey.</p>
+            <h2 className="font-headline text-3xl md:text-4xl">Productos Destacados</h2>
+            <p className="mt-2 text-lg text-muted-foreground">Selecciones exclusivas para comenzar tu viaje.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* 
@@ -199,7 +199,7 @@ export default function Home() {
                 </CardContent>
                 <CardFooter className="p-4 pt-0">
                   <Button asChild className="w-full">
-                    <Link href={`/products/${product.id}`}>View Product</Link>
+                    <Link href={`/products/${product.id}`}>Ver Producto</Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -213,8 +213,8 @@ export default function Home() {
       <section className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-headline text-3xl md:text-4xl">Benefits of Aromatherapy</h2>
-            <p className="mt-2 text-lg text-muted-foreground">Transform your well-being, one scent at a time.</p>
+            <h2 className="font-headline text-3xl md:text-4xl">Beneficios de la Aromaterapia</h2>
+            <p className="mt-2 text-lg text-muted-foreground">Transforma tu bienestar, un aroma a la vez.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             {benefits.map((benefit) => (
@@ -233,8 +233,8 @@ export default function Home() {
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-headline text-3xl md:text-4xl">From Our Blog</h2>
-            <p className="mt-2 text-lg text-muted-foreground">Insights and stories on the world of aromatherapy.</p>
+            <h2 className="font-headline text-3xl md:text-4xl">De Nuestro Blog</h2>
+            <p className="mt-2 text-lg text-muted-foreground">Ideas e historias del mundo de la aromaterapia.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* 
@@ -264,7 +264,7 @@ export default function Home() {
           </div>
           <div className="text-center mt-12">
             <Button asChild variant="outline">
-              <Link href="/blog">Read More <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              <Link href="/blog">Leer Más <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
           </div>
         </div>
@@ -275,8 +275,8 @@ export default function Home() {
       <section className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-headline text-3xl md:text-4xl text-foreground">What Our Customers Say</h2>
-            <p className="mt-2 text-lg text-muted-foreground">Real stories from our amazing community.</p>
+            <h2 className="font-headline text-3xl md:text-4xl text-foreground">Lo que Dicen Nuestros Clientes</h2>
+            <p className="mt-2 text-lg text-muted-foreground">Historias reales de nuestra increíble comunidad.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (

@@ -37,7 +37,7 @@ function ProductRating({ rating, reviews }: { rating: number; reviews: number })
           <Star key={`empty-${i}`} className="h-5 w-5 text-muted-foreground/50" />
         ))}
       </div>
-      <span className="text-muted-foreground text-sm">({reviews} reviews)</span>
+      <span className="text-muted-foreground text-sm">({reviews} reseñas)</span>
     </div>
   );
 }
@@ -70,8 +70,8 @@ export default function ProductDetailPage() {
 
 
   if (product === null) {
-    // Loading state
-    return <div>Loading...</div>;
+    // Estado de carga
+    return <div>Cargando...</div>;
   }
   
   if (!product) {
@@ -103,7 +103,7 @@ export default function ProductDetailPage() {
             <Link href={`/products?category=${product.category}`} className="text-sm font-medium text-primary uppercase hover:underline">{product.category}</Link>
             <h1 className="font-headline text-4xl md:text-5xl mt-2">{product.name}</h1>
             {product.brand && (
-                <p className="text-xl text-muted-foreground mt-2">by <Link href={`/products?brand=${product.brand}`} className="hover:underline">{product.brand}</Link></p>
+                <p className="text-xl text-muted-foreground mt-2">de <Link href={`/products?brand=${product.brand}`} className="hover:underline">{product.brand}</Link></p>
             )}
             <div className="mt-4">
               <ProductRating rating={product.rating} reviews={product.reviews} />
@@ -130,7 +130,7 @@ export default function ProductDetailPage() {
             {product.aromas && product.aromas.length > 0 && (
                 <Select value={selectedAroma} onValueChange={setSelectedAroma}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select Aroma" />
+                    <SelectValue placeholder="Seleccionar Aroma" />
                   </SelectTrigger>
                   <SelectContent>
                     {product.aromas.map(aroma => (
@@ -140,16 +140,16 @@ export default function ProductDetailPage() {
                 </Select>
             )}
             <Button size="lg" className="w-full md:w-auto" onClick={handleAddToCart}>
-              Add to Cart
+              Añadir al Carrito
             </Button>
           </div>
         </div>
       </div>
        <Separator className="my-16" />
 
-      {/* Related Products Section */}
+      {/* Sección de Productos Relacionados */}
       <div>
-          <h2 className="font-headline text-3xl text-center mb-8">You Might Also Like</h2>
+          <h2 className="font-headline text-3xl text-center mb-8">También te podría gustar</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {relatedProducts.map((relatedProduct) => (
                   <Card key={relatedProduct.id} className="overflow-hidden group flex flex-col">
@@ -182,7 +182,7 @@ export default function ProductDetailPage() {
                       </CardContent>
                       <CardFooter className="p-4 pt-0">
                           <Button asChild className="w-full" variant="outline">
-                              <Link href={`/products/${relatedProduct.id}`}>View Details</Link>
+                              <Link href={`/products/${relatedProduct.id}`}>Ver Detalles</Link>
                           </Button>
                       </CardFooter>
                   </Card>

@@ -15,7 +15,7 @@ export function AppFooter() {
                 <h3 className="font-headline text-2xl text-primary">AromaZen</h3>
             </div>
             <p className="mt-2 text-muted-foreground">
-              Your sanctuary for aromatherapy and wellness.
+              Tu santuario para la aromaterapia y el bienestar.
             </p>
             <div className="mt-4 flex space-x-4">
               <Link href="#" className="text-muted-foreground hover:text-primary">
@@ -30,40 +30,40 @@ export function AppFooter() {
             </div>
           </div>
           <div className="md:col-span-1">
-            <h4 className="font-headline text-lg">Shop</h4>
+            <h4 className="font-headline text-lg">Tienda</h4>
             <ul className="mt-4 space-y-2">
-              <li><Link href="/products?category=incense" className="text-muted-foreground hover:text-primary">Incense</Link></li>
-              <li><Link href="/products?category=diffusers" className="text-muted-foreground hover:text-primary">Diffusers</Link></li>
-              <li><Link href="/products?category=oils" className="text-muted-foreground hover:text-primary">Essential Oils</Link></li>
-              <li><Link href="/deals" className="text-muted-foreground hover:text-primary">Deals</Link></li>
-              <li><Link href="/products" className="text-muted-foreground hover:text-primary">All Products</Link></li>
+              <li><Link href="/products?category=incense" className="text-muted-foreground hover:text-primary">Incienso</Link></li>
+              <li><Link href="/products?category=diffusers" className="text-muted-foreground hover:text-primary">Difusores</Link></li>
+              <li><Link href="/products?category=oils" className="text-muted-foreground hover:text-primary">Aceites Esenciales</Link></li>
+              <li><Link href="/deals" className="text-muted-foreground hover:text-primary">Ofertas</Link></li>
+              <li><Link href="/products" className="text-muted-foreground hover:text-primary">Todos los Productos</Link></li>
             </ul>
           </div>
           <div className="md:col-span-1">
-            <h4 className="font-headline text-lg">Explore</h4>
+            <h4 className="font-headline text-lg">Explorar</h4>
             <ul className="mt-4 space-y-2">
-              <li><Link href="/about" className="text-muted-foreground hover:text-primary">About Us</Link></li>
+              <li><Link href="/about" className="text-muted-foreground hover:text-primary">Nosotros</Link></li>
               <li><Link href="/blog" className="text-muted-foreground hover:text-primary">Blog</Link></li>
-              <li><Link href="/contact" className="text-muted-foreground hover:text-primary">Contact</Link></li>
+              <li><Link href="/contact" className="text-muted-foreground hover:text-primary">Contacto</Link></li>
             </ul>
           </div>
           <div className="md:col-span-1">
-            <h4 className="font-headline text-lg">Newsletter</h4>
+            <h4 className="font-headline text-lg">Boletín</h4>
             <p className="mt-4 text-muted-foreground">
-              Subscribe for wellness tips and new arrivals.
+              Suscríbete para recibir consejos de bienestar y novedades.
             </p>
             <form className="mt-4 flex space-x-2">
-              <Input type="email" placeholder="Your email" className="flex-1" />
-              <Button type="submit">Subscribe</Button>
+              <Input type="email" placeholder="Tu email" className="flex-1" />
+              <Button type="submit">Suscribirse</Button>
             </form>
           </div>
         </div>
         <div className="mt-12 border-t pt-8 text-center text-muted-foreground text-sm">
-          <p>&copy; {new Date().getFullYear()} AromaZen Boutique. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} AromaZen Boutique. Todos los derechos reservados.</p>
           <div className="mt-2 space-x-4">
-            <Link href="/privacy-policy" className="hover:text-primary">Privacy Policy</Link>
+            <Link href="/privacy-policy" className="hover:text-primary">Política de Privacidad</Link>
             <span>&bull;</span>
-            <Link href="/terms-of-service" className="hover:text-primary">Terms of Service</Link>
+            <Link href="/terms-of-service" className="hover:text-primary">Términos de Servicio</Link>
           </div>
         </div>
       </div>

@@ -16,7 +16,7 @@ export function CartSheet() {
     <Sheet open={isCartOpen} onOpenChange={setCartOpen}>
       <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
         <SheetHeader className="px-6">
-          <SheetTitle className="font-headline text-2xl">Shopping Cart</SheetTitle>
+          <SheetTitle className="font-headline text-2xl">Carrito de Compras</SheetTitle>
         </SheetHeader>
         <Separator />
         {cartItems.length > 0 ? (
@@ -75,25 +75,25 @@ export function CartSheet() {
                   <span>Subtotal</span>
                   <span>${total.toFixed(2)}</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Shipping and taxes calculated at checkout.</p>
+                <p className="text-sm text-muted-foreground">Envío e impuestos calculados en el checkout.</p>
                 <SheetClose asChild>
                   <Button asChild size="lg" className="w-full">
-                    <Link href="/checkout">Proceed to Checkout</Link>
+                    <Link href="/checkout">Proceder al Pago</Link>
                   </Button>
                 </SheetClose>
                 <SheetClose asChild>
-                   <Button variant="outline" className="w-full">Continue Shopping</Button>
+                   <Button variant="outline" className="w-full">Seguir Comprando</Button>
                 </SheetClose>
               </div>
             </SheetFooter>
           </>
         ) : (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
-            <h3 className="text-xl font-semibold">Your cart is empty</h3>
-            <p className="text-muted-foreground">Add some products to get started.</p>
+            <h3 className="text-xl font-semibold">Tu carrito está vacío</h3>
+            <p className="text-muted-foreground">Añade algunos productos para empezar.</p>
             <SheetClose asChild>
               <Button asChild>
-                <Link href="/products">Browse Products</Link>
+                <Link href="/products">Ver Productos</Link>
               </Button>
             </SheetClose>
           </div>

@@ -19,7 +19,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
 import {
@@ -74,16 +73,16 @@ export default function AdminDashboardPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle className="font-headline text-2xl">Admin Dashboard</CardTitle>
-            <CardDescription>Manage your store's products, users, and orders.</CardDescription>
+            <CardTitle className="font-headline text-2xl">Panel de Administración</CardTitle>
+            <CardDescription>Gestiona los productos, usuarios y pedidos de tu tienda.</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="products">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="products">Products</TabsTrigger>
-              <TabsTrigger value="users">Users</TabsTrigger>
-              <TabsTrigger value="orders">Orders</TabsTrigger>
+              <TabsTrigger value="products">Productos</TabsTrigger>
+              <TabsTrigger value="users">Usuarios</TabsTrigger>
+              <TabsTrigger value="orders">Pedidos</TabsTrigger>
             </TabsList>
             
             {/* Products Tab */}
@@ -91,21 +90,21 @@ export default function AdminDashboardPage() {
               <div className="flex justify-end mb-4">
                  <Dialog>
                     <DialogTrigger asChild>
-                      <Button>Add Product</Button>
+                      <Button>Añadir Producto</Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px]">
                       <form action={addProduct}>
                         <DialogHeader>
-                          <DialogTitle className="font-headline">Add New Product</DialogTitle>
-                          <DialogDescription>Fill in the details for the new product.</DialogDescription>
+                          <DialogTitle className="font-headline">Añadir Nuevo Producto</DialogTitle>
+                          <DialogDescription>Completa los detalles del nuevo producto.</DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="nombre-add" className="text-right">Name</Label>
+                            <Label htmlFor="nombre-add" className="text-right">Nombre</Label>
                             <Input id="nombre-add" name="nombre" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="precio-add" className="text-right">Price</Label>
+                            <Label htmlFor="precio-add" className="text-right">Precio</Label>
                             <Input id="precio-add" name="precio" type="number" step="0.01" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
@@ -113,29 +112,29 @@ export default function AdminDashboardPage() {
                             <Input id="stock-add" name="stock" type="number" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="categoriaNombre-add" className="text-right">Category</Label>
-                            <Input id="categoriaNombre-add" name="categoriaNombre" placeholder="e.g. Aceite" className="col-span-3" required />
+                            <Label htmlFor="categoriaNombre-add" className="text-right">Categoría</Label>
+                            <Input id="categoriaNombre-add" name="categoriaNombre" placeholder="Ej: Aceite" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="brand-add" className="text-right">Brand</Label>
-                            <Input id="brand-add" name="brand" placeholder="e.g. ZenScents" className="col-span-3" />
+                            <Label htmlFor="brand-add" className="text-right">Marca</Label>
+                            <Input id="brand-add" name="brand" placeholder="Ej: ZenScents" className="col-span-3" />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="fragancias-add" className="text-right">Fragrances</Label>
-                            <Input id="fragancias-add" name="fragancias" placeholder="e.g. Sandalwood, Lavender" className="col-span-3" />
+                            <Label htmlFor="fragancias-add" className="text-right">Fragancias</Label>
+                            <Input id="fragancias-add" name="fragancias" placeholder="Ej: Sándalo, Lavanda" className="col-span-3" />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="imagenUrl-add" className="text-right">Image URL</Label>
-                            <Input id="imagenUrl-add" name="imagenUrl" placeholder="https://example.com/image.jpg" className="col-span-3" required />
+                            <Label htmlFor="imagenUrl-add" className="text-right">URL de Imagen</Label>
+                            <Input id="imagenUrl-add" name="imagenUrl" placeholder="https://ejemplo.com/imagen.jpg" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="descripcion-add" className="text-right">Description</Label>
+                            <Label htmlFor="descripcion-add" className="text-right">Descripción</Label>
                             <Textarea id="descripcion-add" name="descripcion" className="col-span-3" required />
                           </div>
                         </div>
                         <DialogFooter>
                             <DialogClose asChild>
-                                <Button type="submit">Save Product</Button>
+                                <Button type="submit">Guardar Producto</Button>
                             </DialogClose>
                         </DialogFooter>
                       </form>
@@ -145,13 +144,13 @@ export default function AdminDashboardPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="hidden w-[100px] sm:table-cell">Image</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead className="hidden md:table-cell">Brand</TableHead>
-                    <TableHead className="hidden md:table-cell">Price</TableHead>
+                    <TableHead className="hidden w-[100px] sm:table-cell">Imagen</TableHead>
+                    <TableHead>Nombre</TableHead>
+                    <TableHead>Categoría</TableHead>
+                    <TableHead className="hidden md:table-cell">Marca</TableHead>
+                    <TableHead className="hidden md:table-cell">Precio</TableHead>
                     <TableHead>
-                      <span className="sr-only">Actions</span>
+                      <span className="sr-only">Acciones</span>
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -177,29 +176,29 @@ export default function AdminDashboardPage() {
                         <div className="flex gap-2">
                            <Dialog>
                               <DialogTrigger asChild>
-                                <Button variant="outline" size="sm" onClick={() => setSelectedProduct(product)}>Edit</Button>
+                                <Button variant="outline" size="sm" onClick={() => setSelectedProduct(product)}>Editar</Button>
                               </DialogTrigger>
                               <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Edit Product</DialogTitle>
+                                    <DialogTitle>Editar Producto</DialogTitle>
                                 </DialogHeader>
-                                {/* Edit form is rendered below in a separate dialog */}
+                                {/* El formulario de edición se renderiza abajo en otro diálogo */}
                               </DialogContent>
                            </Dialog>
                            <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                 <Button variant="destructive" size="sm">Delete</Button>
+                                 <Button variant="destructive" size="sm">Eliminar</Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                       This action cannot be undone. This will permanently delete the product.
+                                       Esta acción no se puede deshacer. Esto eliminará permanentemente el producto.
                                     </AlertDialogDescription>
                                  </AlertDialogHeader>
                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleDeleteProduct(product.id)}>Delete</AlertDialogAction>
+                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleDeleteProduct(product.id)}>Eliminar</AlertDialogAction>
                                  </AlertDialogFooter>
                               </AlertDialogContent>
                            </AlertDialog>
@@ -216,12 +215,12 @@ export default function AdminDashboardPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>User ID</TableHead>
-                    <TableHead>Name</TableHead>
+                    <TableHead>ID de Usuario</TableHead>
+                    <TableHead>Nombre</TableHead>
                     <TableHead>Email</TableHead>
-                    <TableHead>Join Date</TableHead>
+                    <TableHead>Fecha de Registro</TableHead>
                     <TableHead>
-                      <span className="sr-only">Actions</span>
+                      <span className="sr-only">Acciones</span>
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -236,16 +235,16 @@ export default function AdminDashboardPage() {
                         <div className="flex gap-2 justify-end">
                           <Dialog>
                             <DialogTrigger asChild>
-                              <Button variant="outline" size="sm" onClick={() => setSelectedUser(user)}>Edit</Button>
+                              <Button variant="outline" size="sm" onClick={() => setSelectedUser(user)}>Editar</Button>
                             </DialogTrigger>
                              <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Edit User</DialogTitle>
-                                    <DialogDescription>Make changes to the user's details.</DialogDescription>
+                                    <DialogTitle>Editar Usuario</DialogTitle>
+                                    <DialogDescription>Haz cambios en los detalles del usuario.</DialogDescription>
                                 </DialogHeader>
                                  <div className="grid gap-4 py-4">
                                     <div className="grid grid-cols-4 items-center gap-4">
-                                        <Label htmlFor="user-name-edit" className="text-right">Name</Label>
+                                        <Label htmlFor="user-name-edit" className="text-right">Nombre</Label>
                                         <Input id="user-name-edit" name="name" defaultValue={user.name} className="col-span-3" required />
                                     </div>
                                     <div className="grid grid-cols-4 items-center gap-4">
@@ -255,28 +254,28 @@ export default function AdminDashboardPage() {
                                 </div>
                                 <DialogFooter>
                                     <DialogClose asChild>
-                                        <Button type="button" variant="secondary">Cancel</Button>
+                                        <Button type="button" variant="secondary">Cancelar</Button>
                                     </DialogClose>
                                     <DialogClose asChild>
-                                        <Button type="submit">Save Changes</Button>
+                                        <Button type="submit">Guardar Cambios</Button>
                                     </DialogClose>
                                 </DialogFooter>
                               </DialogContent>
                           </Dialog>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="sm">Delete</Button>
+                              <Button variant="destructive" size="sm">Eliminar</Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
-                                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                  <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                                   <AlertDialogDescription>
-                                      This action cannot be undone. This will permanently delete the user account.
+                                      Esta acción no se puede deshacer. Esto eliminará permanentemente la cuenta del usuario.
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction>Delete</AlertDialogAction>
+                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                  <AlertDialogAction>Eliminar</AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
@@ -293,13 +292,13 @@ export default function AdminDashboardPage() {
                <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Order ID</TableHead>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>ID de Pedido</TableHead>
+                    <TableHead>Cliente</TableHead>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Estado</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead>
-                      <span className="sr-only">Actions</span>
+                      <span className="sr-only">Acciones</span>
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -321,26 +320,26 @@ export default function AdminDashboardPage() {
                                 <DialogTrigger asChild>
                                 <Button variant="ghost" size="icon">
                                     <Eye className="h-4 w-4" />
-                                    <span className="sr-only">View Details</span>
+                                    <span className="sr-only">Ver Detalles</span>
                                 </Button>
                                 </DialogTrigger>
                                 <DialogContent className="sm:max-w-2xl">
                                     <DialogHeader>
-                                        <DialogTitle>Order Details</DialogTitle>
-                                        <DialogDescription>Order ID: {order.id}</DialogDescription>
+                                        <DialogTitle>Detalles del Pedido</DialogTitle>
+                                        <DialogDescription>ID de Pedido: {order.id}</DialogDescription>
                                     </DialogHeader>
                                     <div className="grid gap-4 py-4">
-                                        <p><strong>Customer:</strong> {order.customerName}</p>
-                                        <p><strong>Date:</strong> {order.date}</p>
-                                        <p><strong>Status:</strong> {order.status}</p>
+                                        <p><strong>Cliente:</strong> {order.customerName}</p>
+                                        <p><strong>Fecha:</strong> {order.date}</p>
+                                        <p><strong>Estado:</strong> {order.status}</p>
                                         <p><strong>Total:</strong> ${order.total.toFixed(2)}</p>
-                                        <h4 className="font-semibold mt-4">Items:</h4>
+                                        <h4 className="font-semibold mt-4">Artículos:</h4>
                                         <Table>
                                             <TableHeader>
                                                 <TableRow>
-                                                    <TableHead>Product</TableHead>
-                                                    <TableHead>Quantity</TableHead>
-                                                    <TableHead>Price</TableHead>
+                                                    <TableHead>Producto</TableHead>
+                                                    <TableHead>Cantidad</TableHead>
+                                                    <TableHead>Precio</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
@@ -356,61 +355,61 @@ export default function AdminDashboardPage() {
                                     </div>
                                     <DialogFooter>
                                         <DialogClose asChild>
-                                          <Button>Close</Button>
+                                          <Button>Cerrar</Button>
                                         </DialogClose>
                                     </DialogFooter>
                                 </DialogContent>
                             </Dialog>
                             <Dialog>
                                <DialogTrigger asChild>
-                                  <Button variant="outline" size="sm" onClick={() => setSelectedOrder(order)}>Edit</Button>
+                                  <Button variant="outline" size="sm" onClick={() => setSelectedOrder(order)}>Editar</Button>
                                </DialogTrigger>
                                <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Edit Order</DialogTitle>
-                                    <DialogDescription>Update the order status.</DialogDescription>
+                                    <DialogTitle>Editar Pedido</DialogTitle>
+                                    <DialogDescription>Actualizar el estado del pedido.</DialogDescription>
                                 </DialogHeader>
                                  <div className="grid gap-4 py-4">
-                                    <p><strong>Order ID:</strong> {order.id}</p>
-                                    <p><strong>Customer:</strong> {order.customerName}</p>
+                                    <p><strong>ID de Pedido:</strong> {order.id}</p>
+                                    <p><strong>Cliente:</strong> {order.customerName}</p>
                                     <div className="grid grid-cols-4 items-center gap-4">
-                                        <Label htmlFor="order-status-edit" className="text-right">Status</Label>
+                                        <Label htmlFor="order-status-edit" className="text-right">Estado</Label>
                                         <Select defaultValue={order.status}>
                                             <SelectTrigger className="col-span-3">
-                                                <SelectValue placeholder="Select status" />
+                                                <SelectValue placeholder="Seleccionar estado" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="Pending">Pending</SelectItem>
-                                                <SelectItem value="Shipped">Shipped</SelectItem>
-                                                <SelectItem value="Delivered">Delivered</SelectItem>
+                                                <SelectItem value="Pending">Pendiente</SelectItem>
+                                                <SelectItem value="Shipped">Enviado</SelectItem>
+                                                <SelectItem value="Delivered">Entregado</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
                                 </div>
                                 <DialogFooter>
                                     <DialogClose asChild>
-                                        <Button type="button" variant="secondary">Cancel</Button>
+                                        <Button type="button" variant="secondary">Cancelar</Button>
                                     </DialogClose>
                                     <DialogClose asChild>
-                                        <Button type="submit">Save Changes</Button>
+                                        <Button type="submit">Guardar Cambios</Button>
                                     </DialogClose>
                                 </DialogFooter>
                                </DialogContent>
                             </Dialog>
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                 <Button variant="destructive" size="sm">Delete</Button>
+                                 <Button variant="destructive" size="sm">Eliminar</Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                   <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete the order.
+                                        Esta acción no se puede deshacer. Esto eliminará permanentemente el pedido.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction>Delete</AlertDialogAction>
+                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    <AlertDialogAction>Eliminar</AlertDialogAction>
                                   </AlertDialogFooter>
                               </AlertDialogContent>
                            </AlertDialog>
@@ -431,17 +430,17 @@ export default function AdminDashboardPage() {
             <DialogContent className="sm:max-w-[425px]">
                 <form action={editProduct}>
                     <DialogHeader>
-                        <DialogTitle className="font-headline">Edit Product</DialogTitle>
-                        <DialogDescription>Make changes to the product details.</DialogDescription>
+                        <DialogTitle className="font-headline">Editar Producto</DialogTitle>
+                        <DialogDescription>Haz cambios en los detalles del producto.</DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <Input type="hidden" name="id" defaultValue={selectedProduct.id} />
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="nombre-edit" className="text-right">Name</Label>
+                          <Label htmlFor="nombre-edit" className="text-right">Nombre</Label>
                           <Input id="nombre-edit" name="nombre" defaultValue={selectedProduct.nombre} className="col-span-3" required />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="precio-edit" className="text-right">Price</Label>
+                          <Label htmlFor="precio-edit" className="text-right">Precio</Label>
                           <Input id="precio-edit" name="precio" type="number" step="0.01" defaultValue={selectedProduct.precio} className="col-span-3" required />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
@@ -449,32 +448,32 @@ export default function AdminDashboardPage() {
                             <Input id="stock-edit" name="stock" type="number" defaultValue={selectedProduct.stock} className="col-span-3" required />
                           </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="categoriaNombre-edit" className="text-right">Category</Label>
+                          <Label htmlFor="categoriaNombre-edit" className="text-right">Categoría</Label>
                           <Input id="categoriaNombre-edit" name="categoriaNombre" defaultValue={selectedProduct.categoriaNombre} className="col-span-3" required />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="brand-edit" className="text-right">Brand</Label>
+                          <Label htmlFor="brand-edit" className="text-right">Marca</Label>
                           <Input id="brand-edit" name="brand" defaultValue={selectedProduct.brand} className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="fragancias-edit" className="text-right">Fragrances</Label>
+                          <Label htmlFor="fragancias-edit" className="text-right">Fragancias</Label>
                           <Input id="fragancias-edit" name="fragancias" defaultValue={selectedProduct.fragancias?.join(', ')} className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="imagenUrl-edit" className="text-right">Image URL</Label>
+                          <Label htmlFor="imagenUrl-edit" className="text-right">URL de Imagen</Label>
                           <Input id="imagenUrl-edit" name="imagenUrl" defaultValue={selectedProduct.imagenUrl} className="col-span-3" required />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="descripcion-edit" className="text-right">Description</Label>
+                          <Label htmlFor="descripcion-edit" className="text-right">Descripción</Label>
                           <Textarea id="descripcion-edit" name="descripcion" defaultValue={selectedProduct.descripcion} className="col-span-3" required />
                         </div>
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
-                           <Button type="button" variant="secondary" onClick={() => setSelectedProduct(null)}>Cancel</Button>
+                           <Button type="button" variant="secondary" onClick={() => setSelectedProduct(null)}>Cancelar</Button>
                         </DialogClose>
                         <DialogClose asChild>
-                           <Button type="submit">Save Changes</Button>
+                           <Button type="submit">Guardar Cambios</Button>
                         </DialogClose>
                     </DialogFooter>
                 </form>
@@ -487,12 +486,12 @@ export default function AdminDashboardPage() {
         <Dialog open={!!selectedUser} onOpenChange={(isOpen) => !isOpen && setSelectedUser(null)}>
             <DialogContent className="sm:max-w-[425px]">
                  <DialogHeader>
-                    <DialogTitle className="font-headline">Edit User</DialogTitle>
-                    <DialogDescription>Make changes to the user's details.</DialogDescription>
+                    <DialogTitle className="font-headline">Editar Usuario</DialogTitle>
+                    <DialogDescription>Haz cambios en los detalles del usuario.</DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="user-name-edit" className="text-right">Name</Label>
+                        <Label htmlFor="user-name-edit" className="text-right">Nombre</Label>
                         <Input id="user-name-edit" name="name" defaultValue={selectedUser.name} className="col-span-3" required />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -502,10 +501,10 @@ export default function AdminDashboardPage() {
                 </div>
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button type="button" variant="secondary" onClick={() => setSelectedUser(null)}>Cancel</Button>
+                        <Button type="button" variant="secondary" onClick={() => setSelectedUser(null)}>Cancelar</Button>
                     </DialogClose>
                     <DialogClose asChild>
-                        <Button type="submit">Save Changes</Button>
+                        <Button type="submit">Guardar Cambios</Button>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>
@@ -517,32 +516,32 @@ export default function AdminDashboardPage() {
         <Dialog open={!!selectedOrder} onOpenChange={(isOpen) => !isOpen && setSelectedOrder(null)}>
             <DialogContent className="sm:max-w-[425px]">
                  <DialogHeader>
-                    <DialogTitle className="font-headline">Edit Order</DialogTitle>
-                    <DialogDescription>Update the order status.</DialogDescription>
+                    <DialogTitle className="font-headline">Editar Pedido</DialogTitle>
+                    <DialogDescription>Actualizar el estado del pedido.</DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
-                    <p><strong>Order ID:</strong> {selectedOrder.id}</p>
-                    <p><strong>Customer:</strong> {selectedOrder.customerName}</p>
+                    <p><strong>ID de Pedido:</strong> {selectedOrder.id}</p>
+                    <p><strong>Cliente:</strong> {selectedOrder.customerName}</p>
                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="order-status-edit" className="text-right">Status</Label>
+                        <Label htmlFor="order-status-edit" className="text-right">Estado</Label>
                          <Select defaultValue={selectedOrder.status}>
                             <SelectTrigger className="col-span-3">
                                 <SelectValue placeholder="Select status" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="Pending">Pending</SelectItem>
-                                <SelectItem value="Shipped">Shipped</SelectItem>
-                                <SelectItem value="Delivered">Delivered</SelectItem>
+                                <SelectItem value="Pending">Pendiente</SelectItem>
+                                <SelectItem value="Shipped">Enviado</SelectItem>
+                                <SelectItem value="Delivered">Entregado</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
                 </div>
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button type="button" variant="secondary" onClick={() => setSelectedOrder(null)}>Cancel</Button>
+                        <Button type="button" variant="secondary" onClick={() => setSelectedOrder(null)}>Cancelar</Button>
                     </DialogClose>
                     <DialogClose asChild>
-                        <Button type="submit">Save Changes</Button>
+                        <Button type="submit">Guardar Cambios</Button>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>

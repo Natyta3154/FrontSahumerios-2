@@ -9,8 +9,8 @@ export default function AdminLoginPage() {
     
   async function handleLogin(formData: FormData) {
     'use server';
-    // Here you would typically handle authentication
-    // For now, we'll just redirect to the dashboard
+    // Aquí normalmente manejarías la autenticación.
+    // Por ahora, solo redirigimos al panel de control.
     redirect('/admin/dashboard');
   }
 
@@ -19,20 +19,20 @@ export default function AdminLoginPage() {
       <Card className="w-full max-w-sm">
         <form action={handleLogin}>
             <CardHeader>
-            <CardTitle className="font-headline text-2xl">Admin Login</CardTitle>
-            <CardDescription>Enter your credentials to access the dashboard.</CardDescription>
+            <CardTitle className="font-headline text-2xl">Acceso Admin</CardTitle>
+            <CardDescription>Ingresa tus credenciales para acceder al panel.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
             <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="admin@example.com" required />
+                <Input id="email" type="email" placeholder="admin@ejemplo.com" required />
             </div>
             <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Contraseña</Label>
                 <Input id="password" type="password" required />
             </div>
             <Button type="submit" className="w-full">
-                Login
+                Acceder
             </Button>
             </CardContent>
         </form>

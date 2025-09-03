@@ -25,10 +25,10 @@ export default function DealsPage() {
     <div className="container mx-auto px-4 py-16 md:py-24">
       <div className="text-center mb-12">
         <h1 className="font-headline text-4xl md:text-5xl text-foreground">
-          Special Offers
+          Ofertas Especiales
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-          Don't miss out on these limited-time deals on your favorite aromatherapy products.
+          No te pierdas estas ofertas por tiempo limitado en tus productos de aromaterapia favoritos.
         </p>
       </div>
       
@@ -43,7 +43,7 @@ export default function DealsPage() {
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <Badge variant="destructive" className="absolute top-3 right-3">DEAL</Badge>
+                <Badge variant="destructive" className="absolute top-3 right-3">OFERTA</Badge>
                </Link>
             </CardHeader>
             <CardContent className="p-4 flex-grow">
@@ -68,7 +68,7 @@ export default function DealsPage() {
             </CardContent>
             <CardFooter className="p-4 pt-0">
               <Button asChild className="w-full">
-                <Link href={`/products/${product.id}`}>View Details</Link>
+                <Link href={`/products/${product.id}`}>Ver Detalles</Link>
               </Button>
             </CardFooter>
           </Card>

@@ -31,15 +31,15 @@ export default function ProductsPage() {
   }, []);
 
   const categories: { name: string, value: Category }[] = [
-    { name: "All Categories", value: "all" },
-    { name: "Incense", value: "incense" },
-    { name: "Diffusers", value: "diffusers" },
-    { name: "Oils", value: "oils" },
+    { name: "Todas las Categorías", value: "all" },
+    { name: "Incienso", value: "incense" },
+    { name: "Difusores", value: "diffusers" },
+    { name: "Aceites", value: "oils" },
     { name: "Aceite", value: "Aceite"}
   ];
   
   const brands: { name: string, value: Brand }[] = [
-    { name: "All Brands", value: "all" },
+    { name: "Todas las Marcas", value: "all" },
     ...Array.from(new Set(products.map(p => p.brand).filter(Boolean) as string[])).map(b => ({ name: b, value: b }))
   ];
 
@@ -54,10 +54,10 @@ export default function ProductsPage() {
     <div className="container mx-auto px-4 py-16 md:py-24">
       <div className="text-center mb-12">
         <h1 className="font-headline text-4xl md:text-5xl text-foreground">
-          Our Collection
+          Nuestra Colección
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-          Explore our curated selection of aromatherapy products, designed to bring balance and tranquility to your life.
+          Explora nuestra selección curada de productos de aromaterapia, diseñados para traer equilibrio y tranquilidad a tu vida.
         </p>
       </div>
       
@@ -128,7 +128,7 @@ export default function ProductsPage() {
             </CardContent>
             <CardFooter className="p-4 pt-0">
               <Button asChild className="w-full">
-                <Link href={`/products/${product.id}`}>View Details</Link>
+                <Link href={`/products/${product.id}`}>Ver Detalles</Link>
               </Button>
             </CardFooter>
           </Card>

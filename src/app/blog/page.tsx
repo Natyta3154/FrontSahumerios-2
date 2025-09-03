@@ -9,10 +9,10 @@ export default function BlogPage() {
     <div className="container mx-auto px-4 py-16 md:py-24">
       <div className="text-center mb-12">
         <h1 className="font-headline text-4xl md:text-5xl text-foreground">
-          AromaZen Blog
+          Blog de AromaZen
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-          Your guide to the world of aromatherapy, wellness, and mindful living.
+          Tu guía al mundo de la aromaterapia, el bienestar y la vida consciente.
         </p>
       </div>
 
@@ -44,7 +44,7 @@ export default function BlogPage() {
                 </div>
                 <CardDescription className="line-clamp-4 flex-grow">{article.summary}</CardDescription>
                 <div className="mt-4 text-primary font-semibold group-hover:underline">
-                  Read More
+                  Leer Más
                 </div>
               </CardContent>
             </Link>
