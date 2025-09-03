@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { featuredProducts, blogArticles } from "@/lib/data";
-import { ArrowRight, Brain, Leaf, Wind } from "lucide-react";
+import { ArrowRight, Brain, Leaf, Star, Wind } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -23,6 +23,27 @@ export default function Home() {
       title: "Enhanced Focus",
       description: "Certain scents can sharpen your focus and boost your cognitive performance.",
     },
+  ];
+
+  const testimonials = [
+    {
+      name: "Sarah L.",
+      rating: 5,
+      comment: "Absolutely in love with the lavender oil. It has completely transformed my sleep routine. The quality is unmatched!",
+      image: "https://picsum.photos/100/100?random=13"
+    },
+    {
+      name: "Michael B.",
+      rating: 5,
+      comment: "The ceramic diffuser is not only beautiful but works perfectly. My home has never felt so serene. Highly recommended.",
+      image: "https://picsum.photos/100/100?random=14"
+    },
+    {
+      name: "Jessica P.",
+      rating: 4,
+      comment: "Great selection of incense. The sandalwood is my favorite for my morning yoga sessions. The scent is so authentic.",
+      image: "https://picsum.photos/100/100?random=15"
+    }
   ];
 
   return (
@@ -172,6 +193,37 @@ export default function Home() {
             <Button asChild variant="outline">
               <Link href="/blog">Read More <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-24 bg-card">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="font-headline text-3xl md:text-4xl text-foreground">What Our Customers Say</h2>
+            <p className="mt-2 text-lg text-muted-foreground">Real stories from our amazing community.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <Card key={index} className="flex flex-col items-center text-center p-8">
+                <Image
+                  src={testimonial.image}
+                  alt={testimonial.name}
+                  width={80}
+                  height={80}
+                  className="rounded-full"
+                />
+                <div className="flex mt-4 mb-2">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className={`h-5 w-5 ${i < testimonial.rating ? 'text-primary fill-primary' : 'text-muted-foreground/50'}`} />
+                  ))}
+                </div>
+                <CardContent className="p-0">
+                  <p className="text-muted-foreground italic">&quot;{testimonial.comment}&quot;</p>
+                  <p className="mt-4 font-semibold text-foreground">- {testimonial.name}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
