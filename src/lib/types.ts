@@ -1,18 +1,39 @@
 export type Product = {
-  id: string;
+  id: number; // Cambiado a number para coincidir con el backend
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  stock: number;
+  imagenUrl: string;
+  activo: boolean;
+  categoriaNombre: 'incense' | 'diffusers' | 'oils' | 'Aceite' | string; // Permitir más categorías
+  mensaje?: string | null;
+  fragancias?: string[];
+  porcentajeDescuento?: number | null;
+  fechaInicioDescuento?: string | null;
+  fechaFinDescuento?: string | null;
+  precioFinal: number;
+  atributos?: {
+    nombre: string;
+    valor: string;
+  }[];
+
+  // Mantener campos antiguos por compatibilidad temporal donde sea necesario o mapear
+  // Esto es para que el resto de la aplicación no se rompa de inmediato.
+  // Idealmente, se refactoriza todo para usar los nuevos nombres.
   name: string;
   description: string;
   price: number;
   image: string;
-  category: 'incense' | 'diffusers' | 'oils';
-  rating: number;
-  reviews: number;
-  fragrance?: string;
+  category: 'incense' | 'diffusers' | 'oils' | 'Aceite' | string;
+  rating: number; // Simulado o mapeado si no viene del backend
+  reviews: number; // Simulado o mapeado
   aromas?: string[];
   brand?: string;
   onSale?: boolean;
   originalPrice?: number;
 };
+
 
 export type BlogArticle = {
   slug: string;

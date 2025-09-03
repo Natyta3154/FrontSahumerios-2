@@ -61,7 +61,7 @@ export default function AdminDashboardPage() {
     loadProducts();
   }, []);
 
-  const handleDeleteProduct = async (productId: string) => {
+  const handleDeleteProduct = async (productId: number) => {
     await deleteProduct(productId);
     // Después de eliminar, volvemos a cargar los productos para refrescar la lista.
     const fetchedProducts = await getProducts();
@@ -101,32 +101,36 @@ export default function AdminDashboardPage() {
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="name-add" className="text-right">Name</Label>
-                            <Input id="name-add" name="name" className="col-span-3" required />
+                            <Label htmlFor="nombre-add" className="text-right">Name</Label>
+                            <Input id="nombre-add" name="nombre" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="price-add" className="text-right">Price</Label>
-                            <Input id="price-add" name="price" type="number" step="0.01" className="col-span-3" required />
+                            <Label htmlFor="precio-add" className="text-right">Price</Label>
+                            <Input id="precio-add" name="precio" type="number" step="0.01" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="category-add" className="text-right">Category</Label>
-                            <Input id="category-add" name="category" placeholder="incense, diffusers, or oils" className="col-span-3" required />
+                            <Label htmlFor="stock-add" className="text-right">Stock</Label>
+                            <Input id="stock-add" name="stock" type="number" className="col-span-3" required />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="categoriaNombre-add" className="text-right">Category</Label>
+                            <Input id="categoriaNombre-add" name="categoriaNombre" placeholder="e.g. Aceite" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="brand-add" className="text-right">Brand</Label>
                             <Input id="brand-add" name="brand" placeholder="e.g. ZenScents" className="col-span-3" />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="fragrance-add" className="text-right">Fragrance</Label>
-                            <Input id="fragrance-add" name="fragrance" placeholder="e.g. Sandalwood, Lavender" className="col-span-3" />
+                            <Label htmlFor="fragancias-add" className="text-right">Fragrances</Label>
+                            <Input id="fragancias-add" name="fragancias" placeholder="e.g. Sandalwood, Lavender" className="col-span-3" />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="image-add" className="text-right">Image URL</Label>
-                            <Input id="image-add" name="image" placeholder="https://example.com/image.jpg" className="col-span-3" required />
+                            <Label htmlFor="imagenUrl-add" className="text-right">Image URL</Label>
+                            <Input id="imagenUrl-add" name="imagenUrl" placeholder="https://example.com/image.jpg" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="description-add" className="text-right">Description</Label>
-                            <Textarea id="description-add" name="description" className="col-span-3" required />
+                            <Label htmlFor="descripcion-add" className="text-right">Description</Label>
+                            <Textarea id="descripcion-add" name="descripcion" className="col-span-3" required />
                           </div>
                         </div>
                         <DialogFooter>
@@ -145,7 +149,6 @@ export default function AdminDashboardPage() {
                     <TableHead>Name</TableHead>
                     <TableHead>Category</TableHead>
                     <TableHead className="hidden md:table-cell">Brand</TableHead>
-                    <TableHead className="hidden md:table-cell">Fragrance</TableHead>
                     <TableHead className="hidden md:table-cell">Price</TableHead>
                     <TableHead>
                       <span className="sr-only">Actions</span>
@@ -169,7 +172,6 @@ export default function AdminDashboardPage() {
                         <Badge variant="outline">{product.category}</Badge>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">{product.brand || 'N/A'}</TableCell>
-                      <TableCell className="hidden md:table-cell">{product.fragrance || 'N/A'}</TableCell>
                       <TableCell className="hidden md:table-cell">${product.price.toFixed(2)}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
@@ -181,6 +183,7 @@ export default function AdminDashboardPage() {
                                 <DialogHeader>
                                     <DialogTitle>Edit Product</DialogTitle>
                                 </DialogHeader>
+                                {/* Edit form is rendered below in a separate dialog */}
                               </DialogContent>
                            </Dialog>
                            <AlertDialog>
@@ -434,32 +437,36 @@ export default function AdminDashboardPage() {
                     <div className="grid gap-4 py-4">
                         <Input type="hidden" name="id" defaultValue={selectedProduct.id} />
                         <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name-edit" className="text-right">Name</Label>
-                        <Input id="name-edit" name="name" defaultValue={selectedProduct.name} className="col-span-3" required />
+                          <Label htmlFor="nombre-edit" className="text-right">Name</Label>
+                          <Input id="nombre-edit" name="nombre" defaultValue={selectedProduct.nombre} className="col-span-3" required />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="price-edit" className="text-right">Price</Label>
-                        <Input id="price-edit" name="price" type="number" step="0.01" defaultValue={selectedProduct.price} className="col-span-3" required />
+                          <Label htmlFor="precio-edit" className="text-right">Price</Label>
+                          <Input id="precio-edit" name="precio" type="number" step="0.01" defaultValue={selectedProduct.precio} className="col-span-3" required />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="category-edit" className="text-right">Category</Label>
-                        <Input id="category-edit" name="category" defaultValue={selectedProduct.category} className="col-span-3" required />
+                            <Label htmlFor="stock-edit" className="text-right">Stock</Label>
+                            <Input id="stock-edit" name="stock" type="number" defaultValue={selectedProduct.stock} className="col-span-3" required />
+                          </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="categoriaNombre-edit" className="text-right">Category</Label>
+                          <Input id="categoriaNombre-edit" name="categoriaNombre" defaultValue={selectedProduct.categoriaNombre} className="col-span-3" required />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="brand-edit" className="text-right">Brand</Label>
-                        <Input id="brand-edit" name="brand" defaultValue={selectedProduct.brand} className="col-span-3" />
+                          <Label htmlFor="brand-edit" className="text-right">Brand</Label>
+                          <Input id="brand-edit" name="brand" defaultValue={selectedProduct.brand} className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="fragrance-edit" className="text-right">Fragrance</Label>
-                        <Input id="fragrance-edit" name="fragrance" defaultValue={selectedProduct.fragrance} className="col-span-3" />
+                          <Label htmlFor="fragancias-edit" className="text-right">Fragrances</Label>
+                          <Input id="fragancias-edit" name="fragancias" defaultValue={selectedProduct.fragancias?.join(', ')} className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="image-edit" className="text-right">Image URL</Label>
-                        <Input id="image-edit" name="image" defaultValue={selectedProduct.image} className="col-span-3" required />
+                          <Label htmlFor="imagenUrl-edit" className="text-right">Image URL</Label>
+                          <Input id="imagenUrl-edit" name="imagenUrl" defaultValue={selectedProduct.imagenUrl} className="col-span-3" required />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="description-edit" className="text-right">Description</Label>
-                        <Textarea id="description-edit" name="description" defaultValue={selectedProduct.description} className="col-span-3" required />
+                          <Label htmlFor="descripcion-edit" className="text-right">Description</Label>
+                          <Textarea id="descripcion-edit" name="descripcion" defaultValue={selectedProduct.descripcion} className="col-span-3" required />
                         </div>
                     </div>
                     <DialogFooter>

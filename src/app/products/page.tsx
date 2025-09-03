@@ -34,7 +34,8 @@ export default function ProductsPage() {
     { name: "All Categories", value: "all" },
     { name: "Incense", value: "incense" },
     { name: "Diffusers", value: "diffusers" },
-    { name: "Essential Oils", value: "oils" },
+    { name: "Oils", value: "oils" },
+    { name: "Aceite", value: "Aceite"}
   ];
   
   const brands: { name: string, value: Brand }[] = [

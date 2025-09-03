@@ -4,31 +4,59 @@
 
 import type { Product, BlogArticle, User, Order } from './types';
 
+// Función para mapear la respuesta de la API al tipo Product que usa el frontend
+function mapApiToProduct(apiProduct: any): Product {
+  const onSale = apiProduct.porcentajeDescuento && apiProduct.porcentajeDescuento > 0;
+  return {
+    // Datos del backend
+    id: apiProduct.id,
+    nombre: apiProduct.nombre,
+    descripcion: apiProduct.descripcion,
+    precio: apiProduct.precio,
+    stock: apiProduct.stock,
+    imagenUrl: apiProduct.imagenUrl,
+    activo: apiProduct.activo,
+    categoriaNombre: apiProduct.categoriaNombre,
+    mensaje: apiProduct.mensaje,
+    fragancias: apiProduct.fragancias,
+    porcentajeDescuento: apiProduct.porcentajeDescuento,
+    fechaInicioDescuento: apiProduct.fechaInicioDescuento,
+    fechaFinDescuento: apiProduct.fechaFinDescuento,
+    precioFinal: apiProduct.precioFinal,
+    atributos: apiProduct.atributos,
+
+    // Datos mapeados para compatibilidad con el frontend
+    name: apiProduct.nombre,
+    description: apiProduct.descripcion,
+    price: apiProduct.precioFinal, // Usar precioFinal que puede tener descuento
+    image: apiProduct.imagenUrl,
+    category: apiProduct.categoriaNombre,
+    rating: 4.5, // Simulado, ya que no viene del backend
+    reviews: 10, // Simulado
+    aromas: apiProduct.fragancias,
+    brand: apiProduct.atributos?.find((a: any) => a.nombre.toLowerCase() === 'brand')?.valor, // Simulado
+    onSale: onSale,
+    originalPrice: onSale ? apiProduct.precio : undefined,
+  };
+}
+
+
 // --- CONEXIÓN AL BACKEND PARA PRODUCTOS ---
 
 // Función para obtener todos los productos desde tu API.
 export async function getProducts(): Promise<Product[]> {
   try {
-    // Hacemos un fetch a tu endpoint local. 
-    // 'no-cache' asegura que siempre obtengamos los datos más frescos.
     const response = await fetch('http://localhost:8080/productos/listado', { cache: 'no-cache' });
     
     if (!response.ok) {
-      // Si la respuesta no es exitosa, lanzamos un error.
       throw new Error(`Error al obtener los productos: ${response.statusText}`);
     }
 
-    const products = await response.json();
-    
-    // Aquí puedes mapear o transformar los datos si la estructura de tu API 
-    // es diferente a la que espera el frontend (el tipo `Product`).
-    // Por ahora, asumimos que la estructura es compatible.
-    return products;
+    const apiProducts = await response.json();
+    return apiProducts.map(mapApiToProduct);
 
   } catch (error) {
     console.error("No se pudieron obtener los productos:", error);
-    // En caso de error (ej. el backend no está corriendo), devolvemos un array vacío
-    // para evitar que la aplicación se rompa.
     return [];
   }
 }
@@ -40,13 +68,13 @@ export async function getProductById(id: string): Promise<Product | undefined> {
 
     if (!response.ok) {
       if (response.status === 404) {
-        return undefined; // Devuelve undefined si el producto no se encuentra
+        return undefined; 
       }
       throw new Error(`Error al obtener el producto: ${response.statusText}`);
     }
 
-    const product = await response.json();
-    return product;
+    const apiProduct = await response.json();
+    return mapApiToProduct(apiProduct);
 
   } catch (error) {
     console.error(`No se pudo obtener el producto con id ${id}:`, error);
