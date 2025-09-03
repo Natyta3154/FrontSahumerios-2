@@ -9,19 +9,29 @@ import { cn } from "@/lib/utils";
 import { useCart } from "@/context/cart-context";
 import { CartSheet } from "../cart-sheet";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import { useAuth } from "@/context/auth-context";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function AppHeader() {
   const pathname = usePathname();
   const { cartItems, setCartOpen } = useCart();
+  const { user, logout } = useAuth();
   const cartItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/products", label: "Products" },
-    { href: "/deals", label: "Deals" },
-    { href: "/about", label: "About Us" },
+    { href: "/", label: "Inicio" },
+    { href: "/products", label: "Productos" },
+    { href: "/deals", label: "Ofertas" },
+    { href: "/about", label: "Nosotros" },
     { href: "/blog", label: "Blog" },
-    { href: "/contact", label: "Contact" },
+    { href: "/contact", label: "Contacto" },
   ];
 
   return (
@@ -56,7 +66,7 @@ export function AppHeader() {
               size="icon"
               className="relative"
               onClick={() => setCartOpen(true)}
-              aria-label="Open cart"
+              aria-label="Abrir carrito"
             >
               <ShoppingCart className="h-5 w-5" />
               {cartItemCount > 0 && (
@@ -65,18 +75,37 @@ export function AppHeader() {
                 </span>
               )}
             </Button>
-            <Link href="/login" passHref>
-              <Button variant="ghost" size="icon" aria-label="User account">
-                <User className="h-5 w-5" />
-              </Button>
-            </Link>
+            
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" aria-label="Cuenta de usuario">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin/dashboard">Panel de Admin</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>Cerrar Sesión</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link href="/login" passHref>
+                <Button variant="ghost" size="icon" aria-label="Iniciar sesión">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
 
             <div className="md:hidden">
                <Sheet>
                  <SheetTrigger asChild>
                    <Button variant="ghost" size="icon">
                      <Menu className="h-5 w-5" />
-                     <span className="sr-only">Toggle Menu</span>
+                     <span className="sr-only">Abrir Menú</span>
                    </Button>
                  </SheetTrigger>
                  <SheetContent side="left">

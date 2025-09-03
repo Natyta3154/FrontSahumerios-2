@@ -8,29 +8,53 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { CreditCard, Truck } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import { useAuth } from "@/context/auth-context";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 export default function CheckoutPage() {
   const { cartItems, total, clearCart } = useCart();
+  const { user } = useAuth();
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (!user) {
+      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+      const searchParams = typeof window !== 'undefined' ? window.location.search : '';
+      const nextUrl = `/login?next=${encodeURIComponent(currentPath + searchParams)}`;
+      router.replace(nextUrl);
+    }
+  }, [user, router]);
+
+
   const shippingCost = total > 0 ? 5.00 : 0;
   const grandTotal = total + shippingCost;
 
   const handlePlaceOrder = () => {
-    // In a real application, you would process the payment here.
-    alert("Order placed successfully!");
+    // En una aplicación real, aquí procesarías el pago.
+    alert("¡Pedido realizado con éxito!");
     clearCart();
-    // Redirect to a confirmation page, e.g., router.push('/order-confirmation');
+    router.push('/');
   };
   
+  if (!user) {
+    return (
+        <div className="container mx-auto px-4 py-16 md:py-24 text-center">
+            <h1 className="font-headline text-2xl">Redirigiendo a la página de login...</h1>
+        </div>
+    )
+  }
+
   if (cartItems.length === 0) {
     return (
         <div className="container mx-auto px-4 py-16 md:py-24 text-center">
-            <h1 className="font-headline text-4xl mb-4">Your Cart is Empty</h1>
-            <p className="text-muted-foreground mb-8">You can't checkout without any items in your cart.</p>
+            <h1 className="font-headline text-4xl mb-4">Tu carrito está vacío</h1>
+            <p className="text-muted-foreground mb-8">No puedes proceder al pago sin artículos en tu carrito.</p>
             <Button asChild>
-                <Link href="/products">Continue Shopping</Link>
+                <Link href="/products">Seguir comprando</Link>
             </Button>
         </div>
     )
@@ -40,77 +64,77 @@ export default function CheckoutPage() {
     <div className="container mx-auto px-4 py-16">
       <div className="grid lg:grid-cols-2 gap-12">
         
-        {/* Left Side: Shipping and Payment Forms */}
+        {/* Lado Izquierdo: Formularios de Envío y Pago */}
         <div>
           <h1 className="font-headline text-3xl mb-6">Checkout</h1>
           <div className="space-y-8">
             
-            {/* Contact Information */}
+            {/* Información de Contacto */}
             <Card>
               <CardContent className="pt-6">
-                <h2 className="font-headline text-xl mb-4">Contact Information</h2>
+                <h2 className="font-headline text-xl mb-4">Información de Contacto</h2>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="you@example.com" />
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" type="email" placeholder="tu@email.com" defaultValue={user.email} />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Shipping Address */}
+            {/* Dirección de Envío */}
             <Card>
               <CardContent className="pt-6">
-                <h2 className="font-headline text-xl mb-4">Shipping Address</h2>
+                <h2 className="font-headline text-xl mb-4">Dirección de Envío</h2>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                    <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="full-name">Full Name</Label>
-                    <Input id="full-name" placeholder="John Doe" />
+                    <Label htmlFor="full-name">Nombre Completo</Label>
+                    <Input id="full-name" placeholder="John Doe" defaultValue={user.name} />
                   </div>
                   <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="address">Address</Label>
+                    <Label htmlFor="address">Dirección</Label>
                     <Input id="address" placeholder="123 Main St" />
                   </div>
                    <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
+                    <Label htmlFor="city">Ciudad</Label>
                     <Input id="city" placeholder="Serenity City" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="state">State / Province</Label>
+                    <Label htmlFor="state">Estado / Provincia</Label>
                     <Input id="state" placeholder="California" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="zip">ZIP / Postal Code</Label>
+                    <Label htmlFor="zip">Código Postal</Label>
                     <Input id="zip" placeholder="90210" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="country">Country</Label>
+                    <Label htmlFor="country">País</Label>
                     <Input id="country" placeholder="United States" />
                   </div>
                 </div>
               </CardContent>
             </Card>
             
-            {/* Payment Method */}
+            {/* Método de Pago */}
              <Card>
               <CardContent className="pt-6">
-                 <h2 className="font-headline text-xl mb-4">Payment Method</h2>
+                 <h2 className="font-headline text-xl mb-4">Método de Pago</h2>
                  <Accordion type="single" collapsible defaultValue="item-1">
                     <AccordionItem value="item-1">
                         <AccordionTrigger>
                            <div className="flex items-center gap-2">
-                             <CreditCard className="h-5 w-5" /> Credit Card
+                             <CreditCard className="h-5 w-5" /> Tarjeta de Crédito
                            </div>
                         </AccordionTrigger>
                         <AccordionContent className="pt-4">
                             <div className="space-y-4">
                                <div className="space-y-2">
-                                <Label htmlFor="card-number">Card Number</Label>
+                                <Label htmlFor="card-number">Número de Tarjeta</Label>
                                 <Input id="card-number" placeholder="**** **** **** 1234" />
                                </div>
                                <div className="grid grid-cols-2 gap-4">
                                    <div className="space-y-2">
-                                     <Label htmlFor="expiry-date">Expiration Date</Label>
+                                     <Label htmlFor="expiry-date">Fecha de Expiración</Label>
                                      <Input id="expiry-date" placeholder="MM/YY" />
                                    </div>
                                    <div className="space-y-2">
@@ -130,8 +154,8 @@ export default function CheckoutPage() {
                         </AccordionTrigger>
                         <AccordionContent>
                             <div className="pt-4 text-center">
-                                <p className="text-muted-foreground">You will be redirected to PayPal to complete your purchase.</p>
-                                <Button variant="outline" className="mt-4">Continue with PayPal</Button>
+                                <p className="text-muted-foreground">Serás redirigido a PayPal para completar tu compra.</p>
+                                <Button variant="outline" className="mt-4">Continuar con PayPal</Button>
                             </div>
                         </AccordionContent>
                     </AccordionItem>
@@ -142,9 +166,9 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        {/* Right Side: Order Summary */}
+        {/* Lado Derecho: Resumen del Pedido */}
         <div className="bg-card p-8 rounded-lg h-fit sticky top-24">
-          <h2 className="font-headline text-2xl mb-6">Order Summary</h2>
+          <h2 className="font-headline text-2xl mb-6">Resumen del Pedido</h2>
           <div className="space-y-4">
             {cartItems.map(item => (
               <div key={item.id} className="flex items-center gap-4">
@@ -169,7 +193,7 @@ export default function CheckoutPage() {
               <span>${total.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
-              <span>Shipping</span>
+              <span>Envío</span>
               <span>${shippingCost.toFixed(2)}</span>
             </div>
           </div>
@@ -179,7 +203,7 @@ export default function CheckoutPage() {
             <span>${grandTotal.toFixed(2)}</span>
           </div>
           <Button size="lg" className="w-full mt-6" onClick={handlePlaceOrder}>
-            Place Order
+            Realizar Pedido
           </Button>
         </div>
       </div>
