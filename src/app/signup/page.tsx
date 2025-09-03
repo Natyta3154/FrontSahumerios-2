@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/auth-context";
+import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,23 +15,69 @@ import React from "react";
 export default function SignupPage() {
   const router = useRouter();
   const { login } = useAuth();
+  const { toast } = useToast();
 
-  const handleSignup = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const name = formData.get('name') as string;
     const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const confirmPassword = formData.get('confirm-password') as string;
 
-    // En una aplicación real, aquí crearías el usuario en tu backend.
-    // Por ahora, simulamos un registro y login automáticos.
-    const newUser = {
-      id: `usr_${Date.now()}`,
-      name,
-      email
-    };
-    
-    login(newUser);
-    router.push('/'); // Redirige al inicio después de registrarse
+    if (password !== confirmPassword) {
+      toast({
+        title: "Error de Registro",
+        description: "Las contraseñas no coinciden.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8080/usuarios/registrar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: name,
+          email: email,
+          password: password,
+          rol: 'user', // Registrar siempre como usuario común
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.mensaje || 'Ocurrió un error al registrarse.');
+      }
+
+      // Si el registro es exitoso, iniciar sesión automáticamente
+      const newUser = {
+        id: data.usuario.id,
+        nombre: data.usuario.nombre,
+        email: data.usuario.email,
+        rol: data.usuario.rol,
+      };
+      
+      login(newUser);
+
+      toast({
+        title: "¡Registro Exitoso!",
+        description: data.mensaje,
+      });
+
+      router.push('/'); // Redirige al inicio después de registrarse
+
+    } catch (error) {
+       toast({
+        title: "Error de Registro",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+    }
   };
 
 

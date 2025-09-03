@@ -18,12 +18,13 @@ export default function LoginPage() {
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // En una aplicación real, aquí validarías las credenciales.
+    // En una aplicación real, aquí validarías las credenciales con tu backend.
     // Por ahora, simulamos un inicio de sesión exitoso.
     const user = {
-      id: 'usr_0',
-      name: 'Usuario Logueado',
-      email: 'usuario@example.com'
+      id: 1, // Simulado
+      nombre: 'Usuario Logueado',
+      email: 'usuario@example.com',
+      rol: 'user'
     };
     login(user);
     

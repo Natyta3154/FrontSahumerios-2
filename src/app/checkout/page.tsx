@@ -89,7 +89,7 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                    <div className="space-y-2 sm:col-span-2">
                     <Label htmlFor="full-name">Nombre Completo</Label>
-                    <Input id="full-name" placeholder="John Doe" defaultValue={user.name} />
+                    <Input id="full-name" placeholder="John Doe" defaultValue={user.nombre} />
                   </div>
                   <div className="space-y-2 sm:col-span-2">
                     <Label htmlFor="address">Dirección</Label>

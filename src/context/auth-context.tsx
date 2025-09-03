@@ -12,11 +12,12 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
-// Define la estructura del objeto de usuario
+// Define la estructura del objeto de usuario para que coincida con el backend
 interface User {
-  id: string;
-  name: string;
+  id: number;
+  nombre: string;
   email: string;
+  rol: 'user' | 'admin' | string;
 }
 
 // Define el tipo para el contexto de autenticación
