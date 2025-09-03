@@ -35,8 +35,23 @@ export async function getProducts(): Promise<Product[]> {
 
 // Función para obtener un producto específico por su ID.
 export async function getProductById(id: string): Promise<Product | undefined> {
-  const products = await getProducts();
-  return products.find(p => p.id === id);
+   try {
+    const response = await fetch(`http://localhost:8080/productos/${id}`, { cache: 'no-cache' });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return undefined; // Devuelve undefined si el producto no se encuentra
+      }
+      throw new Error(`Error al obtener el producto: ${response.statusText}`);
+    }
+
+    const product = await response.json();
+    return product;
+
+  } catch (error) {
+    console.error(`No se pudo obtener el producto con id ${id}:`, error);
+    return undefined;
+  }
 }
 
 

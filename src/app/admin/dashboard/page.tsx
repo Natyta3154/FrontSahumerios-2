@@ -44,7 +44,7 @@ import { Eye } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import type { Product, User, Order } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { addProduct, editProduct } from './actions';
+import { addProduct, editProduct, deleteProduct } from './actions';
 
 
 export default function AdminDashboardPage() {
@@ -60,6 +60,14 @@ export default function AdminDashboardPage() {
     };
     loadProducts();
   }, []);
+
+  const handleDeleteProduct = async (productId: string) => {
+    await deleteProduct(productId);
+    // Después de eliminar, volvemos a cargar los productos para refrescar la lista.
+    const fetchedProducts = await getProducts();
+    setProducts(fetchedProducts);
+  };
+
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -188,7 +196,7 @@ export default function AdminDashboardPage() {
                                  </AlertDialogHeader>
                                  <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction>Delete</AlertDialogAction>
+                                    <AlertDialogAction onClick={() => handleDeleteProduct(product.id)}>Delete</AlertDialogAction>
                                  </AlertDialogFooter>
                               </AlertDialogContent>
                            </AlertDialog>

@@ -1,73 +1,118 @@
-// NOTA PARA EL DESARROLLADOR:
-// Este archivo contiene "Server Actions" de Next.js.
-// Estas funciones se ejecutan en el servidor y son la forma ideal de manejar
-// envíos de formularios y mutaciones de datos sin necesidad de crear endpoints de API explícitos.
-//
-// CUANDO CONECTES TU BACKEND:
-// 1.  Aquí es donde implementarás la lógica para comunicarte con tu base de datos o API.
-// 2.  Cada función (addProduct, editProduct, etc.) debe ser modificada para enviar
-//     los datos del formulario (formData) a tu backend.
-// 3.  Después de una operación exitosa (ej. producto añadido), deberías usar
-//     `revalidatePath('/admin/dashboard')` de Next.js para refrescar los datos en la página
-//     y mostrar los cambios inmediatamente.
 'use server';
 
-// Marcador de posición para agregar un producto.
-// En una aplicación real, esta función interactuaría con una base de datos.
-export async function addProduct(formData: FormData) {
-  // Lógica para enviar los datos a tu backend.
-  // Ejemplo:
-  // const newProduct = {
-  //   name: formData.get('name'),
-  //   price: formData.get('price'),
-  //   ...
-  // };
-  // await fetch('https://tu-api.com/products', { method: 'POST', body: JSON.stringify(newProduct) });
+import { revalidatePath } from 'next/cache';
 
-  console.log('Añadiendo producto...');
-  console.log({
+// NOTA PARA EL DESARROLLADOR:
+// Este archivo contiene "Server Actions" de Next.js.
+// Estas funciones se ejecutan en el servidor y están conectadas a tu API de backend.
+
+// Añade un nuevo producto.
+export async function addProduct(formData: FormData) {
+  const newProduct = {
     name: formData.get('name'),
-    price: formData.get('price'),
+    price: Number(formData.get('price')),
     category: formData.get('category'),
-    fragrance: formData.get('fragrance'),
     brand: formData.get('brand'),
+    fragrance: formData.get('fragrance'),
     image: formData.get('image'),
     description: formData.get('description'),
-  });
+    // Agrega aquí cualquier otro campo que tu API espere.
+  };
 
-  // Aquí deberías revalidar la ruta para actualizar la lista de productos en la UI.
-  // Ejemplo: revalidatePath('/admin/dashboard');
+  try {
+    const response = await fetch('http://localhost:8080/productos/agregar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newProduct),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error al añadir el producto: ${errorText}`);
+    }
+
+    console.log('Producto añadido con éxito.');
+    // Revalida la ruta para actualizar la lista de productos en la UI.
+    revalidatePath('/admin/dashboard');
+    revalidatePath('/products');
+
+  } catch (error) {
+    console.error('Error en addProduct:', error);
+    // Opcional: podrías devolver un objeto de error para mostrarlo en el cliente.
+    return { error: (error as Error).message };
+  }
 }
   
-// Marcador de posición para editar un producto.
-// En una aplicación real, esta función interactuaría con una base de datos.
+// Edita un producto existente.
 export async function editProduct(formData: FormData) {
-  // Lógica para enviar los datos actualizados a tu backend.
-  // Ejemplo:
-  // const productId = formData.get('id');
-  // const updatedProduct = {
-  //   name: formData.get('name'),
-  //   price: formData.get('price'),
-  //   ...
-  // };
-  // await fetch(`https://tu-api.com/products/${productId}`, { method: 'PUT', body: JSON.stringify(updatedProduct) });
+  const productId = formData.get('id');
+  if (!productId) {
+    return { error: 'No se proporcionó ID de producto.' };
+  }
 
-  console.log('Editando producto...');
-  console.log({
-    id: formData.get('id'),
+  const updatedProduct = {
     name: formData.get('name'),
-    price: formData.get('price'),
+    price: Number(formData.get('price')),
     category: formData.get('category'),
-    fragrance: formData.get('fragrance'),
     brand: formData.get('brand'),
+    fragrance: formData.get('fragrance'),
     image: formData.get('image'),
     description: formData.get('description'),
-  });
+     // Agrega aquí cualquier otro campo que tu API espere.
+  };
 
-  // Aquí deberías revalidar la ruta para actualizar la lista de productos en la UI.
-  // Ejemplo: revalidatePath('/admin/dashboard');
+   try {
+    const response = await fetch(`http://localhost:8080/productos/editar/${productId}`, {
+      method: 'PUT', // O 'PATCH', dependiendo de tu API
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedProduct),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error al editar el producto: ${errorText}`);
+    }
+
+    console.log('Producto editado con éxito.');
+    // Revalida la ruta para actualizar la lista de productos en la UI.
+    revalidatePath('/admin/dashboard');
+    revalidatePath(`/products/${productId}`);
+    revalidatePath('/products');
+
+
+  } catch (error) {
+    console.error('Error en editProduct:', error);
+    return { error: (error as Error).message };
+  }
 }
 
-// Puedes añadir aquí más Server Actions para eliminar productos, editar usuarios, etc.
-// export async function deleteProduct(productId: string) { ... }
-// export async function editUser(formData: FormData) { ... }
+// Elimina un producto.
+export async function deleteProduct(productId: string) {
+  if (!productId) {
+    return { error: 'No se proporcionó ID de producto.' };
+  }
+
+  try {
+    const response = await fetch(`http://localhost:8080/productos/eliminar/${productId}`, {
+      method: 'DELETE',
+    });
+
+     if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error al eliminar el producto: ${errorText}`);
+    }
+    
+    console.log('Producto eliminado con éxito.');
+    // Revalida la ruta para actualizar la lista de productos en la UI.
+    revalidatePath('/admin/dashboard');
+    revalidatePath('/products');
+
+  } catch (error) {
+    console.error('Error en deleteProduct:', error);
+    return { error: (error as Error).message };
+  }
+}
