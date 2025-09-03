@@ -1,5 +1,23 @@
+// NOTA PARA EL DESARROLLADOR:
+// Este archivo contiene datos de muestra (mock data) para simular el contenido de la tienda.
+// En una aplicación de producción, deberías eliminar estos datos estáticos y, en su lugar,
+// hacer llamadas a tu API de backend para obtener la información de productos, artículos de blog, etc.
+//
+// Puedes crear funciones asíncronas aquí que usen `fetch` para comunicarse con tu backend.
+// Por ejemplo:
+//
+// export async function getProducts() {
+//   const response = await fetch('https://tu-api.com/products');
+//   const data = await response.json();
+//   return data;
+// }
+//
+// Luego, en tus páginas (por ejemplo, en `src/app/products/page.tsx`), podrías llamar a `getProducts()`
+// para obtener los datos dinámicamente.
+
 import type { Product, BlogArticle, User, Order } from './types';
 
+// Datos de muestra para los productos.
 export const products: Product[] = [
   {
     id: '1',
@@ -116,8 +134,10 @@ export const products: Product[] = [
   },
 ];
 
+// Selección de los primeros 3 productos para la sección "Featured Products" de la página de inicio.
 export const featuredProducts = products.slice(0, 3);
 
+// Datos de muestra para los artículos del blog.
 export const blogArticles: BlogArticle[] = [
   {
     slug: 'beginners-guide-to-aromatherapy',
@@ -148,6 +168,7 @@ export const blogArticles: BlogArticle[] = [
   },
 ];
 
+// Datos de muestra para los usuarios del panel de administración.
 export const users: User[] = [
   { id: 'usr_1', name: 'Sarah L.', email: 'sarah.l@example.com', joinDate: '2023-01-15' },
   { id: 'usr_2', name: 'Michael B.', email: 'michael.b@example.com', joinDate: '2023-02-20' },
@@ -155,6 +176,7 @@ export const users: User[] = [
   { id: 'usr_4', name: 'David C.', email: 'david.c@example.com', joinDate: '2023-04-05' },
 ];
 
+// Datos de muestra para los pedidos del panel de administración.
 export const orders: Order[] = [
   {
     id: 'ord_1',

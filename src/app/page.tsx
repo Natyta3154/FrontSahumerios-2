@@ -4,14 +4,16 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+// Importamos los datos de muestra. En una aplicación real, estos datos vendrían de una llamada a tu backend.
 import { featuredProducts, blogArticles } from "@/lib/data";
 import { ArrowRight, Brain, Leaf, Star, Wind } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import Autoplay from "embla-carousel-autoplay"; // Importamos el plugin de autoplay.
+import Autoplay from "embla-carousel-autoplay"; // Importamos el plugin de autoplay para el carrusel.
 import React from "react";
 
 export default function Home() {
+  // Datos para la sección de beneficios. Pueden ser estáticos o venir del backend si se desea.
   const benefits = [
     {
       icon: <Wind className="h-10 w-10 text-primary" />,
@@ -30,6 +32,7 @@ export default function Home() {
     },
   ];
 
+  // Datos para la sección de testimonios. Idealmente, estos vendrían de tu base de datos.
   const testimonials = [
     {
       name: "Sarah L.",
@@ -51,22 +54,22 @@ export default function Home() {
     }
   ];
   
-  // Creamos una referencia para el plugin de autoplay.
-  // Esto nos permite controlar el carrusel si es necesario.
+  // Creamos una referencia para el plugin de autoplay del carrusel.
+  // Esto nos permite controlar el carrusel si es necesario (pausar, reanudar, etc.).
   const plugin = React.useRef(
     Autoplay({ delay: 4000, stopOnInteraction: true })
   );
 
   return (
     <div className="flex flex-col">
-      {/* Sección del carrusel principal (Hero) */}
+      {/* --- SECCIÓN PRINCIPAL (HERO CAROUSEL) --- */}
+      {/* Esta sección muestra un carrusel de imágenes a pantalla completa con un llamado a la acción. */}
       <section className="relative h-[60vh] md:h-[80vh] w-full">
         {/* 
-          Componente Carousel:
-          - `plugins={[plugin.current]}`: Aquí se activa el plugin de autoplay.
-          - `opts={{ loop: true }}`: Esta opción hace que el carrusel sea infinito (vuelve al principio después de la última imagen).
-          - `onMouseEnter={plugin.current.stop}`: Pausa el carrusel cuando el ratón está encima.
-          - `onMouseLeave={plugin.current.reset}`: Reanuda el carrusel cuando el ratón sale.
+          Componente Carousel de ShadCN:
+          - `plugins={[plugin.current]}`: Activa el plugin de autoplay.
+          - `opts={{ loop: true }}`: Hace que el carrusel sea infinito.
+          - `onMouseEnter`, `onMouseLeave`: Pausa y reanuda el autoplay cuando el usuario interactúa.
         */}
         <Carousel 
           className="w-full h-full" 
@@ -76,7 +79,8 @@ export default function Home() {
           onMouseLeave={plugin.current.reset}
         >
           <CarouselContent className="h-full">
-            {/* Cada `CarouselItem` es una diapositiva del carrusel. */}
+            {/* Cada `CarouselItem` es una diapositiva. Las imágenes son de un servicio de placeholders. */}
+            {/* Para conectar tu backend, reemplazarías las URLs de `src` con las de tus imágenes. */}
             <CarouselItem className="h-full">
               <div className="relative h-full w-full">
                 <Image
@@ -86,6 +90,7 @@ export default function Home() {
                   fill
                   className="object-cover"
                 />
+                {/* Capa semitransparente para oscurecer la imagen y hacer el texto legible. */}
                 <div className="absolute inset-0 bg-black/50" />
               </div>
             </CarouselItem>
@@ -114,12 +119,13 @@ export default function Home() {
               </div>
             </CarouselItem>
           </CarouselContent>
-          {/* Controles para ir a la diapositiva anterior y siguiente. Se ocultan en pantallas pequeñas. */}
+          {/* Controles de navegación del carrusel, ocultos en móviles. */}
           <div className="hidden md:block">
             <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2" />
             <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2" />
           </div>
         </Carousel>
+        {/* Contenido de texto superpuesto en el carrusel. */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
           <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl text-white drop-shadow-lg">
             Find Your Inner Peace
@@ -133,6 +139,8 @@ export default function Home() {
         </div>
       </section>
 
+      {/* --- SECCIÓN DE FILOSOFÍA --- */}
+      {/* Un bloque simple para comunicar la misión de la marca. */}
       <section className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
@@ -144,6 +152,8 @@ export default function Home() {
         </div>
       </section>
 
+      {/* --- SECCIÓN DE PRODUCTOS DESTACADOS --- */}
+      {/* Muestra una selección de productos. Los datos vienen de `featuredProducts`. */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -151,6 +161,10 @@ export default function Home() {
             <p className="mt-2 text-lg text-muted-foreground">Handpicked selections to begin your journey.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* 
+              Se itera sobre el array `featuredProducts` para renderizar cada tarjeta de producto.
+              Para conectar tu backend, aquí harías un fetch de tus productos destacados y los pasarías a este componente.
+            */}
             {featuredProducts.map((product) => (
               <Card key={product.id} className="overflow-hidden group">
                 <CardHeader className="p-0">
@@ -182,6 +196,8 @@ export default function Home() {
         </div>
       </section>
 
+      {/* --- SECCIÓN DE BENEFICIOS --- */}
+      {/* Muestra los beneficios clave de la aromaterapia. */}
       <section className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -200,6 +216,8 @@ export default function Home() {
         </div>
       </section>
 
+      {/* --- SECCIÓN DEL BLOG --- */}
+      {/* Muestra los últimos 3 artículos del blog. */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -207,6 +225,10 @@ export default function Home() {
             <p className="mt-2 text-lg text-muted-foreground">Insights and stories on the world of aromatherapy.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* 
+              Se usa `.slice(0, 3)` para tomar solo los primeros 3 artículos.
+              En una aplicación real, tu API debería tener un endpoint para `/articles?limit=3`.
+            */}
             {blogArticles.slice(0, 3).map((article) => (
               <Card key={article.slug} className="overflow-hidden group">
                 <Link href={`/blog/${article.slug}`}>
@@ -236,6 +258,8 @@ export default function Home() {
         </div>
       </section>
 
+      {/* --- SECCIÓN DE TESTIMONIOS --- */}
+      {/* Muestra testimonios de clientes. */}
       <section className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -253,6 +277,7 @@ export default function Home() {
                   className="rounded-full"
                 />
                 <div className="flex mt-4 mb-2">
+                  {/* Renderiza las estrellas de calificación. */}
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className={`h-5 w-5 ${i < testimonial.rating ? 'text-primary fill-primary' : 'text-muted-foreground/50'}`} />
                   ))}
