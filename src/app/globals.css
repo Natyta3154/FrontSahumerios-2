@@ -11,39 +11,39 @@
     */
 
     /* Color de fondo principal de la aplicación */
-    --background: 210 20% 98%;
+    --background: 260 30% 98%;
     /* Color del texto principal */
-    --foreground: 215 25% 27%;
+    --foreground: 260 20% 15%;
 
     /* Color de fondo para elementos tipo "tarjeta" (cards) */
-    --card: 210 20% 100%;
+    --card: 260 30% 100%;
     /* Color del texto dentro de las tarjetas */
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 260 20% 15%;
 
     /* Color de fondo para elementos emergentes (popovers) */
-    --popover: 210 20% 100%;
+    --popover: 260 30% 100%;
     /* Color del texto dentro de los popovers */
-    --popover-foreground: 215 25% 27%;
+    --popover-foreground: 260 20% 15%;
 
-    /* Color primario (para botones, enlaces y elementos destacados) */
-    --primary: 250 40% 50%;
+    /* Color primario (Violeta/Morado para espiritualidad y sabiduría) */
+    --primary: 270 55% 60%;
     /* Color del texto sobre el color primario */
     --primary-foreground: 0 0% 100%;
     
-    /* Color secundario (para elementos menos importantes) */
-    --secondary: 215 20% 92%;
+    /* Color secundario (Plateado para capacidades psíquicas) */
+    --secondary: 240 10% 94%;
     /* Color del texto sobre el color secundario */
-    --secondary-foreground: 215 25% 27%;
+    --secondary-foreground: 260 20% 15%;
 
     /* Color para textos y elementos "apagados" o sutiles */
-    --muted: 215 20% 92%;
+    --muted: 240 10% 94%;
     /* Color del texto "apagado" o sutil */
-    --muted-foreground: 215 20% 45%;
+    --muted-foreground: 260 15% 45%;
 
-    /* Color de acento (para fondos de hover, elementos activos) */
-    --accent: 250 40% 95%;
+    /* Color de acento (Dorado para lucidez y vitalidad) */
+    --accent: 45 80% 95%;
     /* Color del texto sobre el color de acento */
-    --accent-foreground: 250 40% 30%;
+    --accent-foreground: 45 60% 30%;
 
     /* Color para acciones destructivas (botones de eliminar, errores) */
     --destructive: 0 72% 51%;
@@ -51,18 +51,18 @@
     --destructive-foreground: 0 0% 100%;
 
     /* Color para bordes y separadores */
-    --border: 214 20% 85%;
+    --border: 260 20% 90%;
     /* Color para campos de entrada (inputs) */
-    --input: 214 20% 85%;
+    --input: 260 20% 90%;
     /* Color para el "anillo" de foco (outline al hacer focus) */
-    --ring: 250 40% 50%;
+    --ring: 270 55% 60%;
 
     /* Colores para gráficos (si los usas) */
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-1: 270 60% 65%;
+    --chart-2: 45 85% 65%;
+    --chart-3: 240 20% 50%;
+    --chart-4: 300 50% 70%;
+    --chart-5: 210 30% 70%;
     
     /* Radio de borde para elementos como tarjetas y botones */
     --radius: 0.5rem;
@@ -72,30 +72,30 @@
       Tema Oscuro:
       Aquí se definen las mismas variables pero con valores para el modo oscuro.
     */
-    --background: 215 28% 17%;
-    --foreground: 210 20% 98%;
-    --card: 215 28% 21%;
-    --card-foreground: 210 20% 98%;
-    --popover: 215 28% 17%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 250 50% 65%;
-    --primary-foreground: 215 25% 15%;
-    --secondary: 215 28% 25%;
-    --secondary-foreground: 210 20% 98%;
-    --muted: 215 28% 25%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 250 50% 30%;
-    --accent-foreground: 210 20% 98%;
+    --background: 260 20% 11%;
+    --foreground: 260 20% 98%;
+    --card: 260 20% 15%;
+    --card-foreground: 260 20% 98%;
+    --popover: 260 20% 11%;
+    --popover-foreground: 260 20% 98%;
+    --primary: 270 60% 70%;
+    --primary-foreground: 270 20% 10%;
+    --secondary: 260 15% 25%;
+    --secondary-foreground: 260 20% 98%;
+    --muted: 260 15% 25%;
+    --muted-foreground: 260 15% 65%;
+    --accent: 45 70% 25%;
+    --accent-foreground: 45 80% 95%;
     --destructive: 0 63% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 215 28% 30%;
-    --input: 215 28% 30%;
-    --ring: 250 50% 65%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --border: 260 15% 30%;
+    --input: 260 15% 30%;
+    --ring: 270 60% 70%;
+    --chart-1: 270 60% 65%;
+    --chart-2: 45 85% 65%;
+    --chart-3: 240 20% 50%;
+    --chart-4: 300 50% 70%;
+    --chart-5: 210 30% 70%;
   }
 }
 
@@ -106,7 +106,7 @@
   body {
     @apply text-foreground;
     background-color: hsl(var(--background));
-    background-image: radial-gradient(circle at top right, hsl(250 50% 65% / 0.1), transparent 50%),
-                      radial-gradient(circle at bottom left, hsl(250 40% 50% / 0.1), transparent 50%);
+    background-image: radial-gradient(circle at top right, hsl(var(--primary) / 0.1), transparent 50%),
+                      radial-gradient(circle at bottom left, hsl(var(--accent) / 0.1), transparent 50%);
   }
 }
