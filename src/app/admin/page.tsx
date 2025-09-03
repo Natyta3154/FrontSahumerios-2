@@ -33,6 +33,8 @@ export default function AdminPage() {
       name: formData.get('name'),
       price: formData.get('price'),
       category: formData.get('category'),
+      fragrance: formData.get('fragrance'),
+      image: formData.get('image'),
       description: formData.get('description'),
     });
     // Here you would typically revalidate the path to update the product list
@@ -68,6 +70,14 @@ export default function AdminPage() {
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="category" className="text-right">Category</Label>
                     <Input id="category" name="category" placeholder="incense, diffusers, or oils" className="col-span-3" required />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="fragrance" className="text-right">Fragrance</Label>
+                    <Input id="fragrance" name="fragrance" placeholder="e.g. Sandalwood, Lavender" className="col-span-3" />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="image" className="text-right">Image URL</Label>
+                    <Input id="image" name="image" placeholder="https://example.com/image.jpg" className="col-span-3" required />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="description" className="text-right">Description</Label>
