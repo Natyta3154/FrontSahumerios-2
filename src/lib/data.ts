@@ -1,4 +1,4 @@
-import type { Product, BlogArticle } from './types';
+import type { Product, BlogArticle, User, Order } from './types';
 
 export const products: Product[] = [
   {
@@ -128,5 +128,47 @@ export const blogArticles: BlogArticle[] = [
     date: 'November 15, 2023',
     image: 'https://picsum.photos/800/600?random=12',
     content: '<p>The ritual of burning incense has been used for centuries across various cultures to sanctify spaces and elevate consciousness. The simple act of lighting an incense stick and watching the smoke curl can be a powerful anchor for mindfulness.</p><h3>Choosing Your Scent</h3><p>Different scents evoke different moods. For a calming space, try Sandalwood or Lavender. For an energizing and cleansing atmosphere, Palo Santo or Sage are excellent choices. Experiment to find what resonates with you.</p><h3>The Ritual</h3><p>Find a quiet corner in your home. Place your incense in a proper holder. As you light it, set an intention for your practice, whether it\'s for meditation, creative work, or simply to unwind. Allow the aroma to fill your space and your senses, bringing you into the present moment.</p>'
+  },
+];
+
+export const users: User[] = [
+  { id: 'usr_1', name: 'Sarah L.', email: 'sarah.l@example.com', joinDate: '2023-01-15' },
+  { id: 'usr_2', name: 'Michael B.', email: 'michael.b@example.com', joinDate: '2023-02-20' },
+  { id: 'usr_3', name: 'Jessica P.', email: 'jessica.p@example.com', joinDate: '2023-03-10' },
+  { id: 'usr_4', name: 'David C.', email: 'david.c@example.com', joinDate: '2023-04-05' },
+];
+
+export const orders: Order[] = [
+  {
+    id: 'ord_1',
+    customerName: 'Sarah L.',
+    date: '2023-10-20',
+    status: 'Delivered',
+    total: 62.98,
+    items: [
+      { productId: '2', productName: 'Ceramic Ultrasonic Diffuser', quantity: 1, price: 49.99 },
+      { productId: '1', productName: 'Sandalwood Incense Sticks', quantity: 1, price: 12.99 },
+    ],
+  },
+  {
+    id: 'ord_2',
+    customerName: 'Michael B.',
+    date: '2023-11-01',
+    status: 'Shipped',
+    total: 33.49,
+    items: [
+      { productId: '3', productName: 'Pure Lavender Essential Oil', quantity: 1, price: 18.50 },
+      { productId: '9', productName: 'Peppermint Essential Oil', quantity: 1, price: 13.50 },
+    ],
+  },
+   {
+    id: 'ord_3',
+    customerName: 'Jessica P.',
+    date: '2023-11-05',
+    status: 'Pending',
+    total: 15.00,
+    items: [
+      { productId: '4', productName: 'Palo Santo Sticks', quantity: 1, price: 15.00 },
+    ],
   },
 ];
