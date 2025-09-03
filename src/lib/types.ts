@@ -8,6 +8,7 @@ export type Product = {
   rating: number;
   reviews: number;
   fragrance?: string;
+  brand?: string;
 };
 
 export type BlogArticle = {

@@ -96,6 +96,10 @@ export default function AdminDashboardPage() {
                             <Input id="category-add" name="category" placeholder="incense, diffusers, or oils" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="brand-add" className="text-right">Brand</Label>
+                            <Input id="brand-add" name="brand" placeholder="e.g. ZenScents" className="col-span-3" />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="fragrance-add" className="text-right">Fragrance</Label>
                             <Input id="fragrance-add" name="fragrance" placeholder="e.g. Sandalwood, Lavender" className="col-span-3" />
                           </div>
@@ -123,8 +127,8 @@ export default function AdminDashboardPage() {
                     <TableHead className="hidden w-[100px] sm:table-cell">Image</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Category</TableHead>
+                    <TableHead className="hidden md:table-cell">Brand</TableHead>
                     <TableHead className="hidden md:table-cell">Fragrance</TableHead>
-                    <TableHead className="hidden lg:table-cell">Description</TableHead>
                     <TableHead className="hidden md:table-cell">Price</TableHead>
                     <TableHead>
                       <span className="sr-only">Actions</span>
@@ -147,8 +151,8 @@ export default function AdminDashboardPage() {
                       <TableCell>
                         <Badge variant="outline">{product.category}</Badge>
                       </TableCell>
+                      <TableCell className="hidden md:table-cell">{product.brand || 'N/A'}</TableCell>
                       <TableCell className="hidden md:table-cell">{product.fragrance || 'N/A'}</TableCell>
-                      <TableCell className="hidden lg:table-cell max-w-xs truncate">{product.description}</TableCell>
                       <TableCell className="hidden md:table-cell">${product.price.toFixed(2)}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
@@ -363,6 +367,10 @@ export default function AdminDashboardPage() {
                         <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="category-edit" className="text-right">Category</Label>
                         <Input id="category-edit" name="category" defaultValue={selectedProduct.category} className="col-span-3" required />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="brand-edit" className="text-right">Brand</Label>
+                        <Input id="brand-edit" name="brand" defaultValue={selectedProduct.brand} className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="fragrance-edit" className="text-right">Fragrance</Label>

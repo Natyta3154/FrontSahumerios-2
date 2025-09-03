@@ -11,6 +11,7 @@ export const products: Product[] = [
     rating: 4.5,
     reviews: 120,
     fragrance: 'Sandalwood',
+    brand: 'ZenScents',
   },
   {
     id: '2',
@@ -21,6 +22,7 @@ export const products: Product[] = [
     category: 'diffusers',
     rating: 4.8,
     reviews: 250,
+    brand: 'AuraMist',
   },
   {
     id: '3',
@@ -32,6 +34,7 @@ export const products: Product[] = [
     rating: 4.9,
     reviews: 450,
     fragrance: 'Lavender',
+    brand: 'PureBotanica',
   },
   {
     id: '4',
@@ -43,6 +46,7 @@ export const products: Product[] = [
     rating: 4.7,
     reviews: 95,
     fragrance: 'Palo Santo',
+    brand: 'SacredWood',
   },
   {
     id: '5',
@@ -54,6 +58,7 @@ export const products: Product[] = [
     rating: 4.6,
     reviews: 310,
     fragrance: 'Eucalyptus',
+    brand: 'PureBotanica',
   },
   {
     id: '6',
@@ -64,6 +69,7 @@ export const products: Product[] = [
     category: 'diffusers',
     rating: 4.4,
     reviews: 80,
+    brand: 'AuraMist',
   },
    {
     id: '7',
@@ -75,6 +81,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviews: 75,
     fragrance: 'Frankincense & Myrrh',
+    brand: 'ZenScents',
   },
   {
     id: '8',
@@ -85,6 +92,7 @@ export const products: Product[] = [
     category: 'diffusers',
     rating: 4.3,
     reviews: 150,
+    brand: 'AuraMist',
   },
   {
     id: '9',
@@ -96,6 +104,7 @@ export const products: Product[] = [
     rating: 4.7,
     reviews: 380,
     fragrance: 'Peppermint',
+    brand: 'PureBotanica',
   },
 ];
 

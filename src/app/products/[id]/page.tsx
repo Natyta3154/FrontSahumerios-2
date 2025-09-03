@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Star, StarHalf } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { Separator } from '@/components/ui/separator';
+import { use } from 'react';
 
 function ProductRating({ rating, reviews }: { rating: number; reviews: number }) {
   const fullStars = Math.floor(rating);
@@ -57,6 +58,9 @@ export default function ProductDetailPage() {
           <div>
             <span className="text-sm font-medium text-primary uppercase">{product.category}</span>
             <h1 className="font-headline text-4xl md:text-5xl mt-2">{product.name}</h1>
+            {product.brand && (
+                <p className="text-xl text-muted-foreground mt-2">by {product.brand}</p>
+            )}
             <div className="mt-4">
               <ProductRating rating={product.rating} reviews={product.reviews} />
             </div>

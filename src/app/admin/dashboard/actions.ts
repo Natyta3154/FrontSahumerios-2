@@ -9,6 +9,7 @@ export async function addProduct(formData: FormData) {
     price: formData.get('price'),
     category: formData.get('category'),
     fragrance: formData.get('fragrance'),
+    brand: formData.get('brand'),
     image: formData.get('image'),
     description: formData.get('description'),
   });
@@ -25,6 +26,7 @@ export async function editProduct(formData: FormData) {
     price: formData.get('price'),
     category: formData.get('category'),
     fragrance: formData.get('fragrance'),
+    brand: formData.get('brand'),
     image: formData.get('image'),
     description: formData.get('description'),
   });
