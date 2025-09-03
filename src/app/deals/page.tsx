@@ -1,13 +1,25 @@
 
-import { products } from "@/lib/data";
+"use client";
+
+import { getProducts } from "@/lib/data";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
+import { Product } from "@/lib/types";
 
 export default function DealsPage() {
-  const dealProducts = products.filter(p => p.onSale);
+  const [dealProducts, setDealProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchDealProducts = async () => {
+      const allProducts = await getProducts();
+      setDealProducts(allProducts.filter(p => p.onSale));
+    };
+    fetchDealProducts();
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-16 md:py-24">

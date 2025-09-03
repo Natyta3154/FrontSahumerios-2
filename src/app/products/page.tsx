@@ -1,12 +1,12 @@
 
 "use client";
 
-import { products } from "@/lib/data";
+import { getProducts } from "@/lib/data";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Product } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
@@ -17,9 +17,18 @@ type Brand = string | 'all';
 export default function ProductsPage() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get('category') as Category || 'all';
-  
+
+  const [products, setProducts] = useState<Product[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<Category>(initialCategory);
   const [brandFilter, setBrandFilter] = useState<Brand>('all');
+  
+  useEffect(() => {
+    async function loadProducts() {
+      const fetchedProducts = await getProducts();
+      setProducts(fetchedProducts);
+    }
+    loadProducts();
+  }, []);
 
   const categories: { name: string, value: Category }[] = [
     { name: "All Categories", value: "all" },

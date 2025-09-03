@@ -5,14 +5,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 // Importamos los datos de muestra. En una aplicación real, estos datos vendrían de una llamada a tu backend.
-import { featuredProducts, blogArticles } from "@/lib/data";
+import { getProducts, blogArticles } from "@/lib/data";
 import { ArrowRight, Brain, Leaf, Star, Wind } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Autoplay from "embla-carousel-autoplay"; // Importamos el plugin de autoplay para el carrusel.
 import React from "react";
+import { Product } from "@/lib/types";
 
 export default function Home() {
+
+  const [featuredProducts, setFeaturedProducts] = React.useState<Product[]>([]);
+
+  React.useEffect(() => {
+    const fetchProducts = async () => {
+      const allProducts = await getProducts();
+      setFeaturedProducts(allProducts.slice(0,3));
+    }
+    fetchProducts();
+  }, [])
+
   // Datos para la sección de beneficios. Pueden ser estáticos o venir del backend si se desea.
   const benefits = [
     {

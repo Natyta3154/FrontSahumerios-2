@@ -1,7 +1,7 @@
 
 "use client";
 
-import { products } from '@/lib/data';
+import { getProductById, getProducts } from '@/lib/data';
 import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Product } from '@/lib/types';
 
 
 function ProductRating({ rating, reviews }: { rating: number; reviews: number }) {
@@ -43,22 +44,46 @@ function ProductRating({ rating, reviews }: { rating: number; reviews: number })
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const product = products.find((p) => p.id === params.id);
+  const [product, setProduct] = useState<Product | null | undefined>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const { addToCart } = useCart();
-  const [selectedAroma, setSelectedAroma] = React.useState<string | undefined>(product?.aromas?.[0]);
+  const [selectedAroma, setSelectedAroma] = React.useState<string | undefined>();
+  
+  useEffect(() => {
+    if (typeof params.id !== 'string') return;
+    
+    const fetchProductData = async () => {
+      const fetchedProduct = await getProductById(params.id as string);
+      setProduct(fetchedProduct);
 
+      if (fetchedProduct) {
+        setSelectedAroma(fetchedProduct.aromas?.[0]);
+        const allProducts = await getProducts();
+        const related = allProducts.filter(p => p.category === fetchedProduct.category && p.id !== fetchedProduct.id).slice(0, 4);
+        setRelatedProducts(related);
+      }
+    };
+    
+    fetchProductData();
+
+  }, [params.id]);
+
+
+  if (product === null) {
+    // Loading state
+    return <div>Loading...</div>;
+  }
+  
   if (!product) {
     notFound();
   }
-  
-  const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   const handleAddToCart = () => {
     let productToAdd = { ...product };
     if (selectedAroma) {
       productToAdd.name = `${product.name} - ${selectedAroma}`;
     }
-    addToCart(productToAdd);
+    addToCart(productToAdd as Product);
   };
 
   return (

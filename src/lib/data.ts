@@ -1,141 +1,48 @@
 // NOTA PARA EL DESARROLLADOR:
-// Este archivo contiene datos de muestra (mock data) para simular el contenido de la tienda.
-// En una aplicación de producción, deberías eliminar estos datos estáticos y, en su lugar,
-// hacer llamadas a tu API de backend para obtener la información de productos, artículos de blog, etc.
-//
-// Puedes crear funciones asíncronas aquí que usen `fetch` para comunicarse con tu backend.
-// Por ejemplo:
-//
-// export async function getProducts() {
-//   const response = await fetch('https://tu-api.com/products');
-//   const data = await response.json();
-//   return data;
-// }
-//
-// Luego, en tus páginas (por ejemplo, en `src/app/products/page.tsx`), podrías llamar a `getProducts()`
-// para obtener los datos dinámicamente.
+// Este archivo contiene datos de muestra (mock data) y funciones para obtener datos.
+// Ahora estamos conectando tu API de backend.
 
 import type { Product, BlogArticle, User, Order } from './types';
 
-// Datos de muestra para los productos.
-export const products: Product[] = [
-  {
-    id: '1',
-    name: 'Sandalwood Incense Sticks',
-    description: 'Classic, woody, and calming. Perfect for meditation and relaxation. Hand-rolled with natural ingredients.',
-    price: 12.99,
-    image: 'https://picsum.photos/600/400?random=1',
-    category: 'incense',
-    rating: 4.5,
-    reviews: 120,
-    fragrance: 'Sandalwood',
-    brand: 'ZenScents',
-    aromas: ['Sandalwood', 'Nag Champa', 'Dragon\'s Blood'],
-  },
-  {
-    id: '2',
-    name: 'Ceramic Ultrasonic Diffuser',
-    description: 'An elegant ceramic diffuser that uses ultrasonic technology to disperse essential oils. Features multiple timer settings and ambient light.',
-    price: 39.99,
-    originalPrice: 49.99,
-    onSale: true,
-    image: 'https://picsum.photos/600/400?random=2',
-    category: 'diffusers',
-    rating: 4.8,
-    reviews: 250,
-    brand: 'AuraMist',
-  },
-  {
-    id: '3',
-    name: 'Pure Lavender Essential Oil',
-    description: '100% pure, therapeutic-grade lavender oil. Known for its relaxing properties, it promotes restful sleep and soothes skin.',
-    price: 18.50,
-    image: 'https://picsum.photos/600/400?random=3',
-    category: 'oils',
-    rating: 4.9,
-    reviews: 450,
-    fragrance: 'Lavender',
-    brand: 'PureBotanica',
-  },
-  {
-    id: '4',
-    name: 'Palo Santo Sticks',
-    description: 'Ethically harvested "holy wood" from South America. Used for spiritual cleansing and creating a calming atmosphere.',
-    price: 15.00,
-    image: 'https://picsum.photos/600/400?random=4',
-    category: 'incense',
-    rating: 4.7,
-    reviews: 95,
-    fragrance: 'Palo Santo',
-    brand: 'SacredWood',
-  },
-  {
-    id: '5',
-    name: 'Eucalyptus Essential Oil',
-    description: 'Invigorating and clarifying. Ideal for steam inhalation to support respiratory health and clear congestion.',
-    price: 14.99,
-    image: 'https://picsum.photos/600/400?random=5',
-    category: 'oils',
-    rating: 4.6,
-    reviews: 310,
-    fragrance: 'Eucalyptus',
-    brand: 'PureBotanica',
-  },
-  {
-    id: '6',
-    name: 'Glass Reed Diffuser Set',
-    description: 'A stylish and long-lasting way to fragrance your home. Includes a glass bottle, natural reeds, and a bottle of our signature fragrance oil.',
-    price: 29.99,
-    originalPrice: 35.00,
-    onSale: true,
-    image: 'https://picsum.photos/600/400?random=6',
-    category: 'diffusers',
-    rating: 4.4,
-    reviews: 80,
-    brand: 'AuraMist',
-    aromas: ['Ocean Breeze', 'Vanilla Bean', 'Fresh Linen'],
-  },
-   {
-    id: '7',
-    name: 'Frankincense & Myrrh Resin',
-    description: 'Traditional resin incense for a deep, meditative scent. Burn on charcoal discs for an authentic experience.',
-    price: 22.00,
-    image: 'https://picsum.photos/600/400?random=7',
-    category: 'incense',
-    rating: 4.8,
-    reviews: 75,
-    fragrance: 'Frankincense & Myrrh',
-    brand: 'ZenScents',
-  },
-  {
-    id: '8',
-    name: 'Portable USB Diffuser',
-    description: 'Enjoy aromatherapy on the go. This compact diffuser fits in your car or on your desk, powered by any USB port.',
-    price: 25.99,
-    image: 'https://picsum.photos/600/400?random=8',
-    category: 'diffusers',
-    rating: 4.3,
-    reviews: 150,
-    brand: 'AuraMist',
-  },
-  {
-    id: '9',
-    name: 'Peppermint Essential Oil',
-    description: 'Energizing and refreshing. Helps to boost focus, relieve headaches, and soothe sore muscles.',
-    price: 10.99,
-    originalPrice: 13.50,
-    onSale: true,
-    image: 'https://picsum.photos/600/400?random=9',
-    category: 'oils',
-    rating: 4.7,
-    reviews: 380,
-    fragrance: 'Peppermint',
-    brand: 'PureBotanica',
-  },
-];
+// --- CONEXIÓN AL BACKEND PARA PRODUCTOS ---
 
-// Selección de los primeros 3 productos para la sección "Featured Products" de la página de inicio.
-export const featuredProducts = products.slice(0, 3);
+// Función para obtener todos los productos desde tu API.
+export async function getProducts(): Promise<Product[]> {
+  try {
+    // Hacemos un fetch a tu endpoint local. 
+    // 'no-cache' asegura que siempre obtengamos los datos más frescos.
+    const response = await fetch('http://localhost:8080/productos/listado', { cache: 'no-cache' });
+    
+    if (!response.ok) {
+      // Si la respuesta no es exitosa, lanzamos un error.
+      throw new Error(`Error al obtener los productos: ${response.statusText}`);
+    }
+
+    const products = await response.json();
+    
+    // Aquí puedes mapear o transformar los datos si la estructura de tu API 
+    // es diferente a la que espera el frontend (el tipo `Product`).
+    // Por ahora, asumimos que la estructura es compatible.
+    return products;
+
+  } catch (error) {
+    console.error("No se pudieron obtener los productos:", error);
+    // En caso de error (ej. el backend no está corriendo), devolvemos un array vacío
+    // para evitar que la aplicación se rompa.
+    return [];
+  }
+}
+
+// Función para obtener un producto específico por su ID.
+export async function getProductById(id: string): Promise<Product | undefined> {
+  const products = await getProducts();
+  return products.find(p => p.id === id);
+}
+
+
+// --- DATOS DE MUESTRA (MOCK DATA) ---
+// Estos datos se mantendrán por ahora para otras secciones que aún no están conectadas.
+// Progresivamente, los reemplazaremos con llamadas a tu API.
 
 // Datos de muestra para los artículos del blog.
 export const blogArticles: BlogArticle[] = [

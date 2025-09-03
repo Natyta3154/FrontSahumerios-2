@@ -1,7 +1,7 @@
 
 "use client";
 
-import { products, users, orders } from '@/lib/data';
+import { getProducts, users, orders } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -41,16 +41,25 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Eye } from 'lucide-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { Product, User, Order } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { addProduct, editProduct } from './actions';
 
 
 export default function AdminDashboardPage() {
+  const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
   const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
   const [selectedOrder, setSelectedOrder] = React.useState<Order | null>(null);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      const fetchedProducts = await getProducts();
+      setProducts(fetchedProducts);
+    };
+    loadProducts();
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -221,7 +230,26 @@ export default function AdminDashboardPage() {
                              <DialogContent>
                                 <DialogHeader>
                                     <DialogTitle>Edit User</DialogTitle>
+                                    <DialogDescription>Make changes to the user's details.</DialogDescription>
                                 </DialogHeader>
+                                 <div className="grid gap-4 py-4">
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                        <Label htmlFor="user-name-edit" className="text-right">Name</Label>
+                                        <Input id="user-name-edit" name="name" defaultValue={user.name} className="col-span-3" required />
+                                    </div>
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                        <Label htmlFor="user-email-edit" className="text-right">Email</Label>
+                                        <Input id="user-email-edit" name="email" type="email" defaultValue={user.email} className="col-span-3" required />
+                                    </div>
+                                </div>
+                                <DialogFooter>
+                                    <DialogClose asChild>
+                                        <Button type="button" variant="secondary">Cancel</Button>
+                                    </DialogClose>
+                                    <DialogClose asChild>
+                                        <Button type="submit">Save Changes</Button>
+                                    </DialogClose>
+                                </DialogFooter>
                               </DialogContent>
                           </Dialog>
                           <AlertDialog>
@@ -329,7 +357,33 @@ export default function AdminDashboardPage() {
                                <DialogContent>
                                 <DialogHeader>
                                     <DialogTitle>Edit Order</DialogTitle>
+                                    <DialogDescription>Update the order status.</DialogDescription>
                                 </DialogHeader>
+                                 <div className="grid gap-4 py-4">
+                                    <p><strong>Order ID:</strong> {order.id}</p>
+                                    <p><strong>Customer:</strong> {order.customerName}</p>
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                        <Label htmlFor="order-status-edit" className="text-right">Status</Label>
+                                        <Select defaultValue={order.status}>
+                                            <SelectTrigger className="col-span-3">
+                                                <SelectValue placeholder="Select status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="Pending">Pending</SelectItem>
+                                                <SelectItem value="Shipped">Shipped</SelectItem>
+                                                <SelectItem value="Delivered">Delivered</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                                <DialogFooter>
+                                    <DialogClose asChild>
+                                        <Button type="button" variant="secondary">Cancel</Button>
+                                    </DialogClose>
+                                    <DialogClose asChild>
+                                        <Button type="submit">Save Changes</Button>
+                                    </DialogClose>
+                                </DialogFooter>
                                </DialogContent>
                             </Dialog>
                             <AlertDialog>
