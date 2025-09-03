@@ -122,7 +122,10 @@ export default function AdminPage() {
                   </TableCell>
                   <TableCell className="hidden md:table-cell">${product.price.toFixed(2)}</TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="sm">Edit</Button>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm">Edit</Button>
+                      <Button variant="destructive" size="sm">Delete</Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
