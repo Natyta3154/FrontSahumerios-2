@@ -2,12 +2,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function SignupPage() {
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-14rem)] py-12">
-      <Card className="w-full max-w-sm">
+    <div className="relative flex items-center justify-center min-h-[calc(100vh-14rem)] py-12">
+      <Image
+        src="https://picsum.photos/1920/1080"
+        alt="Aromatherapy background"
+        data-ai-hint="zen background"
+        fill
+        className="object-cover absolute inset-0 z-0"
+      />
+      <div className="absolute inset-0 bg-background/80 z-10" />
+      <Card className="w-full max-w-sm z-20">
         <CardHeader>
           <CardTitle className="font-headline text-2xl">Sign Up</CardTitle>
           <CardDescription>Enter your information to create an account.</CardDescription>
