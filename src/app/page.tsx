@@ -1,3 +1,6 @@
+
+"use client" // Este comentario indica que este componente se ejecuta en el cliente (navegador).
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
@@ -5,6 +8,8 @@ import { featuredProducts, blogArticles } from "@/lib/data";
 import { ArrowRight, Brain, Leaf, Star, Wind } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import Autoplay from "embla-carousel-autoplay"; // Importamos el plugin de autoplay.
+import React from "react";
 
 export default function Home() {
   const benefits = [
@@ -45,12 +50,33 @@ export default function Home() {
       image: "https://picsum.photos/100/100?random=15"
     }
   ];
+  
+  // Creamos una referencia para el plugin de autoplay.
+  // Esto nos permite controlar el carrusel si es necesario.
+  const plugin = React.useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  );
 
   return (
     <div className="flex flex-col">
+      {/* Sección del carrusel principal (Hero) */}
       <section className="relative h-[60vh] md:h-[80vh] w-full">
-        <Carousel className="w-full h-full" opts={{ loop: true }}>
+        {/* 
+          Componente Carousel:
+          - `plugins={[plugin.current]}`: Aquí se activa el plugin de autoplay.
+          - `opts={{ loop: true }}`: Esta opción hace que el carrusel sea infinito (vuelve al principio después de la última imagen).
+          - `onMouseEnter={plugin.current.stop}`: Pausa el carrusel cuando el ratón está encima.
+          - `onMouseLeave={plugin.current.reset}`: Reanuda el carrusel cuando el ratón sale.
+        */}
+        <Carousel 
+          className="w-full h-full" 
+          opts={{ loop: true }}
+          plugins={[plugin.current]}
+          onMouseEnter={plugin.current.stop}
+          onMouseLeave={plugin.current.reset}
+        >
           <CarouselContent className="h-full">
+            {/* Cada `CarouselItem` es una diapositiva del carrusel. */}
             <CarouselItem className="h-full">
               <div className="relative h-full w-full">
                 <Image
@@ -75,7 +101,20 @@ export default function Home() {
                 <div className="absolute inset-0 bg-black/50" />
               </div>
             </CarouselItem>
+            <CarouselItem className="h-full">
+              <div className="relative h-full w-full">
+                <Image
+                  src="https://picsum.photos/1600/902"
+                  alt="Essential oil bottles"
+                  data-ai-hint="essential oils"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-black/50" />
+              </div>
+            </CarouselItem>
           </CarouselContent>
+          {/* Controles para ir a la diapositiva anterior y siguiente. Se ocultan en pantallas pequeñas. */}
           <div className="hidden md:block">
             <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2" />
             <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2" />
