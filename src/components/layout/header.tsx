@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Menu, ShoppingCart, User } from "lucide-react";
+import { Menu, ShoppingCart, User, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/context/cart-context";
 import { CartSheet } from "../cart-sheet";
@@ -17,6 +17,7 @@ export function AppHeader() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/products", label: "Products" },
+    { href: "/deals", label: "Deals" },
     { href: "/about", label: "About Us" },
     { href: "/blog", label: "Blog" },
     { href: "/contact", label: "Contact" },

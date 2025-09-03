@@ -31,6 +31,7 @@ export function AppFooter() {
               <li><Link href="/products?category=incense" className="text-muted-foreground hover:text-primary">Incense</Link></li>
               <li><Link href="/products?category=diffusers" className="text-muted-foreground hover:text-primary">Diffusers</Link></li>
               <li><Link href="/products?category=oils" className="text-muted-foreground hover:text-primary">Essential Oils</Link></li>
+              <li><Link href="/deals" className="text-muted-foreground hover:text-primary">Deals</Link></li>
               <li><Link href="/products" className="text-muted-foreground hover:text-primary">All Products</Link></li>
             </ul>
           </div>

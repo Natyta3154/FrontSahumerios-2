@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Star, StarHalf } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { Separator } from '@/components/ui/separator';
-import { use } from 'react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 
 function ProductRating({ rating, reviews }: { rating: number; reviews: number }) {
@@ -65,7 +65,16 @@ export default function ProductDetailPage() {
             <div className="mt-4">
               <ProductRating rating={product.rating} reviews={product.reviews} />
             </div>
-            <p className="mt-4 text-3xl font-bold">${product.price.toFixed(2)}</p>
+             <div className="flex items-baseline gap-2 mt-4">
+                <p className={`font-bold text-3xl ${product.onSale ? 'text-destructive' : 'text-foreground'}`}>
+                    ${product.price.toFixed(2)}
+                </p>
+                {product.onSale && product.originalPrice && (
+                    <p className="text-xl text-muted-foreground line-through">
+                        ${product.originalPrice.toFixed(2)}
+                    </p>
+                )}
+              </div>
           </div>
           
           <Separator className="my-6" />
@@ -105,9 +114,16 @@ export default function ProductDetailPage() {
                                 {relatedProduct.name}
                             </CardTitle>
                           </Link>
-                          <CardDescription className="font-bold text-md text-foreground">
-                              ${relatedProduct.price.toFixed(2)}
-                          </CardDescription>
+                           <div className="flex items-baseline gap-2">
+                                <p className={`font-bold text-md ${relatedProduct.onSale ? 'text-destructive' : 'text-foreground'}`}>
+                                    ${relatedProduct.price.toFixed(2)}
+                                </p>
+                                {relatedProduct.onSale && relatedProduct.originalPrice && (
+                                    <p className="text-sm text-muted-foreground line-through">
+                                        ${relatedProduct.originalPrice.toFixed(2)}
+                                    </p>
+                                )}
+                            </div>
                       </CardContent>
                       <CardFooter className="p-4 pt-0">
                           <Button asChild className="w-full" variant="outline">

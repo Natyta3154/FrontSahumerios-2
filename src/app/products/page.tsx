@@ -105,9 +105,16 @@ export default function ProductsPage() {
                {product.brand && (
                 <p className="text-sm text-muted-foreground mb-2">{product.brand}</p>
               )}
-              <CardDescription className="font-bold text-lg text-foreground">
-                ${product.price.toFixed(2)}
-              </CardDescription>
+               <div className="flex items-baseline gap-2">
+                <p className={`font-bold text-lg ${product.onSale ? 'text-destructive' : 'text-foreground'}`}>
+                    ${product.price.toFixed(2)}
+                </p>
+                {product.onSale && product.originalPrice && (
+                    <p className="text-sm text-muted-foreground line-through">
+                        ${product.originalPrice.toFixed(2)}
+                    </p>
+                )}
+              </div>
             </CardContent>
             <CardFooter className="p-4 pt-0">
               <Button asChild className="w-full">

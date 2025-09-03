@@ -9,6 +9,8 @@ export type Product = {
   reviews: number;
   fragrance?: string;
   brand?: string;
+  onSale?: boolean;
+  originalPrice?: number;
 };
 
 export type BlogArticle = {
