@@ -44,42 +44,13 @@ import { Eye } from 'lucide-react';
 import React from 'react';
 import type { Product, User, Order } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { addProduct, editProduct } from './actions';
 
 
 export default function AdminDashboardPage() {
   const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
   const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
   const [selectedOrder, setSelectedOrder] = React.useState<Order | null>(null);
-
-  // This is a placeholder. In a real app, this would be a server action.
-  async function addProduct(formData: FormData) {
-    'use server';
-    console.log('Adding product...');
-    console.log({
-      name: formData.get('name'),
-      price: formData.get('price'),
-      category: formData.get('category'),
-      fragrance: formData.get('fragrance'),
-      image: formData.get('image'),
-      description: formData.get('description'),
-    });
-    // Here you would typically revalidate the path to update the product list
-  }
-  
-  async function editProduct(formData: FormData) {
-    'use server';
-    console.log('Editing product...');
-     console.log({
-      id: selectedProduct?.id,
-      name: formData.get('name'),
-      price: formData.get('price'),
-      category: formData.get('category'),
-      fragrance: formData.get('fragrance'),
-      image: formData.get('image'),
-      description: formData.get('description'),
-    });
-    // Here you would typically revalidate the path to update the product list
-  }
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -380,6 +351,7 @@ export default function AdminDashboardPage() {
                         <DialogDescription>Make changes to the product details.</DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
+                        <Input type="hidden" name="id" defaultValue={selectedProduct.id} />
                         <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="name-edit" className="text-right">Name</Label>
                         <Input id="name-edit" name="name" defaultValue={selectedProduct.name} className="col-span-3" required />
@@ -488,5 +460,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-
-    
