@@ -1,7 +1,8 @@
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Facebook, Instagram, Twitter } from "lucide-react";
+import { Facebook, Instagram, Twitter, Flower2 } from "lucide-react";
 
 export function AppFooter() {
   return (
@@ -9,7 +10,10 @@ export function AppFooter() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
-            <h3 className="font-headline text-2xl text-primary">AromaZen</h3>
+            <div className="flex items-center space-x-2">
+                <Flower2 className="h-7 w-7 text-primary" />
+                <h3 className="font-headline text-2xl text-primary">AromaZen</h3>
+            </div>
             <p className="mt-2 text-muted-foreground">
               Your sanctuary for aromatherapy and wellness.
             </p>

@@ -1,9 +1,10 @@
+
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Menu, ShoppingCart, User, Tag } from "lucide-react";
+import { Flower2, Menu, ShoppingCart, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/context/cart-context";
 import { CartSheet } from "../cart-sheet";
@@ -28,6 +29,7 @@ export function AppHeader() {
       <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/80 backdrop-blur-lg">
         <div className="container flex h-16 items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
+            <Flower2 className="h-7 w-7 text-primary" />
             <span className="font-headline text-2xl font-bold text-primary">
               AromaZen
             </span>
@@ -79,7 +81,8 @@ export function AppHeader() {
                  </SheetTrigger>
                  <SheetContent side="left">
                     <div className="flex flex-col p-6">
-                      <Link href="/" className="mb-6">
+                      <Link href="/" className="mb-6 flex items-center space-x-2">
+                        <Flower2 className="h-7 w-7 text-primary" />
                         <span className="font-headline text-2xl font-bold text-primary">AromaZen</span>
                       </Link>
                       <nav className="flex flex-col space-y-4">
