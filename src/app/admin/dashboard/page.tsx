@@ -157,6 +157,9 @@ export default function AdminDashboardPage() {
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Join Date</TableHead>
+                    <TableHead>
+                      <span className="sr-only">Actions</span>
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -166,6 +169,12 @@ export default function AdminDashboardPage() {
                       <TableCell>{user.name}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.joinDate}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2 justify-end">
+                          <Button variant="outline" size="sm">Edit</Button>
+                          <Button variant="destructive" size="sm">Delete</Button>
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -182,7 +191,7 @@ export default function AdminDashboardPage() {
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead>
-                      <span className="sr-only">Details</span>
+                      <span className="sr-only">Actions</span>
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -199,50 +208,54 @@ export default function AdminDashboardPage() {
                       </TableCell>
                       <TableCell className="text-right">${order.total.toFixed(2)}</TableCell>
                       <TableCell className="text-right">
-                         <Dialog>
-                            <DialogTrigger asChild>
-                              <Button variant="ghost" size="icon">
-                                <Eye className="h-4 w-4" />
-                                <span className="sr-only">View Details</span>
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-2xl">
-                                <DialogHeader>
-                                    <DialogTitle>Order Details</DialogTitle>
-                                    <DialogDescription>Order ID: {order.id}</DialogDescription>
-                                </DialogHeader>
-                                <div className="grid gap-4 py-4">
-                                    <p><strong>Customer:</strong> {order.customerName}</p>
-                                    <p><strong>Date:</strong> {order.date}</p>
-                                    <p><strong>Status:</strong> {order.status}</p>
-                                    <p><strong>Total:</strong> ${order.total.toFixed(2)}</p>
-                                    <h4 className="font-semibold mt-4">Items:</h4>
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Product</TableHead>
-                                                <TableHead>Quantity</TableHead>
-                                                <TableHead>Price</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {order.items.map(item => (
-                                                <TableRow key={item.productId}>
-                                                    <TableCell>{item.productName}</TableCell>
-                                                    <TableCell>{item.quantity}</TableCell>
-                                                    <TableCell>${item.price.toFixed(2)}</TableCell>
+                         <div className="flex gap-2 justify-end">
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                    <Eye className="h-4 w-4" />
+                                    <span className="sr-only">View Details</span>
+                                </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-2xl">
+                                    <DialogHeader>
+                                        <DialogTitle>Order Details</DialogTitle>
+                                        <DialogDescription>Order ID: {order.id}</DialogDescription>
+                                    </DialogHeader>
+                                    <div className="grid gap-4 py-4">
+                                        <p><strong>Customer:</strong> {order.customerName}</p>
+                                        <p><strong>Date:</strong> {order.date}</p>
+                                        <p><strong>Status:</strong> {order.status}</p>
+                                        <p><strong>Total:</strong> ${order.total.toFixed(2)}</p>
+                                        <h4 className="font-semibold mt-4">Items:</h4>
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead>Product</TableHead>
+                                                    <TableHead>Quantity</TableHead>
+                                                    <TableHead>Price</TableHead>
                                                 </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </div>
-                                <DialogFooter>
-                                  <DialogTrigger asChild>
-                                    <Button>Close</Button>
-                                  </DialogTrigger>
-                                </DialogFooter>
-                            </DialogContent>
-                         </Dialog>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {order.items.map(item => (
+                                                    <TableRow key={item.productId}>
+                                                        <TableCell>{item.productName}</TableCell>
+                                                        <TableCell>{item.quantity}</TableCell>
+                                                        <TableCell>${item.price.toFixed(2)}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                    <DialogFooter>
+                                    <DialogTrigger asChild>
+                                        <Button>Close</Button>
+                                    </DialogTrigger>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                            <Button variant="outline" size="sm">Edit</Button>
+                            <Button variant="destructive" size="sm">Delete</Button>
+                         </div>
                       </TableCell>
                     </TableRow>
                   ))}
