@@ -9,6 +9,7 @@ import { Star, StarHalf } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { Separator } from '@/components/ui/separator';
 import { use } from 'react';
+import Link from 'next/link';
 
 function ProductRating({ rating, reviews }: { rating: number; reviews: number }) {
   const fullStars = Math.floor(rating);
@@ -40,7 +41,7 @@ export default function ProductDetailPage() {
     notFound();
   }
   
-  const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 3);
+  const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-16">
@@ -56,10 +57,10 @@ export default function ProductDetailPage() {
 
         <div className="flex flex-col">
           <div>
-            <span className="text-sm font-medium text-primary uppercase">{product.category}</span>
+            <Link href={`/products?category=${product.category}`} className="text-sm font-medium text-primary uppercase hover:underline">{product.category}</Link>
             <h1 className="font-headline text-4xl md:text-5xl mt-2">{product.name}</h1>
             {product.brand && (
-                <p className="text-xl text-muted-foreground mt-2">by {product.brand}</p>
+                <p className="text-xl text-muted-foreground mt-2">by <Link href={`/products?brand=${product.brand}`} className="hover:underline">{product.brand}</Link></p>
             )}
             <div className="mt-4">
               <ProductRating rating={product.rating} reviews={product.reviews} />
@@ -79,6 +80,43 @@ export default function ProductDetailPage() {
             </Button>
           </div>
         </div>
+      </div>
+       <Separator className="my-16" />
+
+      {/* Related Products Section */}
+      <div>
+          <h2 className="font-headline text-3xl text-center mb-8">You Might Also Like</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {relatedProducts.map((relatedProduct) => (
+                  <Card key={relatedProduct.id} className="overflow-hidden group flex flex-col">
+                      <CardHeader className="p-0">
+                          <Link href={`/products/${relatedProduct.id}`} className="block overflow-hidden aspect-square relative">
+                              <Image
+                                  src={relatedProduct.image}
+                                  alt={relatedProduct.name}
+                                  fill
+                                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                              />
+                          </Link>
+                      </CardHeader>
+                      <CardContent className="p-4 flex-grow">
+                          <Link href={`/products/${relatedProduct.id}`} className="hover:text-primary transition-colors">
+                            <CardTitle className="font-headline text-lg mb-2 h-12">
+                                {relatedProduct.name}
+                            </CardTitle>
+                          </Link>
+                          <CardDescription className="font-bold text-md text-foreground">
+                              ${relatedProduct.price.toFixed(2)}
+                          </CardDescription>
+                      </CardContent>
+                      <CardFooter className="p-4 pt-0">
+                          <Button asChild className="w-full" variant="outline">
+                              <Link href={`/products/${relatedProduct.id}`}>View Details</Link>
+                          </Button>
+                      </CardFooter>
+                  </Card>
+              ))}
+          </div>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { products } from "@/lib/data";
@@ -8,24 +9,36 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import type { Product } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
+import { Separator } from "@/components/ui/separator";
 
 type Category = Product['category'] | 'all';
+type Brand = string | 'all';
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get('category') as Category || 'all';
-  const [filter, setFilter] = useState<Category>(initialCategory);
-
-  const filteredProducts = products.filter(
-    (product) => filter === "all" || product.category === filter
-  );
+  
+  const [categoryFilter, setCategoryFilter] = useState<Category>(initialCategory);
+  const [brandFilter, setBrandFilter] = useState<Brand>('all');
 
   const categories: { name: string, value: Category }[] = [
-    { name: "All", value: "all" },
+    { name: "All Categories", value: "all" },
     { name: "Incense", value: "incense" },
     { name: "Diffusers", value: "diffusers" },
     { name: "Essential Oils", value: "oils" },
   ];
+  
+  const brands: { name: string, value: Brand }[] = [
+    { name: "All Brands", value: "all" },
+    ...Array.from(new Set(products.map(p => p.brand).filter(Boolean) as string[])).map(b => ({ name: b, value: b }))
+  ];
+
+  const filteredProducts = products.filter(product => {
+      const categoryMatch = categoryFilter === 'all' || product.category === categoryFilter;
+      const brandMatch = brandFilter === 'all' || product.brand === brandFilter;
+      return categoryMatch && brandMatch;
+  });
+
 
   return (
     <div className="container mx-auto px-4 py-16 md:py-24">
@@ -38,18 +51,37 @@ export default function ProductsPage() {
         </p>
       </div>
       
-      <div className="flex justify-center mb-8 gap-2 md:gap-4">
-        {categories.map(category => (
-            <Button
-                key={category.value}
-                variant={filter === category.value ? "default" : "outline"}
-                onClick={() => setFilter(category.value)}
-                className="capitalize"
-            >
-                {category.name}
-            </Button>
-        ))}
+      <div className="flex flex-col items-center mb-12 gap-4">
+        <div className="flex justify-center flex-wrap gap-2 md:gap-4">
+            {categories.map(category => (
+                <Button
+                    key={category.value}
+                    variant={categoryFilter === category.value ? "default" : "outline"}
+                    onClick={() => {
+                        setCategoryFilter(category.value);
+                        setBrandFilter('all'); // Reset brand filter when category changes
+                    }}
+                    className="capitalize"
+                >
+                    {category.name}
+                </Button>
+            ))}
+        </div>
+        <div className="flex justify-center flex-wrap gap-2 md:gap-4">
+            {brands.map(brand => (
+                <Button
+                    key={brand.value}
+                    variant={brandFilter === brand.value ? "secondary" : "ghost"}
+                    onClick={() => setBrandFilter(brand.value)}
+                    className="capitalize"
+                    size="sm"
+                >
+                    {brand.name}
+                </Button>
+            ))}
+        </div>
       </div>
+
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {filteredProducts.map((product) => (
@@ -65,11 +97,14 @@ export default function ProductsPage() {
                </Link>
             </CardHeader>
             <CardContent className="p-4 flex-grow">
-              <CardTitle className="font-headline text-xl mb-2 h-14">
-                <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
+              <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
+                <CardTitle className="font-headline text-xl mb-2 h-14">
                     {product.name}
-                </Link>
-              </CardTitle>
+                </CardTitle>
+              </Link>
+               {product.brand && (
+                <p className="text-sm text-muted-foreground mb-2">{product.brand}</p>
+              )}
               <CardDescription className="font-bold text-lg text-foreground">
                 ${product.price.toFixed(2)}
               </CardDescription>
