@@ -12,15 +12,17 @@ import Link from "next/link";
 import Autoplay from "embla-carousel-autoplay"; // Importamos el plugin de autoplay para el carrusel.
 import React from "react";
 import { Product } from "@/lib/types";
+import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
 
-  const [featuredProducts, setFeaturedProducts] = React.useState<Product[]>([]);
+  const [saleProducts, setSaleProducts] = React.useState<Product[]>([]);
 
   React.useEffect(() => {
     const fetchProducts = async () => {
       const allProducts = await getProducts();
-      setFeaturedProducts(allProducts.slice(0,3));
+      // Filtramos para obtener solo los productos en oferta y tomamos los primeros 4
+      setSaleProducts(allProducts.filter(p => p.onSale).slice(0, 4));
     }
     fetchProducts();
   }, [])
@@ -164,38 +166,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- SECCIÓN DE PRODUCTOS DESTACADOS --- */}
-      {/* Muestra una selección de productos. Los datos vienen de `featuredProducts`. */}
+      {/* --- SECCIÓN DE PRODUCTOS EN OFERTA --- */}
+      {/* Muestra una selección de productos en oferta. */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-headline text-3xl md:text-4xl">Productos Destacados</h2>
-            <p className="mt-2 text-lg text-muted-foreground">Selecciones exclusivas para comenzar tu viaje.</p>
+            <h2 className="font-headline text-3xl md:text-4xl">Nuestras Ofertas</h2>
+            <p className="mt-2 text-lg text-muted-foreground">Aprovecha estos descuentos por tiempo limitado.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* 
-              Se itera sobre el array `featuredProducts` para renderizar cada tarjeta de producto.
-              Para conectar tu backend, aquí harías un fetch de tus productos destacados y los pasarías a este componente.
+              Se itera sobre el array `saleProducts` para renderizar cada tarjeta de producto.
+              Estos productos han sido filtrados para incluir solo aquellos con `onSale: true`.
             */}
-            {featuredProducts.map((product) => (
-              <Card key={product.id} className="overflow-hidden group">
+            {saleProducts.map((product) => (
+              <Card key={product.id} className="overflow-hidden group flex flex-col">
                 <CardHeader className="p-0">
-                  <Link href={`/products/${product.id}`} className="block overflow-hidden">
+                  <Link href={`/products/${product.id}`} className="block overflow-hidden aspect-square relative">
                     <Image
                       src={product.image}
                       alt={product.name}
                       data-ai-hint="aromatherapy product"
-                      width={600}
-                      height={400}
-                      className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                      fill
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
+                    <Badge variant="destructive" className="absolute top-3 right-3">OFERTA</Badge>
                   </Link>
                 </CardHeader>
-                <CardContent className="p-4">
-                  <CardTitle className="font-headline text-xl mb-2">{product.name}</CardTitle>
-                  <CardDescription>
-                    ${product.price.toFixed(2)}
-                  </CardDescription>
+                <CardContent className="p-4 flex-grow">
+                   <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
+                    <CardTitle className="font-headline text-xl mb-2 h-14 line-clamp-2">{product.name}</CardTitle>
+                   </Link>
+                   <div className="flex items-baseline gap-2">
+                        <p className="font-bold text-lg text-destructive">
+                        ${product.price.toFixed(2)}
+                        </p>
+                        {product.originalPrice && (
+                            <p className="text-sm text-muted-foreground line-through">
+                                ${product.originalPrice.toFixed(2)}
+                            </p>
+                        )}
+                    </div>
                 </CardContent>
                 <CardFooter className="p-4 pt-0">
                   <Button asChild className="w-full">
