@@ -7,6 +7,7 @@ export type Product = {
   category: 'incense' | 'diffusers' | 'oils';
   rating: number;
   reviews: number;
+  fragrance?: string;
 };
 
 export type BlogArticle = {

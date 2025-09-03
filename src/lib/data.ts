@@ -10,6 +10,7 @@ export const products: Product[] = [
     category: 'incense',
     rating: 4.5,
     reviews: 120,
+    fragrance: 'Sandalwood',
   },
   {
     id: '2',
@@ -30,6 +31,7 @@ export const products: Product[] = [
     category: 'oils',
     rating: 4.9,
     reviews: 450,
+    fragrance: 'Lavender',
   },
   {
     id: '4',
@@ -40,6 +42,7 @@ export const products: Product[] = [
     category: 'incense',
     rating: 4.7,
     reviews: 95,
+    fragrance: 'Palo Santo',
   },
   {
     id: '5',
@@ -50,6 +53,7 @@ export const products: Product[] = [
     category: 'oils',
     rating: 4.6,
     reviews: 310,
+    fragrance: 'Eucalyptus',
   },
   {
     id: '6',
@@ -70,6 +74,7 @@ export const products: Product[] = [
     category: 'incense',
     rating: 4.8,
     reviews: 75,
+    fragrance: 'Frankincense & Myrrh',
   },
   {
     id: '8',
@@ -90,6 +95,7 @@ export const products: Product[] = [
     category: 'oils',
     rating: 4.7,
     reviews: 380,
+    fragrance: 'Peppermint',
   },
 ];
 

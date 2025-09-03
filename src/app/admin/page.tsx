@@ -98,6 +98,8 @@ export default function AdminPage() {
                 <TableHead className="hidden w-[100px] sm:table-cell">Image</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Category</TableHead>
+                <TableHead className="hidden md:table-cell">Fragrance</TableHead>
+                <TableHead className="hidden lg:table-cell">Description</TableHead>
                 <TableHead className="hidden md:table-cell">Price</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
@@ -120,6 +122,8 @@ export default function AdminPage() {
                   <TableCell>
                     <Badge variant="outline">{product.category}</Badge>
                   </TableCell>
+                  <TableCell className="hidden md:table-cell">{product.fragrance || 'N/A'}</TableCell>
+                  <TableCell className="hidden lg:table-cell max-w-xs truncate">{product.description}</TableCell>
                   <TableCell className="hidden md:table-cell">${product.price.toFixed(2)}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
