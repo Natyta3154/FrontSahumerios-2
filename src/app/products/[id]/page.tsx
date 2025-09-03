@@ -1,7 +1,8 @@
+
 "use client";
 
 import { products } from '@/lib/data';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Star, StarHalf } from 'lucide-react';
@@ -29,7 +30,8 @@ function ProductRating({ rating, reviews }: { rating: number; reviews: number })
   );
 }
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+export default function ProductDetailPage() {
+  const params = useParams();
   const product = products.find((p) => p.id === params.id);
   const { addToCart } = useCart();
 
