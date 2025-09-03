@@ -1,3 +1,6 @@
+
+"use client";
+
 import { products, users, orders } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,7 +20,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -25,13 +41,36 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Eye } from 'lucide-react';
+import React from 'react';
+import type { Product, User, Order } from '@/lib/types';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 
 export default function AdminDashboardPage() {
+  const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
+  const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
+  const [selectedOrder, setSelectedOrder] = React.useState<Order | null>(null);
+
   // This is a placeholder. In a real app, this would be a server action.
   async function addProduct(formData: FormData) {
     'use server';
     console.log('Adding product...');
     console.log({
+      name: formData.get('name'),
+      price: formData.get('price'),
+      category: formData.get('category'),
+      fragrance: formData.get('fragrance'),
+      image: formData.get('image'),
+      description: formData.get('description'),
+    });
+    // Here you would typically revalidate the path to update the product list
+  }
+  
+  async function editProduct(formData: FormData) {
+    'use server';
+    console.log('Editing product...');
+     console.log({
+      id: selectedProduct?.id,
       name: formData.get('name'),
       price: formData.get('price'),
       category: formData.get('category'),
@@ -59,6 +98,7 @@ export default function AdminDashboardPage() {
               <TabsTrigger value="orders">Orders</TabsTrigger>
             </TabsList>
             
+            {/* Products Tab */}
             <TabsContent value="products" className="mt-6">
               <div className="flex justify-end mb-4">
                  <Dialog>
@@ -73,32 +113,34 @@ export default function AdminDashboardPage() {
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="name" className="text-right">Name</Label>
-                            <Input id="name" name="name" className="col-span-3" required />
+                            <Label htmlFor="name-add" className="text-right">Name</Label>
+                            <Input id="name-add" name="name" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="price" className="text-right">Price</Label>
-                            <Input id="price" name="price" type="number" step="0.01" className="col-span-3" required />
+                            <Label htmlFor="price-add" className="text-right">Price</Label>
+                            <Input id="price-add" name="price" type="number" step="0.01" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="category" className="text-right">Category</Label>
-                            <Input id="category" name="category" placeholder="incense, diffusers, or oils" className="col-span-3" required />
+                            <Label htmlFor="category-add" className="text-right">Category</Label>
+                            <Input id="category-add" name="category" placeholder="incense, diffusers, or oils" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="fragrance" className="text-right">Fragrance</Label>
-                            <Input id="fragrance" name="fragrance" placeholder="e.g. Sandalwood, Lavender" className="col-span-3" />
+                            <Label htmlFor="fragrance-add" className="text-right">Fragrance</Label>
+                            <Input id="fragrance-add" name="fragrance" placeholder="e.g. Sandalwood, Lavender" className="col-span-3" />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="image" className="text-right">Image URL</Label>
-                            <Input id="image" name="image" placeholder="https://example.com/image.jpg" className="col-span-3" required />
+                            <Label htmlFor="image-add" className="text-right">Image URL</Label>
+                            <Input id="image-add" name="image" placeholder="https://example.com/image.jpg" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="description" className="text-right">Description</Label>
-                            <Textarea id="description" name="description" className="col-span-3" required />
+                            <Label htmlFor="description-add" className="text-right">Description</Label>
+                            <Textarea id="description-add" name="description" className="col-span-3" required />
                           </div>
                         </div>
                         <DialogFooter>
-                          <Button type="submit">Save Product</Button>
+                            <DialogClose asChild>
+                                <Button type="submit">Save Product</Button>
+                            </DialogClose>
                         </DialogFooter>
                       </form>
                     </DialogContent>
@@ -139,8 +181,28 @@ export default function AdminDashboardPage() {
                       <TableCell className="hidden md:table-cell">${product.price.toFixed(2)}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm">Edit</Button>
-                          <Button variant="destructive" size="sm">Delete</Button>
+                           <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" onClick={() => setSelectedProduct(product)}>Edit</Button>
+                              </DialogTrigger>
+                           </Dialog>
+                           <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                 <Button variant="destructive" size="sm">Delete</Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                 <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                       This action cannot be undone. This will permanently delete the product.
+                                    </AlertDialogDescription>
+                                 </AlertDialogHeader>
+                                 <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction>Delete</AlertDialogAction>
+                                 </AlertDialogFooter>
+                              </AlertDialogContent>
+                           </AlertDialog>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -149,6 +211,7 @@ export default function AdminDashboardPage() {
               </Table>
             </TabsContent>
 
+            {/* Users Tab */}
             <TabsContent value="users" className="mt-6">
               <Table>
                 <TableHeader>
@@ -171,8 +234,28 @@ export default function AdminDashboardPage() {
                       <TableCell>{user.joinDate}</TableCell>
                       <TableCell>
                         <div className="flex gap-2 justify-end">
-                          <Button variant="outline" size="sm">Edit</Button>
-                          <Button variant="destructive" size="sm">Delete</Button>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="outline" size="sm" onClick={() => setSelectedUser(user)}>Edit</Button>
+                            </DialogTrigger>
+                          </Dialog>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm">Delete</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                      This action cannot be undone. This will permanently delete the user account.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction>Delete</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -181,6 +264,7 @@ export default function AdminDashboardPage() {
               </Table>
             </TabsContent>
 
+            {/* Orders Tab */}
             <TabsContent value="orders" className="mt-6">
                <Table>
                 <TableHeader>
@@ -247,14 +331,34 @@ export default function AdminDashboardPage() {
                                         </Table>
                                     </div>
                                     <DialogFooter>
-                                    <DialogTrigger asChild>
-                                        <Button>Close</Button>
-                                    </DialogTrigger>
+                                        <DialogClose asChild>
+                                          <Button>Close</Button>
+                                        </DialogClose>
                                     </DialogFooter>
                                 </DialogContent>
                             </Dialog>
-                            <Button variant="outline" size="sm">Edit</Button>
-                            <Button variant="destructive" size="sm">Delete</Button>
+                            <Dialog>
+                               <DialogTrigger asChild>
+                                  <Button variant="outline" size="sm" onClick={() => setSelectedOrder(order)}>Edit</Button>
+                               </DialogTrigger>
+                            </Dialog>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                 <Button variant="destructive" size="sm">Delete</Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete the order.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction>Delete</AlertDialogAction>
+                                  </AlertDialogFooter>
+                              </AlertDialogContent>
+                           </AlertDialog>
                          </div>
                       </TableCell>
                     </TableRow>
@@ -262,10 +366,127 @@ export default function AdminDashboardPage() {
                 </TableBody>
               </Table>
             </TabsContent>
-
           </Tabs>
         </CardContent>
       </Card>
+      
+      {/* Edit Product Dialog */}
+      {selectedProduct && (
+        <Dialog open={!!selectedProduct} onOpenChange={(isOpen) => !isOpen && setSelectedProduct(null)}>
+            <DialogContent className="sm:max-w-[425px]">
+                <form action={editProduct}>
+                    <DialogHeader>
+                        <DialogTitle className="font-headline">Edit Product</DialogTitle>
+                        <DialogDescription>Make changes to the product details.</DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name-edit" className="text-right">Name</Label>
+                        <Input id="name-edit" name="name" defaultValue={selectedProduct.name} className="col-span-3" required />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="price-edit" className="text-right">Price</Label>
+                        <Input id="price-edit" name="price" type="number" step="0.01" defaultValue={selectedProduct.price} className="col-span-3" required />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="category-edit" className="text-right">Category</Label>
+                        <Input id="category-edit" name="category" defaultValue={selectedProduct.category} className="col-span-3" required />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="fragrance-edit" className="text-right">Fragrance</Label>
+                        <Input id="fragrance-edit" name="fragrance" defaultValue={selectedProduct.fragrance} className="col-span-3" />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="image-edit" className="text-right">Image URL</Label>
+                        <Input id="image-edit" name="image" defaultValue={selectedProduct.image} className="col-span-3" required />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="description-edit" className="text-right">Description</Label>
+                        <Textarea id="description-edit" name="description" defaultValue={selectedProduct.description} className="col-span-3" required />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                           <Button type="button" variant="secondary" onClick={() => setSelectedProduct(null)}>Cancel</Button>
+                        </DialogClose>
+                        <DialogClose asChild>
+                           <Button type="submit">Save Changes</Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Edit User Dialog */}
+       {selectedUser && (
+        <Dialog open={!!selectedUser} onOpenChange={(isOpen) => !isOpen && setSelectedUser(null)}>
+            <DialogContent className="sm:max-w-[425px]">
+                 <DialogHeader>
+                    <DialogTitle className="font-headline">Edit User</DialogTitle>
+                    <DialogDescription>Make changes to the user's details.</DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="user-name-edit" className="text-right">Name</Label>
+                        <Input id="user-name-edit" name="name" defaultValue={selectedUser.name} className="col-span-3" required />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="user-email-edit" className="text-right">Email</Label>
+                        <Input id="user-email-edit" name="email" type="email" defaultValue={selectedUser.email} className="col-span-3" required />
+                    </div>
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button type="button" variant="secondary" onClick={() => setSelectedUser(null)}>Cancel</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                        <Button type="submit">Save Changes</Button>
+                    </DialogClose>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Edit Order Dialog */}
+      {selectedOrder && (
+        <Dialog open={!!selectedOrder} onOpenChange={(isOpen) => !isOpen && setSelectedOrder(null)}>
+            <DialogContent className="sm:max-w-[425px]">
+                 <DialogHeader>
+                    <DialogTitle className="font-headline">Edit Order</DialogTitle>
+                    <DialogDescription>Update the order status.</DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                    <p><strong>Order ID:</strong> {selectedOrder.id}</p>
+                    <p><strong>Customer:</strong> {selectedOrder.customerName}</p>
+                     <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="order-status-edit" className="text-right">Status</Label>
+                         <Select defaultValue={selectedOrder.status}>
+                            <SelectTrigger className="col-span-3">
+                                <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Pending">Pending</SelectItem>
+                                <SelectItem value="Shipped">Shipped</SelectItem>
+                                <SelectItem value="Delivered">Delivered</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button type="button" variant="secondary" onClick={() => setSelectedOrder(null)}>Cancel</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                        <Button type="submit">Save Changes</Button>
+                    </DialogClose>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+      )}
+
     </div>
   );
 }
+
+    
