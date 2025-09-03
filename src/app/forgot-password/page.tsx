@@ -4,36 +4,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-14rem)] py-12">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="font-headline text-2xl">Login</CardTitle>
-          <CardDescription>Enter your email below to login to your account.</CardDescription>
+          <CardTitle className="font-headline text-2xl">Forgot Password</CardTitle>
+          <CardDescription>Enter your email and we'll send you a link to reset your password.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" placeholder="m@example.com" required />
           </div>
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">
-                Forgot your password?
-              </Link>
-            </div>
-            <Input id="password" type="password" required />
-          </div>
           <Button type="submit" className="w-full">
-            Login
+            Send Reset Link
           </Button>
         </CardContent>
         <CardFooter className="text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup" className="underline ml-1">
-              Sign up
+            <Link href="/login" className="underline">
+              Back to Login
             </Link>
         </CardFooter>
       </Card>
