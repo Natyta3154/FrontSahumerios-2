@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 // Importamos los datos de muestra. En una aplicación real, estos datos vendrían de una llamada a tu backend.
 import { getProducts, blogArticles } from "@/lib/data";
-import { ArrowRight, Brain, Leaf, Star, Wind } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Autoplay from "embla-carousel-autoplay"; // Importamos el plugin de autoplay para el carrusel.
@@ -17,34 +17,20 @@ import { Badge } from "@/components/ui/badge";
 export default function Home() {
 
   const [saleProducts, setSaleProducts] = React.useState<Product[]>([]);
+  const [featuredProducts, setFeaturedProducts] = React.useState<Product[]>([]);
+
 
   React.useEffect(() => {
     const fetchProducts = async () => {
       const allProducts = await getProducts();
       // Filtramos para obtener solo los productos en oferta y tomamos los primeros 4
       setSaleProducts(allProducts.filter(p => p.onSale).slice(0, 4));
+      // Tomamos los primeros 3 productos generales como destacados
+      setFeaturedProducts(allProducts.slice(0, 3));
     }
     fetchProducts();
   }, [])
 
-  // Datos para la sección de beneficios. Pueden ser estáticos o venir del backend si se desea.
-  const benefits = [
-    {
-      icon: <Wind className="h-10 w-10 text-primary" />,
-      title: "Relajación",
-      description: "Nuestros productos ayudan a calmar la mente y el cuerpo, reduciendo el estrés y la ansiedad.",
-    },
-    {
-      icon: <Leaf className="h-10 w-10 text-primary" />,
-      title: "Ingredientes Naturales",
-      description: "Elaborados con los mejores botánicos y aceites esenciales de origen ético.",
-    },
-    {
-      icon: <Brain className="h-10 w-10 text-primary" />,
-      title: "Concentración Mejorada",
-      description: "Ciertos aromas pueden agudizar tu enfoque y potenciar tu rendimiento cognitivo.",
-    },
-  ];
 
   // Datos para la sección de testimonios. Idealmente, estos vendrían de tu base de datos.
   const testimonials = [
@@ -219,21 +205,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- SECCIÓN DE BENEFICIOS --- */}
-      {/* Muestra los beneficios clave de la aromaterapia. */}
+      {/* --- SECCIÓN DE PRODUCTOS DESTACADOS --- */}
       <section className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-headline text-3xl md:text-4xl">Beneficios de la Aromaterapia</h2>
-            <p className="mt-2 text-lg text-muted-foreground">Transforma tu bienestar, un aroma a la vez.</p>
+            <h2 className="font-headline text-3xl md:text-4xl">Productos Destacados</h2>
+            <p className="mt-2 text-lg text-muted-foreground">Explora nuestros productos más populares.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            {benefits.map((benefit) => (
-              <div key={benefit.title} className="flex flex-col items-center p-6">
-                {benefit.icon}
-                <h3 className="font-headline text-2xl mt-4">{benefit.title}</h3>
-                <p className="mt-2 text-muted-foreground">{benefit.description}</p>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {featuredProducts.map((product) => (
+              <Card key={product.id} className="overflow-hidden group flex flex-col">
+                <CardHeader className="p-0">
+                  <Link href={`/products/${product.id}`} className="block overflow-hidden aspect-square relative">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </Link>
+                </CardHeader>
+                <CardContent className="p-4 flex-grow">
+                  <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
+                    <CardTitle className="font-headline text-xl mb-2 h-14 line-clamp-2">{product.name}</CardTitle>
+                  </Link>
+                  <div className="flex items-baseline gap-2">
+                    <p className={`font-bold text-lg ${product.onSale ? 'text-destructive' : 'text-foreground'}`}>
+                      ${product.price.toFixed(2)}
+                    </p>
+                    {product.onSale && product.originalPrice && (
+                      <p className="text-sm text-muted-foreground line-through">
+                        ${product.originalPrice.toFixed(2)}
+                      </p>
+                    )}
+                  </div>
+                </CardContent>
+                <CardFooter className="p-4 pt-0">
+                   <Button asChild className="w-full">
+                    <Link href={`/products/${product.id}`}>Ver Detalles</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
             ))}
           </div>
         </div>
