@@ -34,6 +34,7 @@ export async function addProduct(formData: FormData) {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'omit',
       body: JSON.stringify(newProduct),
     });
 
@@ -83,6 +84,7 @@ export async function editProduct(formData: FormData) {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'omit',
       body: JSON.stringify(updatedProduct),
     });
 
@@ -112,6 +114,7 @@ export async function deleteProduct(productId: number) {
   try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
       method: 'DELETE',
+      credentials: 'omit',
     });
 
      if (!response.ok) {

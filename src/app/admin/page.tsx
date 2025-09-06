@@ -26,6 +26,7 @@ export default function AdminLoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'omit',
         body: JSON.stringify({ email, password }),
       });
       
