@@ -9,95 +9,92 @@
       Los colores se definen usando el formato HSL (Tono, Saturación, Luminosidad).
       Puedes obtener estos valores desde herramientas en línea como "HSL Color Picker".
 
-      TEMA OSCURO (según la paleta proporcionada)
+      TEMA LILA OSCURO
     */
 
-    /* Color de fondo principal de la aplicación */
-    --background: 30 10% 10%; /* Un marrón muy oscuro */
-    /* Color del texto principal */
-    --foreground: 35 50% 95%; /* Un blanco roto cálido */
+    /* Color de fondo principal (un púrpura muy oscuro) */
+    --background: 270 10% 12%;
+    /* Color del texto principal (un blanco suave con tinte lila) */
+    --foreground: 270 40% 96%;
 
-    /* Color de fondo para elementos tipo "tarjeta" (cards) */
-    --card: 30 10% 15%;
+    /* Color de fondo para tarjetas */
+    --card: 270 10% 15%;
     /* Color del texto dentro de las tarjetas */
-    --card-foreground: 35 50% 95%;
+    --card-foreground: 270 40% 96%;
 
     /* Color de fondo para elementos emergentes (popovers) */
-    --popover: 30 10% 10%;
+    --popover: 270 10% 10%;
     /* Color del texto dentro de los popovers */
-    --popover-foreground: 35 50% 95%;
+    --popover-foreground: 270 40% 96%;
 
-    /* Color primario (Crema/Hueso) */
-    --primary: 40 50% 85%;
-    /* Color del texto sobre el color primario */
-    --primary-foreground: 30 20% 10%;
+    /* Color primario (Lila) */
+    --primary: 260 60% 75%;
+    /* Color del texto sobre el color primario (púrpura oscuro) */
+    --primary-foreground: 260 50% 10%;
     
-    /* Color secundario (Marrón medio) */
-    --secondary: 30 15% 25%;
+    /* Color secundario (Púrpura apagado) */
+    --secondary: 265 15% 30%;
     /* Color del texto sobre el color secundario */
-    --secondary-foreground: 35 50% 95%;
+    --secondary-foreground: 270 40% 96%;
 
-    /* Color para textos y elementos "apagados" o sutiles */
-    --muted: 30 10% 25%;
-    /* Color del texto "apagado" o sutil */
-    --muted-foreground: 35 15% 65%;
+    /* Color para textos y elementos sutiles */
+    --muted: 265 10% 35%;
+    /* Color del texto sutil */
+    --muted-foreground: 265 15% 65%;
 
-    /* Color de acento (Marrón tierra más claro) */
-    --accent: 30 20% 20%;
+    /* Color de acento (Lila más claro para interacciones) */
+    --accent: 260 40% 40%;
     /* Color del texto sobre el color de acento */
-    --accent-foreground: 40 80% 95%;
+    --accent-foreground: 270 40% 96%;
 
-    /* Color para acciones destructivas (botones de eliminar, errores) */
+    /* Color para acciones destructivas (rojo) */
     --destructive: 0 63% 50%;
     /* Color del texto sobre el color destructivo */
     --destructive-foreground: 0 0% 100%;
 
     /* Color para bordes y separadores */
-    --border: 30 10% 30%;
+    --border: 265 10% 30%;
     /* Color para campos de entrada (inputs) */
-    --input: 30 10% 30%;
-    /* Color para el "anillo" de foco (outline al hacer focus) */
-    --ring: 40 50% 85%;
+    --input: 265 10% 30%;
+    /* Color para el "anillo" de foco (outline) */
+    --ring: 260 60% 75%;
 
-    /* Colores para gráficos (si los usas) */
-    --chart-1: 40 50% 85%;
-    --chart-2: 30 40% 70%;
-    --chart-3: 35 20% 50%;
-    --chart-4: 40 30% 60%;
-    --chart-5: 25 30% 70%;
+    /* Colores para gráficos */
+    --chart-1: 260 60% 75%;
+    --chart-2: 265 40% 65%;
+    --chart-3: 270 30% 55%;
+    --chart-4: 260 40% 45%;
+    --chart-5: 265 20% 35%;
     
-    /* Radio de borde para elementos como tarjetas y botones */
+    /* Radio de borde para elementos */
     --radius: 0.5rem;
   }
   .dark {
-    /* 
-      Para este diseño, el tema oscuro y el claro son el mismo. 
-      Si quieres un tema claro separado, podemos definirlo aquí.
-    */
-    --background: 30 10% 10%;
-    --foreground: 35 50% 95%;
-    --card: 30 10% 15%;
-    --card-foreground: 35 50% 95%;
-    --popover: 30 10% 10%;
-    --popover-foreground: 35 50% 95%;
-    --primary: 40 50% 85%;
-    --primary-foreground: 30 20% 10%;
-    --secondary: 30 15% 25%;
-    --secondary-foreground: 35 50% 95%;
-    --muted: 30 10% 25%;
-    --muted-foreground: 35 15% 65%;
-    --accent: 30 20% 20%;
-    --accent-foreground: 40 80% 95%;
+    /* Mantenemos el tema oscuro como el principal y único por ahora */
+    --background: 270 10% 12%;
+    --foreground: 270 40% 96%;
+    --card: 270 10% 15%;
+    --card-foreground: 270 40% 96%;
+    --popover: 270 10% 10%;
+    --popover-foreground: 270 40% 96%;
+    --primary: 260 60% 75%;
+    --primary-foreground: 260 50% 10%;
+    --secondary: 265 15% 30%;
+    --secondary-foreground: 270 40% 96%;
+    --muted: 265 10% 35%;
+    --muted-foreground: 265 15% 65%;
+    --accent: 260 40% 40%;
+    --accent-foreground: 270 40% 96%;
     --destructive: 0 63% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 30 10% 30%;
-    --input: 30 10% 30%;
-    --ring: 40 50% 85%;
-    --chart-1: 40 50% 85%;
-    --chart-2: 30 40% 70%;
-    --chart-3: 35 20% 50%;
-    --chart-4: 40 30% 60%;
-    --chart-5: 25 30% 70%;
+    --border: 265 10% 30%;
+    --input: 265 10% 30%;
+    --ring: 260 60% 75%;
+    --chart-1: 260 60% 75%;
+    --chart-2: 265 40% 65%;
+    --chart-3: 270 30% 55%;
+    --chart-4: 260 40% 45%;
+    --chart-5: 265 20% 35%;
   }
 }
 
@@ -108,6 +105,5 @@
   body {
     @apply text-foreground;
     background-color: hsl(var(--background));
-    /* Eliminamos los gradientes radiales para un fondo sólido */
   }
 }
