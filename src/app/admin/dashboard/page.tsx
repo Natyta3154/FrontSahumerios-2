@@ -43,26 +43,31 @@ import { Eye } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import type { Product, User, Order } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+// NOTA: Se importan las funciones (Server Actions) desde 'actions.ts' para conectar los formularios a la API.
 import { addProduct, editProduct, deleteProduct } from './actions';
 
 
 export default function AdminDashboardPage() {
+  // ESTADO: Almacena la lista de productos, usuarios y pedidos.
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
   const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
   const [selectedOrder, setSelectedOrder] = React.useState<Order | null>(null);
 
+  // EFECTO: Carga los productos desde la API cuando el componente se monta.
   useEffect(() => {
     const loadProducts = async () => {
+      // VISUALIZACIÓN: Llama a getProducts (de data.ts) para obtener los datos.
       const fetchedProducts = await getProducts();
       setProducts(fetchedProducts);
     };
     loadProducts();
   }, []);
 
+  // MANEJADOR: Llama a la Server Action para eliminar un producto y refresca la lista.
   const handleDeleteProduct = async (productId: number) => {
     await deleteProduct(productId);
-    // Después de eliminar, volvemos a cargar los productos para refrescar la lista.
+    // Vuelve a cargar los productos para reflejar el cambio.
     const fetchedProducts = await getProducts();
     setProducts(fetchedProducts);
   };
@@ -78,6 +83,7 @@ export default function AdminDashboardPage() {
           </div>
         </CardHeader>
         <CardContent>
+          {/* VISUALIZACIÓN: Pestañas para organizar el contenido del panel. */}
           <Tabs defaultValue="products">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="products">Productos</TabsTrigger>
@@ -85,7 +91,7 @@ export default function AdminDashboardPage() {
               <TabsTrigger value="orders">Pedidos</TabsTrigger>
             </TabsList>
             
-            {/* Products Tab */}
+            {/* Pestaña de Productos */}
             <TabsContent value="products" className="mt-6">
               <div className="flex justify-end mb-4">
                  <Dialog>
@@ -93,12 +99,14 @@ export default function AdminDashboardPage() {
                       <Button>Añadir Producto</Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px]">
+                      {/* CONEXIÓN: El 'action={addProduct}' conecta este formulario directamente a la Server Action. */}
                       <form action={addProduct}>
                         <DialogHeader>
                           <DialogTitle className="font-headline">Añadir Nuevo Producto</DialogTitle>
                           <DialogDescription>Completa los detalles del nuevo producto.</DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
+                          {/* Campos del formulario */}
                           <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="nombre-add" className="text-right">Nombre</Label>
                             <Input id="nombre-add" name="nombre" className="col-span-3" required />
@@ -141,6 +149,7 @@ export default function AdminDashboardPage() {
                     </DialogContent>
                   </Dialog>
               </div>
+              {/* VISUALIZACIÓN: Tabla que muestra los productos obtenidos de la API. */}
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -178,12 +187,7 @@ export default function AdminDashboardPage() {
                               <DialogTrigger asChild>
                                 <Button variant="outline" size="sm" onClick={() => setSelectedProduct(product)}>Editar</Button>
                               </DialogTrigger>
-                              <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Editar Producto</DialogTitle>
-                                </DialogHeader>
-                                {/* El formulario de edición se renderiza abajo en otro diálogo */}
-                              </DialogContent>
+                              {/* El contenido del diálogo de edición se renderiza más abajo */}
                            </Dialog>
                            <AlertDialog>
                               <AlertDialogTrigger asChild>
@@ -198,6 +202,7 @@ export default function AdminDashboardPage() {
                                  </AlertDialogHeader>
                                  <AlertDialogFooter>
                                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    {/* CONEXIÓN: Llama a la función que ejecuta la Server Action de eliminar. */}
                                     <AlertDialogAction onClick={() => handleDeleteProduct(product.id)}>Eliminar</AlertDialogAction>
                                  </AlertDialogFooter>
                               </AlertDialogContent>
@@ -210,7 +215,8 @@ export default function AdminDashboardPage() {
               </Table>
             </TabsContent>
 
-            {/* Users Tab */}
+            {/* Pestaña de Usuarios */}
+            {/* NOTA: Esta sección actualmente usa datos de muestra. Deberías conectarla a tu API. */}
             <TabsContent value="users" className="mt-6">
               <Table>
                 <TableHeader>
@@ -233,6 +239,7 @@ export default function AdminDashboardPage() {
                       <TableCell>{user.joinDate}</TableCell>
                       <TableCell>
                         <div className="flex gap-2 justify-end">
+                          {/* CONEXIÓN (POR HACER): Conectar este diálogo a una Server Action 'editUser'. */}
                           <Dialog>
                             <DialogTrigger asChild>
                               <Button variant="outline" size="sm" onClick={() => setSelectedUser(user)}>Editar</Button>
@@ -262,6 +269,7 @@ export default function AdminDashboardPage() {
                                 </DialogFooter>
                               </DialogContent>
                           </Dialog>
+                          {/* CONEXIÓN (POR HACER): Conectar este diálogo a una Server Action 'deleteUser'. */}
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button variant="destructive" size="sm">Eliminar</Button>
@@ -287,7 +295,8 @@ export default function AdminDashboardPage() {
               </Table>
             </TabsContent>
 
-            {/* Orders Tab */}
+            {/* Pestaña de Pedidos */}
+            {/* NOTA: Esta sección actualmente usa datos de muestra. Deberías conectarla a tu API. */}
             <TabsContent value="orders" className="mt-6">
                <Table>
                 <TableHeader>
@@ -360,6 +369,7 @@ export default function AdminDashboardPage() {
                                     </DialogFooter>
                                 </DialogContent>
                             </Dialog>
+                            {/* CONEXIÓN (POR HACER): Conectar este diálogo a una Server Action 'updateOrderStatus'. */}
                             <Dialog>
                                <DialogTrigger asChild>
                                   <Button variant="outline" size="sm" onClick={() => setSelectedOrder(order)}>Editar</Button>
@@ -396,7 +406,8 @@ export default function AdminDashboardPage() {
                                 </DialogFooter>
                                </DialogContent>
                             </Dialog>
-                            <AlertDialog>
+                           {/* CONEXIÓN (POR HACER): Conectar este diálogo a una Server Action 'deleteOrder'. */}
+                           <AlertDialog>
                               <AlertDialogTrigger asChild>
                                  <Button variant="destructive" size="sm">Eliminar</Button>
                               </AlertDialogTrigger>
@@ -424,10 +435,11 @@ export default function AdminDashboardPage() {
         </CardContent>
       </Card>
       
-      {/* Edit Product Dialog */}
+      {/* VISUALIZACIÓN: Diálogo para editar un producto. Se muestra cuando 'selectedProduct' no es nulo. */}
       {selectedProduct && (
         <Dialog open={!!selectedProduct} onOpenChange={(isOpen) => !isOpen && setSelectedProduct(null)}>
             <DialogContent className="sm:max-w-[425px]">
+                {/* CONEXIÓN: Este formulario llama a la Server Action 'editProduct'. */}
                 <form action={editProduct}>
                     <DialogHeader>
                         <DialogTitle className="font-headline">Editar Producto</DialogTitle>
@@ -464,8 +476,7 @@ export default function AdminDashboardPage() {
                           <Input id="imagenUrl-edit" name="imagenUrl" defaultValue={selectedProduct.imagenUrl} className="col-span-3" required />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="descripcion-edit" className="text-right">Descripción</Label>
-                          <Textarea id="descripcion-edit" name="descripcion" defaultValue={selectedProduct.descripcion} className="col-span-3" required />
+                          <Label htmlFor="descripcion-edit" className="text-right">Descripción</Label>                          <Textarea id="descripcion-edit" name="descripcion" defaultValue={selectedProduct.descripcion} className="col-span-3" required />
                         </div>
                     </div>
                     <DialogFooter>
@@ -477,73 +488,6 @@ export default function AdminDashboardPage() {
                         </DialogClose>
                     </DialogFooter>
                 </form>
-            </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Edit User Dialog */}
-       {selectedUser && (
-        <Dialog open={!!selectedUser} onOpenChange={(isOpen) => !isOpen && setSelectedUser(null)}>
-            <DialogContent className="sm:max-w-[425px]">
-                 <DialogHeader>
-                    <DialogTitle className="font-headline">Editar Usuario</DialogTitle>
-                    <DialogDescription>Haz cambios en los detalles del usuario.</DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="user-name-edit" className="text-right">Nombre</Label>
-                        <Input id="user-name-edit" name="name" defaultValue={selectedUser.name} className="col-span-3" required />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="user-email-edit" className="text-right">Email</Label>
-                        <Input id="user-email-edit" name="email" type="email" defaultValue={selectedUser.email} className="col-span-3" required />
-                    </div>
-                </div>
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button type="button" variant="secondary" onClick={() => setSelectedUser(null)}>Cancelar</Button>
-                    </DialogClose>
-                    <DialogClose asChild>
-                        <Button type="submit">Guardar Cambios</Button>
-                    </DialogClose>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Edit Order Dialog */}
-      {selectedOrder && (
-        <Dialog open={!!selectedOrder} onOpenChange={(isOpen) => !isOpen && setSelectedOrder(null)}>
-            <DialogContent className="sm:max-w-[425px]">
-                 <DialogHeader>
-                    <DialogTitle className="font-headline">Editar Pedido</DialogTitle>
-                    <DialogDescription>Actualizar el estado del pedido.</DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <p><strong>ID de Pedido:</strong> {selectedOrder.id}</p>
-                    <p><strong>Cliente:</strong> {selectedOrder.customerName}</p>
-                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="order-status-edit" className="text-right">Estado</Label>
-                         <Select defaultValue={selectedOrder.status}>
-                            <SelectTrigger className="col-span-3">
-                                <SelectValue placeholder="Select status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Pending">Pendiente</SelectItem>
-                                <SelectItem value="Shipped">Enviado</SelectItem>
-                                <SelectItem value="Delivered">Entregado</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button type="button" variant="secondary" onClick={() => setSelectedOrder(null)}>Cancelar</Button>
-                    </DialogClose>
-                    <DialogClose asChild>
-                        <Button type="submit">Guardar Cambios</Button>
-                    </DialogClose>
-                </DialogFooter>
             </DialogContent>
         </Dialog>
       )}

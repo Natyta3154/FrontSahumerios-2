@@ -17,6 +17,7 @@ export default function SignupPage() {
   const { login } = useAuth();
   const { toast } = useToast();
 
+  // MANEJADOR: Se ejecuta cuando el usuario envía el formulario de registro.
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -35,6 +36,7 @@ export default function SignupPage() {
     }
 
     try {
+      // CONEXIÓN: Esta es la llamada 'fetch' al endpoint de tu API para registrar un nuevo usuario.
       const response = await fetch('https://apisahumerios.onrender.com/usuarios/registrar', {
         method: 'POST',
         headers: {
@@ -55,7 +57,7 @@ export default function SignupPage() {
         throw new Error(data.mensaje || 'Ocurrió un error al registrarse.');
       }
 
-      // Si el registro es exitoso, iniciar sesión automáticamente
+      // LÓGICA: Si el registro es exitoso, se "inicia sesión" automáticamente.
       const newUser = {
         id: data.usuario.id,
         nombre: data.usuario.nombre,
@@ -83,6 +85,7 @@ export default function SignupPage() {
 
 
   return (
+    // VISUALIZACIÓN: Renderiza el formulario de registro.
     <div className="relative flex items-center justify-center min-h-[calc(100vh-14rem)] py-12">
       <Image
         src="https://picsum.photos/1920/1080"

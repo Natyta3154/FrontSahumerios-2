@@ -4,9 +4,12 @@ import { revalidatePath } from 'next/cache';
 
 // NOTA PARA EL DESARROLLADOR:
 // Este archivo contiene "Server Actions" de Next.js.
-// Estas funciones se ejecutan en el servidor y están conectadas a tu API de backend.
+// Estas funciones se ejecutan en el servidor y son el lugar ideal y seguro
+// para realizar las llamadas a tu API de backend para crear, editar o eliminar datos.
 
-// Añade un nuevo producto.
+// --- ACCIONES DE PRODUCTOS ---
+
+// Conexión con el endpoint para AÑADIR un nuevo producto.
 export async function addProduct(formData: FormData) {
   // Mapeo del FormData al JSON que espera el backend
   const newProduct = {
@@ -17,9 +20,7 @@ export async function addProduct(formData: FormData) {
     imagenUrl: formData.get('imagenUrl'),
     activo: true, // Asumimos que un nuevo producto siempre está activo
     categoriaNombre: formData.get('categoriaNombre'),
-    // Las fragancias se envían como un string separado por comas, lo convertimos a array
     fragancias: (formData.get('fragancias') as string || '').split(',').map(f => f.trim()).filter(f => f),
-    // Por ahora, los atributos se manejarán de forma simple o se omitirán si no están en el form
     atributos: [
       {
         nombre: "Brand",
@@ -29,6 +30,7 @@ export async function addProduct(formData: FormData) {
   };
 
   try {
+    // Esta es la llamada 'fetch' al endpoint de tu API para agregar productos.
     const response = await fetch('https://apisahumerios.onrender.com/productos/agregar', {
       method: 'POST',
       headers: {
@@ -44,6 +46,7 @@ export async function addProduct(formData: FormData) {
     }
 
     console.log('Producto añadido con éxito.');
+    // 'revalidatePath' le dice a Next.js que refresque los datos en estas páginas.
     revalidatePath('/admin/dashboard');
     revalidatePath('/products');
 
@@ -53,14 +56,13 @@ export async function addProduct(formData: FormData) {
   }
 }
   
-// Edita un producto existente.
+// Conexión con el endpoint para EDITAR un producto existente.
 export async function editProduct(formData: FormData) {
   const productId = formData.get('id');
   if (!productId) {
     return { error: 'No se proporcionó ID de producto.' };
   }
 
-  // Mapeo del FormData al JSON que espera el backend
   const updatedProduct = {
     nombre: formData.get('nombre'),
     descripcion: formData.get('descripcion'),
@@ -79,6 +81,7 @@ export async function editProduct(formData: FormData) {
   };
 
    try {
+    // Esta es la llamada 'fetch' al endpoint de tu API para editar productos.
     const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
       method: 'PUT',
       headers: {
@@ -105,13 +108,14 @@ export async function editProduct(formData: FormData) {
   }
 }
 
-// Elimina un producto.
+// Conexión con el endpoint para ELIMINAR un producto.
 export async function deleteProduct(productId: number) {
   if (!productId) {
     return { error: 'No se proporcionó ID de producto.' };
   }
 
   try {
+    // Esta es la llamada 'fetch' al endpoint de tu API para eliminar productos.
     const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
       method: 'DELETE',
       credentials: 'omit',
@@ -131,3 +135,12 @@ export async function deleteProduct(productId: number) {
     return { error: (error as Error).message };
   }
 }
+
+// --- ACCIONES DE USUARIOS Y PEDIDOS (POR IMPLEMENTAR) ---
+// NOTA PARA EL DESARROLLADOR:
+// Aquí deberías añadir las funciones para editar y eliminar usuarios y pedidos.
+// Sigue el mismo patrón que las funciones de productos.
+
+// export async function editUser(formData: FormData) { ... }
+// export async function deleteUser(userId: string) { ... }
+// export async function updateOrderStatus(orderId: string, status: string) { ... }

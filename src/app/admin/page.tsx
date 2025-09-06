@@ -13,6 +13,7 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   
+  // MANEJADOR: Se ejecuta cuando se envía el formulario de login.
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -20,7 +21,7 @@ export default function AdminLoginPage() {
     const password = formData.get('password') as string;
 
     try {
-      // NOTA: Asumí la URL '/auth/login'. ¡Cámbiala si es necesario!
+      // CONEXIÓN: Esta es la llamada 'fetch' al endpoint de tu API para la autenticación de administradores.
       const response = await fetch('https://apisahumerios.onrender.com/auth/login', {
         method: 'POST',
         headers: {
@@ -36,15 +37,15 @@ export default function AdminLoginPage() {
         throw new Error(data.message || 'Error de autenticación.');
       }
 
-      // Verificamos si el rol del usuario es de administrador
+      // LÓGICA: Verifica si el rol del usuario es de administrador.
       if (data.usuario && data.usuario.rol === 'ROLE_ADMIN') {
         toast({
           title: "Inicio de Sesión Exitoso",
           description: `Bienvenido, ${data.usuario.nombre}.`,
         });
         // En una aplicación real, aquí guardarías el token (ej. en cookies)
-        // y el estado del usuario en un contexto.
-        // Por ahora, solo redirigimos.
+        // y el estado del usuario en un contexto global.
+        // Por ahora, solo redirigimos al panel.
         router.push('/admin/dashboard');
       } else {
         throw new Error('Acceso denegado. Se requiere rol de administrador.');
@@ -60,6 +61,7 @@ export default function AdminLoginPage() {
   }
 
   return (
+    // VISUALIZACIÓN: Renderiza el formulario de login para el administrador.
     <div className="flex items-center justify-center min-h-[calc(100vh-14rem)] py-12">
       <Card className="w-full max-w-sm">
         <form onSubmit={handleLogin}>
