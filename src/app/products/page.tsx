@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { Product } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
@@ -30,18 +30,22 @@ export default function ProductsPage() {
     loadProducts();
   }, []);
 
-  const categories: { name: string, value: Category }[] = [
-    { name: "Todas las Categorías", value: "all" },
-    { name: "Incienso", value: "incense" },
-    { name: "Difusores", value: "diffusers" },
-    { name: "Aceites", value: "oils" },
-    { name: "Aceite", value: "Aceite"}
-  ];
+  const categories = useMemo(() => {
+    const uniqueCategories = [...new Set(products.map(p => p.category))];
+    return [
+      { name: "Todas las Categorías", value: "all" },
+      ...uniqueCategories.map(c => ({ name: c, value: c as Category }))
+    ];
+  }, [products]);
   
-  const brands: { name: string, value: Brand }[] = [
-    { name: "Todas las Marcas", value: "all" },
-    ...Array.from(new Set(products.map(p => p.brand).filter(Boolean) as string[])).map(b => ({ name: b, value: b }))
-  ];
+  const brands = useMemo(() => {
+    const uniqueBrands = [...new Set(products.map(p => p.brand).filter(Boolean) as string[])];
+    return [
+      { name: "Todas las Marcas", value: "all" },
+      ...uniqueBrands.map(b => ({ name: b, value: b as Brand }))
+    ];
+  }, [products]);
+
 
   const filteredProducts = products.filter(product => {
       const categoryMatch = categoryFilter === 'all' || product.category === categoryFilter;

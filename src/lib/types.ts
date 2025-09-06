@@ -6,7 +6,7 @@ export type Product = {
   stock: number;
   imagenUrl: string;
   activo: boolean;
-  categoriaNombre: 'incense' | 'diffusers' | 'oils' | 'Aceite' | string; // Permitir más categorías
+  categoriaNombre: 'incense' | 'diffusers' | 'oils' | 'Aceite' | 'Sahumerios' | string; // Permitir más categorías
   mensaje?: string | null;
   fragancias?: string[];
   porcentajeDescuento?: number | null;
@@ -25,7 +25,7 @@ export type Product = {
   description: string;
   price: number;
   image: string;
-  category: 'incense' | 'diffusers' | 'oils' | 'Aceite' | string;
+  category: 'incense' | 'diffusers' | 'oils' | 'Aceite' | 'Sahumerios' | string;
   rating: number; // Simulado o mapeado si no viene del backend
   reviews: number; // Simulado o mapeado
   aromas?: string[];
