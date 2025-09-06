@@ -29,7 +29,7 @@ export async function addProduct(formData: FormData) {
   };
 
   try {
-    const response = await fetch('http://localhost:8080/productos/agregar', {
+    const response = await fetch('https://apisahumerios.onrender.com/productos/agregar', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export async function editProduct(formData: FormData) {
   };
 
    try {
-    const response = await fetch(`http://localhost:8080/productos/editar/${productId}`, {
+    const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ export async function deleteProduct(productId: number) {
   }
 
   try {
-    const response = await fetch(`http://localhost:8080/productos/eliminar/${productId}`, {
+    const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
       method: 'DELETE',
     });
 

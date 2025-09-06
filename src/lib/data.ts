@@ -46,7 +46,7 @@ function mapApiToProduct(apiProduct: any): Product {
 // Función para obtener todos los productos desde tu API.
 export async function getProducts(): Promise<Product[]> {
   try {
-    const response = await fetch('http://localhost:8080/productos/listado', { cache: 'no-cache' });
+    const response = await fetch('https://apisahumerios.onrender.com/productos/listado', { cache: 'no-cache' });
     
     if (!response.ok) {
       throw new Error(`Error al obtener los productos: ${response.statusText}`);
@@ -64,7 +64,7 @@ export async function getProducts(): Promise<Product[]> {
 // Función para obtener un producto específico por su ID.
 export async function getProductById(id: string): Promise<Product | undefined> {
    try {
-    const response = await fetch(`http://localhost:8080/productos/${id}`, { cache: 'no-cache' });
+    const response = await fetch(`https://apisahumerios.onrender.com/productos/${id}`, { cache: 'no-cache' });
 
     if (!response.ok) {
       if (response.status === 404) {

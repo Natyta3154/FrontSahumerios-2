@@ -35,7 +35,7 @@ export default function SignupPage() {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/usuarios/registrar', {
+      const response = await fetch('https://apisahumerios.onrender.com/usuarios/registrar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
