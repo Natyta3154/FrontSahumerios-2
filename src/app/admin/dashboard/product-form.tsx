@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import type { Product } from "@/lib/types"
-import React, { useTransition, useState, useEffect } from "react"
+import React, { useTransition, useState } from "react"
 import { addProduct, editProduct } from "./actions"
 
 export function AdminProductForm({
@@ -30,17 +30,16 @@ export function AdminProductForm({
   const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
   const [isDialogOpen, setDialogOpen] = useState(false)
-  const [currentProducts, setCurrentProducts] = useState(products)
-
-  useEffect(() => {
-    setCurrentProducts(products)
-  }, [products])
 
   const formAction = async (formData: FormData) => {
+    // Cerramos el diálogo inmediatamente para una mejor UX
+    setDialogOpen(false) 
+
     startTransition(async () => {
       const result = product
         ? await editProduct(formData)
         : await addProduct(formData)
+      
       if (result?.error) {
         toast({
           title: `Error al ${product ? "editar" : "añadir"}`,
@@ -54,10 +53,6 @@ export function AdminProductForm({
             product ? "editado" : "añadido"
           } correctamente.`,
         })
-        setDialogOpen(false)
-        // This is a simple way to refresh the product list.
-        // A more advanced solution might use revalidatePath
-        // setCurrentProducts(await getProducts())
       }
     })
   }
@@ -103,7 +98,7 @@ export function AdminProductForm({
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="precio" className="text-right">
-                Precio
+                Precio Base
               </Label>
               <Input
                 id="precio"
