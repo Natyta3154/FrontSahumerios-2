@@ -1,4 +1,5 @@
 
+
 export type Product = {
   id: number;
   nombre: string;
@@ -18,6 +19,8 @@ export type Product = {
     nombre: string;
     valor: string;
   }[];
+  precioMayorista?: number;
+  totalIngresado?: number;
 
   // Datos mapeados para compatibilidad con el frontend
   name: string;
@@ -49,10 +52,10 @@ export type CartItem = Product & {
 };
 
 export type User = {
-  id: string;
-  name: string;
+  id: number;
+  nombre: string;
   email: string;
-  joinDate: string;
+  rol: 'ADMIN' | 'USER';
 };
 
 export type OrderItem = {

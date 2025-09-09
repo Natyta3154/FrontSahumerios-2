@@ -1,4 +1,5 @@
 
+
 // NOTA PARA EL DESARROLLADOR:
 // Este archivo es el punto central para obtener datos desde tu API.
 // Contiene funciones que hacen 'fetch' a los endpoints de tu backend.
@@ -27,6 +28,8 @@ function mapApiToProduct(apiProduct: any): Product {
     fechaFinDescuento: apiProduct.fechaFinDescuento,
     precioFinal: apiProduct.precioFinal,
     atributos: apiProduct.atributos,
+    precioMayorista: apiProduct.precioMayorista,
+    totalIngresado: apiProduct.totalIngresado,
 
     // Datos mapeados para compatibilidad con el frontend
     name: apiProduct.nombre,
@@ -93,12 +96,7 @@ export async function getProductById(id: string): Promise<Product | undefined> {
 
 // CONEXIÓN (POR HACER): Crear una función `getUsers()` para obtener usuarios de tu API.
 // export async function getUsers(): Promise<User[]> { ... }
-export const users: User[] = [
-  { id: 'usr_1', name: 'Sarah L.', email: 'sarah.l@example.com', joinDate: '2023-01-15' },
-  { id: 'usr_2', name: 'Michael B.', email: 'michael.b@example.com', joinDate: '2023-02-20' },
-  { id: 'usr_3', name: 'Jessica P.', email: 'jessica.p@example.com', joinDate: '2023-03-10' },
-  { id: 'usr_4', name: 'David C.', email: 'david.c@example.com', joinDate: '2023-04-05' },
-];
+export const users: User[] = [];
 
 // CONEXIÓN (POR HACER): Crear una función `getOrders()` para obtener pedidos de tu API.
 // export async function getOrders(): Promise<Order[]> { ... }
