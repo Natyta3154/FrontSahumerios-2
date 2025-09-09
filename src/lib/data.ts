@@ -33,7 +33,7 @@ function mapApiToProduct(apiProduct: any): Product {
     name: apiProduct.nombre,
     description: apiProduct.descripcion,
     price: Number(apiProduct.precioFinal), // El precio para el cliente es el precio final con descuento
-    image: apiProduct.imagenurl || 'https://placehold.co/600x600/EEE/31343C?text=?',
+    image: apiProduct.imagenurl || `https://picsum.photos/600/600?random=${apiProduct.id}`,
     category: apiProduct.categoriaNombre,
     rating: 4.5, // Simulado
     reviews: 10, // Simulado
