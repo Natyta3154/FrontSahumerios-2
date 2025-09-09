@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect, useMemo } from "react";
 import type { Product } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
-import { Separator } from "@/components/ui/separator";
 
 type Category = Product['category'] | 'all';
 type Brand = string | 'all';
