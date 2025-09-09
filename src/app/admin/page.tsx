@@ -22,7 +22,7 @@ export default function AdminLoginPage() {
 
     try {
       // CONEXIÓN: Esta es la llamada 'fetch' al endpoint de tu API para la autenticación de administradores.
-      const response = await fetch('https://apisahumerios.onrender.com/auth/login', {
+      const response = await fetch('https://apisahumerios.onrender.com/usuarios/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
