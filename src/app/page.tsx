@@ -88,6 +88,7 @@ export default function Home() {
                   alt="Varita de incienso brillante"
                   data-ai-hint="incense stick"
                   fill
+                  sizes="100vw"
                   className="object-cover"
                 />
                 {/* Capa semitransparente para oscurecer la imagen y hacer el texto legible. */}
@@ -101,6 +102,7 @@ export default function Home() {
                   alt="Difusor de aceite aromático"
                   data-ai-hint="oil diffuser"
                   fill
+                  sizes="100vw"
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-black/50" />
@@ -113,6 +115,7 @@ export default function Home() {
                   alt="Botellas de aceite esencial"
                   data-ai-hint="essential oils"
                   fill
+                  sizes="100vw"
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-black/50" />
@@ -174,6 +177,7 @@ export default function Home() {
                       alt={product.name}
                       data-ai-hint="aromatherapy product"
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                     <Badge variant="destructive" className="absolute top-3 right-3">OFERTA</Badge>
@@ -221,6 +225,7 @@ export default function Home() {
                       src={product.image}
                       alt={product.name}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </Link>
@@ -329,3 +334,5 @@ export default function Home() {
     </div>
   );
 }
+
+    

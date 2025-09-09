@@ -20,6 +20,7 @@ export default function AboutPage() {
               alt="Una persona elaborando productos de aromaterapia"
               data-ai-hint="artisan hands"
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover"
             />
           </div>
@@ -50,6 +51,7 @@ export default function AboutPage() {
               alt="Un paisaje sereno"
               data-ai-hint="serene landscape"
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover"
             />
           </div>
@@ -58,3 +60,5 @@ export default function AboutPage() {
     </div>
   );
 }
+
+    
