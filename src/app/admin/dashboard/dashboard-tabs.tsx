@@ -42,6 +42,9 @@ import type { Product, User, Order } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { deleteProduct } from './actions';
 import { AdminProductForm } from './product-form';
+import { useToast } from '@/hooks/use-toast';
+import { useTransition } from 'react';
+
 
 interface DashboardTabsProps {
     products: Product[];
@@ -52,6 +55,26 @@ interface DashboardTabsProps {
 // Este es un Componente de Cliente, por eso tiene la directiva "use client".
 // Maneja toda la interactividad (pestañas, diálogos, etc.).
 export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+
+  const handleDelete = (productId: number) => {
+    startTransition(async () => {
+      const result = await deleteProduct(productId);
+      if (result?.error) {
+        toast({
+          title: "Error al eliminar",
+          description: result.error,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Éxito",
+          description: "Producto eliminado correctamente.",
+        });
+      }
+    });
+  };
 
   return (
       <Tabs defaultValue="products">
@@ -64,7 +87,8 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
         {/* Pestaña de Productos */}
         <TabsContent value="products" className="mt-6">
           <div className="flex justify-end mb-4">
-             <AdminProductForm products={products} />
+             {/* El componente del formulario se encarga de sí mismo, tanto para añadir como para editar */}
+             <AdminProductForm />
           </div>
           {/* VISUALIZACIÓN: Tabla que muestra los productos obtenidos de la API. */}
           <Table>
@@ -121,10 +145,11 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
                   <TableCell className="hidden md:table-cell">{product.porcentajeDescuento ?? '—'}</TableCell>
                   <TableCell>
                     <div className="flex gap-2 justify-end">
-                       <AdminProductForm product={product} products={products} />
+                       {/* Pasamos el producto específico para que el formulario sepa que es una edición */}
+                       <AdminProductForm product={product} />
                        <AlertDialog>
                           <AlertDialogTrigger asChild>
-                             <Button variant="destructive" size="sm">Eliminar</Button>
+                             <Button variant="destructive" size="sm" disabled={isPending}>Eliminar</Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                              <AlertDialogHeader>
@@ -137,11 +162,10 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
                                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
                                 {/* CONEXIÓN: Llama a la función que ejecuta la Server Action de eliminar. */}
                                 <AlertDialogAction
-                                  onClick={async () => {
-                                    await deleteProduct(product.id)
-                                  }}
+                                  onClick={() => handleDelete(product.id)}
+                                  disabled={isPending}
                                 >
-                                  Eliminar
+                                  {isPending ? "Eliminando..." : "Eliminar"}
                                 </AlertDialogAction>
                              </AlertDialogFooter>
                           </AlertDialogContent>

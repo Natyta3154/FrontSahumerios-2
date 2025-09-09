@@ -24,23 +24,29 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 
 export function AdminProductForm({
   product,
-  products,
 }: {
   product?: Product
-  products: Product[]
 }) {
+  // isPending se usa para deshabilitar el botón de guardar mientras se procesa la acción.
   const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
+  // Controlamos el estado de apertura del diálogo para poder cerrarlo desde el código.
   const [isDialogOpen, setDialogOpen] = useState(false)
 
+  // Esta es la función que se ejecuta cuando se envía el formulario.
   const formAction = async (formData: FormData) => {
+    // Cerramos el diálogo inmediatamente para una mejor experiencia de usuario.
     setDialogOpen(false) 
 
+    // startTransition envuelve la llamada a la Server Action.
+    // React usará esto para gestionar el estado de pendiente.
     startTransition(async () => {
+      // Dependiendo si estamos editando o creando, llamamos a la Server Action correspondiente.
       const result = product
         ? await editProduct(formData)
         : await addProduct(formData)
       
+      // La Server Action devuelve un objeto con una clave 'error' si algo falló.
       if (result?.error) {
         toast({
           title: `Error al ${product ? "editar" : "añadir"}`,
@@ -58,6 +64,7 @@ export function AdminProductForm({
     })
   }
 
+  // El texto y estilo del botón que abre el diálogo cambia si es para editar o añadir.
   const triggerButton = product ? (
     <Button variant="outline" size="sm">
       Editar
@@ -66,12 +73,14 @@ export function AdminProductForm({
     <Button>Añadir Producto</Button>
   )
   
+  // Preparamos el string de atributos para mostrarlo en el textarea.
   const atributosString = product?.atributos?.map(a => `${a.nombre}: ${a.valor}`).join(", ") || "";
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>{triggerButton}</DialogTrigger>
       <DialogContent className="sm:max-w-xl">
+        {/* El formulario llama a `formAction` cuando se envía. */}
         <form action={formAction}>
           <DialogHeader>
             <DialogTitle className="font-headline">
@@ -83,6 +92,7 @@ export function AdminProductForm({
                 : "Completa los detalles del nuevo producto."}
             </DialogDescription>
           </DialogHeader>
+          {/* ScrollArea permite que el formulario sea largo sin romper el diseño del diálogo. */}
           <ScrollArea className="h-[60vh] pr-6">
             <div className="grid gap-4 py-4">
               {product && (
@@ -118,7 +128,7 @@ export function AdminProductForm({
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="atributos" className="text-right">Atributos</Label>
-                <Textarea id="atributos" name="atributos" defaultValue={atributosString} placeholder="Ej: Brand: Zen, Peso: 30g" className="col-span-3" />
+                <Textarea id="atributos" name="atributos" defaultValue={atributosString} placeholder="Ej: Marca: Zen, Peso: 30g" className="col-span-3" />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="imagenurl" className="text-right">URL de Imagen</Label>
@@ -138,7 +148,7 @@ export function AdminProductForm({
               </div>
                <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="activo" className="text-right">Activo</Label>
-                <Switch id="activo" name="activo" defaultChecked={product?.activo ?? true} className="col-span-3" />
+                <Switch id="activo" name="activo" defaultChecked={product?.activo ?? true} />
               </div>
             </div>
           </ScrollArea>
@@ -148,6 +158,7 @@ export function AdminProductForm({
                 Cancelar
               </Button>
             </DialogClose>
+            {/* El botón se deshabilita si la acción está pendiente. */}
             <Button type="submit" disabled={isPending}>
               {isPending ? "Guardando..." : "Guardar Cambios"}
             </Button>

@@ -43,6 +43,8 @@ function buildProductPayload(formData: FormData) {
   // Limpia valores nulos para fechas
   if (!payload.fechaInicioDescuento) delete payload.fechaInicioDescuento;
   if (!payload.fechaFinDescuento) delete payload.fechaFinDescuento;
+  if (payload.porcentajeDescuento === null || payload.porcentajeDescuento === 0) delete payload.porcentajeDescuento;
+
 
   return payload;
 }
@@ -65,7 +67,13 @@ export async function addProduct(formData: FormData) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Error al añadir el producto: ${errorText}`);
+      // Intenta parsear como JSON, si falla, usa el texto plano.
+      try {
+          const errorJson = JSON.parse(errorText);
+          throw new Error(errorJson.message || errorJson.error || `Error al añadir el producto: ${errorText}`);
+      } catch (e) {
+          throw new Error(`Error al añadir el producto: ${errorText}`);
+      }
     }
 
     console.log('Producto añadido con éxito.');
@@ -99,7 +107,12 @@ export async function editProduct(formData: FormData) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Error al editar el producto: ${errorText}`);
+      try {
+          const errorJson = JSON.parse(errorText);
+          throw new Error(errorJson.message || errorJson.error || `Error al editar el producto: ${errorText}`);
+      } catch (e) {
+          throw new Error(`Error al editar el producto: ${errorText}`);
+      }
     }
 
     console.log('Producto editado con éxito.');
@@ -128,7 +141,12 @@ export async function deleteProduct(productId: number) {
 
      if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Error al eliminar el producto: ${errorText}`);
+      try {
+          const errorJson = JSON.parse(errorText);
+          throw new Error(errorJson.message || errorJson.error || `Error al eliminar el producto: ${errorText}`);
+      } catch (e) {
+          throw new Error(`Error al eliminar el producto: ${errorText}`);
+      }
     }
     
     console.log('Producto eliminado con éxito.');
