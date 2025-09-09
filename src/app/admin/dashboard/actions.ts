@@ -39,6 +39,7 @@ function buildProductPayload(formData: FormData) {
     porcentajeDescuento: Number(formData.get('porcentajeDescuento')) || null,
     fechaInicioDescuento: formData.get('fechaInicioDescuento') || null,
     fechaFinDescuento: formData.get('fechaFinDescuento') || null,
+    totalIngresado: Number(formData.get('totalIngresado')) || null,
   };
   
   // Limpia valores nulos o vacíos para que no se envíen al backend si no son necesarios.
@@ -46,6 +47,7 @@ function buildProductPayload(formData: FormData) {
   if (!payload.porcentajeDescuento) delete payload.porcentajeDescuento;
   if (!payload.fechaInicioDescuento) delete payload.fechaInicioDescuento;
   if (!payload.fechaFinDescuento) delete payload.fechaFinDescuento;
+  if (!payload.totalIngresado) delete payload.totalIngresado;
   
   // Para el caso de edición, el ID no debe estar en el cuerpo del payload, sino en la URL.
   // Pero lo necesitamos para la lógica de la acción, así que no lo eliminamos aquí.
