@@ -64,10 +64,12 @@ export async function getProducts(): Promise<Product[]> {
     const mappedProducts = Array.isArray(apiProducts) ? apiProducts.map(mapApiToProduct) : [];
 
     // --- SIMULACIÓN DE OFERTA ---
-    // Forzamos al primer producto a estar en oferta para demostración visual.
+    // Forzamos a los primeros 8 productos a estar en oferta para demostración visual.
     if (mappedProducts.length > 0) {
-        mappedProducts[0].onSale = true;
-        mappedProducts[0].originalPrice = mappedProducts[0].price * 1.25; // Simulamos un 25% de descuento
+      for(let i = 0; i < Math.min(mappedProducts.length, 8); i++) {
+        mappedProducts[i].onSale = true;
+        mappedProducts[i].originalPrice = mappedProducts[i].price * 1.25; // Simulamos un 25% de descuento
+      }
     }
     // --- FIN DE SIMULACIÓN ---
     

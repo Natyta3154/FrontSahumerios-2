@@ -23,8 +23,8 @@ export default function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       const allProducts = await getProducts();
-      // Filtramos para obtener solo los productos en oferta y tomamos los primeros 4
-      setSaleProducts(allProducts.filter(p => p.onSale).slice(0, 4));
+      // Filtramos para obtener solo los productos en oferta y tomamos los primeros 8
+      setSaleProducts(allProducts.filter(p => p.onSale).slice(0, 8));
       // Tomamos los primeros 3 productos generales como destacados
       setFeaturedProducts(allProducts.slice(0, 3));
     }
@@ -156,56 +156,65 @@ export default function Home() {
       </section>
 
       {/* --- SECCIÓN DE PRODUCTOS EN OFERTA --- */}
-      {/* Muestra una selección de productos en oferta. */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-headline text-3xl md:text-4xl">Nuestras Ofertas</h2>
             <p className="mt-2 text-lg text-muted-foreground">Aprovecha estos descuentos por tiempo limitado.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* 
-              Se itera sobre el array `saleProducts` para renderizar cada tarjeta de producto.
-              Estos productos han sido filtrados para incluir solo aquellos con `onSale: true`.
-            */}
-            {saleProducts.map((product) => (
-              <Card key={product.id} className="overflow-hidden group flex flex-col">
-                <CardHeader className="p-0">
-                  <Link href={`/products/${product.id}`} className="block overflow-hidden aspect-square relative">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      data-ai-hint="aromatherapy product"
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <Badge variant="destructive" className="absolute top-3 right-3">OFERTA</Badge>
-                  </Link>
-                </CardHeader>
-                <CardContent className="p-4 flex-grow">
-                   <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
-                    <CardTitle className="font-headline text-xl mb-2 h-14 line-clamp-2">{product.name}</CardTitle>
-                   </Link>
-                   <div className="flex items-baseline gap-2">
-                        <p className="font-bold text-lg text-destructive">
-                        ${product.price.toFixed(2)}
-                        </p>
-                        {product.originalPrice && (
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent>
+              {saleProducts.map((product) => (
+                <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/4">
+                  <div className="p-1 h-full">
+                    <Card className="overflow-hidden group flex flex-col h-full">
+                      <CardHeader className="p-0">
+                        <Link href={`/products/${product.id}`} className="block overflow-hidden aspect-square relative">
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            data-ai-hint="aromatherapy product"
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                          <Badge variant="destructive" className="absolute top-3 right-3">OFERTA</Badge>
+                        </Link>
+                      </CardHeader>
+                      <CardContent className="p-4 flex-grow">
+                        <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
+                          <CardTitle className="font-headline text-xl mb-2 h-14 line-clamp-2">{product.name}</CardTitle>
+                        </Link>
+                        <div className="flex items-baseline gap-2">
+                          <p className="font-bold text-lg text-destructive">
+                            ${product.price.toFixed(2)}
+                          </p>
+                          {product.originalPrice && (
                             <p className="text-sm text-muted-foreground line-through">
-                                ${product.originalPrice.toFixed(2)}
+                              ${product.originalPrice.toFixed(2)}
                             </p>
-                        )}
-                    </div>
-                </CardContent>
-                <CardFooter className="p-4 pt-0">
-                  <Button asChild className="w-full">
-                    <Link href={`/products/${product.id}`}>Ver Producto</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="p-4 pt-0">
+                        <Button asChild className="w-full">
+                          <Link href={`/products/${product.id}`}>Ver Producto</Link>
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden sm:flex" />
+            <CarouselNext className="hidden sm:flex" />
+          </Carousel>
         </div>
       </section>
 
