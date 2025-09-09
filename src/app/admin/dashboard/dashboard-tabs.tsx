@@ -402,5 +402,3 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
       </Tabs>
   )
 }
-
-    
