@@ -10,17 +10,17 @@ import { ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Autoplay from "embla-carousel-autoplay"; // Importamos el plugin de autoplay para el carrusel.
-import React from "react";
-import { Product } from "@/lib/types";
+import React, { useEffect, useState } from "react";
+import type { Product } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
 
-  const [saleProducts, setSaleProducts] = React.useState<Product[]>([]);
-  const [featuredProducts, setFeaturedProducts] = React.useState<Product[]>([]);
+  const [saleProducts, setSaleProducts] = useState<Product[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
 
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchProducts = async () => {
       const allProducts = await getProducts();
       // Filtramos para obtener solo los productos en oferta y tomamos los primeros 4
@@ -329,3 +329,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
