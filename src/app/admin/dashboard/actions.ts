@@ -25,36 +25,34 @@ function buildProductPayload(formData: FormData) {
       return { nombre: nombre.trim(), valor: valorParts.join(':').trim() };
     });
 
+  const getNumberOrNull = (field: string) => {
+    const value = formData.get(field) as string;
+    return value ? Number(value) : null;
+  };
+
+  const getStringOrNull = (field: string) => {
+    const value = formData.get(field) as string;
+    return value || null;
+  };
+  
+
   const payload: any = {
     nombre: formData.get('nombre'),
     descripcion: formData.get('descripcion'),
-    precio: Number(formData.get('precio')),
-    stock: Number(formData.get('stock')),
+    precio: getNumberOrNull('precio'),
+    stock: getNumberOrNull('stock'),
     imagenurl: formData.get('imagenurl'),
     activo: formData.get('activo') === 'on', // Un switch de HTML envía "on" si está activo, o nada si no.
     categoriaNombre: formData.get('categoriaNombre'),
     fragancias: fragancias,
     atributos: atributos,
-    // Usamos parseInt para asegurar que el valor sea un entero. Opcional.
-    totalIngresado: formData.get('totalIngresado') ? parseInt(formData.get('totalIngresado') as string, 10) : null,
-    // Campos opcionales que pueden ser nulos
-    precioMayorista: formData.get('precioMayorista') ? Number(formData.get('precioMayorista')) : null,
-    porcentajeDescuento: formData.get('porcentajeDescuento') ? Number(formData.get('porcentajeDescuento')) : null,
-    fechaInicioDescuento: formData.get('fechaInicioDescuento') || null,
-    fechaFinDescuento: formData.get('fechaFinDescuento') || null,
+    totalIngresado: getNumberOrNull('totalIngresado'),
+    precioMayorista: getNumberOrNull('precioMayorista'),
+    porcentajeDescuento: getNumberOrNull('porcentajeDescuento'),
+    fechaInicioDescuento: getStringOrNull('fechaInicioDescuento'),
+    fechaFinDescuento: getStringOrNull('fechaFinDescuento'),
   };
   
-  // Limpia valores nulos o vacíos para que no se envíen al backend si no son necesarios.
-  // Esto es crucial si tu API no espera campos nulos para todo.
-   for (const key in payload) {
-    if (payload[key] === null || payload[key] === '' || (Array.isArray(payload[key]) && payload[key].length === 0) || Number.isNaN(payload[key])) {
-      delete payload[key];
-    }
-  }
-  
-  // Para el caso de edición, el ID no debe estar en el cuerpo del payload, sino en la URL.
-  // Pero lo necesitamos para la lógica de la acción, así que no lo eliminamos aquí.
-
   return payload;
 }
 
