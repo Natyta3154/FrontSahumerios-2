@@ -6,34 +6,43 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/auth-context";
+import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // En una aplicación real, aquí validarías las credenciales con tu backend.
-    // Por ahora, simulamos un inicio de sesión exitoso.
-    const user = {
-      id: 1, // Simulado
-      nombre: 'Usuario Logueado',
-      email: 'usuario@example.com',
-      rol: 'user'
-    };
-    login(user);
-    
-    // Redirigir al usuario.
-    const next = searchParams.get('next');
-    if (next) {
-      router.push(next);
-    } else {
-      router.push('/');
+    setIsLoading(true);
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      await login(email, password, false);
+      
+      const next = searchParams.get('next');
+      if (next) {
+        router.push(next);
+      } else {
+        router.push('/');
+      }
+    } catch(error) {
+      toast({
+        title: "Error de Inicio de Sesión",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -48,7 +57,7 @@ export default function LoginPage() {
             <CardContent className="grid gap-4">
             <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="tu@email.com" required />
+                <Input id="email" name="email" type="email" placeholder="tu@email.com" required disabled={isLoading} />
             </div>
             <div className="grid gap-2">
                 <div className="flex items-center">
@@ -57,10 +66,10 @@ export default function LoginPage() {
                     ¿Olvidaste tu contraseña?
                 </Link>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" name="password" type="password" required disabled={isLoading} />
             </div>
-            <Button type="submit" className="w-full">
-                Login
+            <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? 'Iniciando Sesión...' : 'Login'}
             </Button>
             </CardContent>
             <CardFooter className="text-center text-sm">

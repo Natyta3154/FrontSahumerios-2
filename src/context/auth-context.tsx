@@ -1,14 +1,6 @@
 
 "use client";
 
-// NOTA PARA EL DESARROLLADOR:
-// Este archivo simula un contexto de autenticación.
-// En una aplicación real, aquí es donde integrarías tu solución de autenticación
-// preferida (como Firebase Auth, NextAuth.js, etc.).
-//
-// El estado `user` y las funciones `login`/`logout` deberían interactuar
-// con tu backend para gestionar sesiones de usuario reales.
-
 import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
@@ -17,13 +9,15 @@ interface User {
   id: number;
   nombre: string;
   email: string;
-  rol: 'user' | 'admin' | string;
+  rol: 'user' | 'ROLE_ADMIN' | string;
 }
 
 // Define el tipo para el contexto de autenticación
 interface AuthContextType {
   user: User | null;
-  login: (user: User) => void;
+  loading: boolean;
+  error: string | null;
+  login: (email: string, password: string, isAdminLogin: boolean) => Promise<void>;
   logout: () => void;
 }
 
@@ -33,14 +27,46 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // Define el proveedor del contexto de autenticación
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Función para "iniciar sesión" (simulada)
-  const login = useCallback((userData: User) => {
-    setUser(userData);
+  // Función para "iniciar sesión"
+  const login = useCallback(async (email: string, password: string, isAdminLogin: boolean) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('https://apisahumerios.onrender.com/usuarios/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'omit',
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.mensaje || 'Error de autenticación.');
+      }
+
+      if (isAdminLogin && data.usuario.rol !== 'ROLE_ADMIN') {
+        throw new Error('Acceso denegado. Se requiere rol de administrador.');
+      }
+      
+      setUser(data.usuario as User);
+
+    } catch (err: any) {
+      setError(err.message);
+      // Re-lanza el error para que el componente que llama pueda manejarlo
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  // Función para "cerrar sesión" (simulada)
+  // Función para "cerrar sesión"
   const logout = useCallback(() => {
     setUser(null);
     router.push('/'); // Redirige al inicio después de cerrar sesión
@@ -49,9 +75,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Memoriza el valor del contexto para evitar re-renderizados innecesarios
   const value = useMemo(() => ({
     user,
+    loading,
+    error,
     login,
     logout
-  }), [user, login, logout]);
+  }), [user, loading, error, login, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

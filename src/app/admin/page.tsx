@@ -7,56 +7,39 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import { useAuth } from "@/context/auth-context";
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   
   // MANEJADOR: Se ejecuta cuando se envía el formulario de login.
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setIsLoading(true);
+
     const formData = new FormData(event.currentTarget);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
     try {
-      // CONEXIÓN: Esta es la llamada 'fetch' al endpoint de tu API para la autenticación de administradores.
-      const response = await fetch('https://apisahumerios.onrender.com/usuarios/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'omit',
-        body: JSON.stringify({ email, password }),
+      await login(email, password, true); // Llama a la función login del contexto
+      toast({
+        title: "Inicio de Sesión Exitoso",
+        description: `Bienvenido. Redirigiendo al panel...`,
       });
-      
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Error de autenticación.');
-      }
-
-      // LÓGICA: Verifica si el rol del usuario es de administrador.
-      if (data.usuario && data.usuario.rol === 'ROLE_ADMIN') {
-        toast({
-          title: "Inicio de Sesión Exitoso",
-          description: `Bienvenido, ${data.usuario.nombre}.`,
-        });
-        // En una aplicación real, aquí guardarías el token (ej. en cookies)
-        // y el estado del usuario en un contexto global.
-        // Por ahora, solo redirigimos al panel.
-        router.push('/admin/dashboard');
-      } else {
-        throw new Error('Acceso denegado. Se requiere rol de administrador.');
-      }
-
+      router.push('/admin/dashboard');
     } catch (error) {
        toast({
         title: "Error de Inicio de Sesión",
         description: (error as Error).message,
         variant: "destructive",
       });
+    } finally {
+        setIsLoading(false);
     }
   }
 
@@ -72,14 +55,14 @@ export default function AdminLoginPage() {
             <CardContent className="grid gap-4">
             <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" type="email" placeholder="admin@ejemplo.com" required />
+                <Input id="email" name="email" type="email" placeholder="admin@ejemplo.com" required disabled={isLoading} />
             </div>
             <div className="grid gap-2">
                 <Label htmlFor="password">Contraseña</Label>
-                <Input id="password" name="password" type="password" required />
+                <Input id="password" name="password" type="password" required disabled={isLoading} />
             </div>
-            <Button type="submit" className="w-full">
-                Acceder
+            <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? 'Accediendo...' : 'Acceder'}
             </Button>
             </CardContent>
         </form>
