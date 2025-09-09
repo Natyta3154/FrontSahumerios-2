@@ -8,7 +8,7 @@ import { Flower2, Menu, ShoppingCart, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/context/cart-context";
 import { CartSheet } from "../cart-sheet";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { useAuth } from "@/context/auth-context";
 import {
   DropdownMenu,
@@ -111,6 +111,9 @@ export function AppHeader() {
                    </Button>
                  </SheetTrigger>
                  <SheetContent side="left">
+                    <SheetHeader className="sr-only">
+                        <SheetTitle>Menú Principal</SheetTitle>
+                    </SheetHeader>
                     <div className="flex flex-col p-6">
                       <Link href="/" className="mb-6 flex items-center space-x-2">
                         <Flower2 className="h-7 w-7 text-primary" />
