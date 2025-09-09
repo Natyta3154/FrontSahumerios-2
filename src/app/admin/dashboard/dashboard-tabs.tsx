@@ -120,7 +120,7 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
                       alt={product.name}
                       className="aspect-square rounded-md object-cover"
                       height="64"
-                      src={product.image}
+                      src={product.image || 'https://placehold.co/64x64/EEE/31343C?text=?'}
                       width="64"
                     />
                   </TableCell>
@@ -402,5 +402,3 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
       </Tabs>
   )
 }
-
-    

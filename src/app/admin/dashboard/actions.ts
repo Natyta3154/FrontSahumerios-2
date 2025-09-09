@@ -46,6 +46,9 @@ function buildProductPayload(formData: FormData) {
   if (!payload.porcentajeDescuento) delete payload.porcentajeDescuento;
   if (!payload.fechaInicioDescuento) delete payload.fechaInicioDescuento;
   if (!payload.fechaFinDescuento) delete payload.fechaFinDescuento;
+  
+  // Para el caso de edición, el ID no debe estar en el cuerpo del payload, sino en la URL.
+  // Pero lo necesitamos para la lógica de la acción, así que no lo eliminamos aquí.
 
   return payload;
 }
@@ -64,7 +67,6 @@ export async function addProduct(formData: FormData, token: string | null) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // Se añade el token a la cabecera
       },
-      credentials: 'omit',
       body: JSON.stringify(newProduct),
     });
 
@@ -100,7 +102,6 @@ export async function editProduct(formData: FormData, token: string | null) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // Se añade el token a la cabecera
       },
-      credentials: 'omit',
       body: JSON.stringify(updatedProduct),
     });
 
@@ -133,7 +134,6 @@ export async function deleteProduct(productId: number, token: string | null) {
       headers: {
         'Authorization': `Bearer ${token}` // Se añade el token a la cabecera
       },
-      credentials: 'omit',
     });
 
     if (!response.ok) {

@@ -1,5 +1,4 @@
 
-
 // NOTA PARA EL DESARROLLADOR:
 // Este archivo es el punto central para obtener datos desde tu API.
 // Contiene funciones que hacen 'fetch' a los endpoints de tu backend.

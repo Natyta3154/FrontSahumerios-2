@@ -65,7 +65,8 @@ export function AdminProductForm({
     <Button>Añadir Producto</Button>
   )
   
-  const atributosString = product?.atributos?.map(a => `${a.nombre}: ${a.valor}`).join(",\n") || "";
+  const atributosString = product?.atributos?.map(a => `${a.nombre}:${a.valor}`).join(", ") || "";
+  const fraganciasString = product?.fragancias?.join(", ") || "";
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
@@ -116,7 +117,7 @@ export function AdminProductForm({
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="fragancias" className="text-right">Fragancias</Label>
-                <Input id="fragancias" name="fragancias" defaultValue={product?.fragancias?.join(", ")} placeholder="Ej: Sándalo, Lavanda" className="col-span-3" />
+                <Input id="fragancias" name="fragancias" defaultValue={fraganciasString} placeholder="Ej: Sándalo, Lavanda" className="col-span-3" />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="atributos" className="text-right">Atributos</Label>
