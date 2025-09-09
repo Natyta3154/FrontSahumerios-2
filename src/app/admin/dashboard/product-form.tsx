@@ -27,26 +27,17 @@ export function AdminProductForm({
 }: {
   product?: Product
 }) {
-  // isPending se usa para deshabilitar el botón de guardar mientras se procesa la acción.
   const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
-  // Controlamos el estado de apertura del diálogo para poder cerrarlo desde el código.
   const [isDialogOpen, setDialogOpen] = useState(false)
+  const formRef = React.useRef<HTMLFormElement>(null)
 
-  // Esta es la función que se ejecuta cuando se envía el formulario.
   const formAction = async (formData: FormData) => {
-    // Cerramos el diálogo inmediatamente para una mejor experiencia de usuario.
-    setDialogOpen(false) 
-
-    // startTransition envuelve la llamada a la Server Action.
-    // React usará esto para gestionar el estado de pendiente.
     startTransition(async () => {
-      // Dependiendo si estamos editando o creando, llamamos a la Server Action correspondiente.
       const result = product
         ? await editProduct(formData)
         : await addProduct(formData)
       
-      // La Server Action devuelve un objeto con una clave 'error' si algo falló.
       if (result?.error) {
         toast({
           title: `Error al ${product ? "editar" : "añadir"}`,
@@ -56,15 +47,13 @@ export function AdminProductForm({
       } else {
         toast({
           title: "Éxito",
-          description: `Producto ${
-            product ? "editado" : "añadido"
-          } correctamente.`,
+          description: `Producto ${product ? "editado" : "añadido"} correctamente.`,
         })
+        setDialogOpen(false)
       }
     })
   }
 
-  // El texto y estilo del botón que abre el diálogo cambia si es para editar o añadir.
   const triggerButton = product ? (
     <Button variant="outline" size="sm">
       Editar
@@ -73,15 +62,16 @@ export function AdminProductForm({
     <Button>Añadir Producto</Button>
   )
   
-  // Preparamos el string de atributos para mostrarlo en el textarea.
-  const atributosString = product?.atributos?.map(a => `${a.nombre}: ${a.valor}`).join(", ") || "";
+  const atributosString = product?.atributos?.map(a => `${a.nombre}: ${a.valor}`).join(",\n") || "";
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>{triggerButton}</DialogTrigger>
       <DialogContent className="sm:max-w-xl">
-        {/* El formulario llama a `formAction` cuando se envía. */}
-        <form action={formAction}>
+        <form 
+          ref={formRef}
+          action={formAction}
+        >
           <DialogHeader>
             <DialogTitle className="font-headline">
               {product ? "Editar Producto" : "Añadir Nuevo Producto"}
@@ -92,7 +82,6 @@ export function AdminProductForm({
                 : "Completa los detalles del nuevo producto."}
             </DialogDescription>
           </DialogHeader>
-          {/* ScrollArea permite que el formulario sea largo sin romper el diseño del diálogo. */}
           <ScrollArea className="h-[60vh] pr-6">
             <div className="grid gap-4 py-4">
               {product && (
@@ -112,7 +101,7 @@ export function AdminProductForm({
               </div>
                <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="precioMayorista" className="text-right">Precio Mayorista</Label>
-                <Input id="precioMayorista" name="precioMayorista" type="number" step="0.01" defaultValue={product?.precioMayorista} className="col-span-3" />
+                <Input id="precioMayorista" name="precioMayorista" type="number" step="0.01" defaultValue={product?.precioMayorista} className="col-span-3" placeholder="Opcional" />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="stock" className="text-right">Stock</Label>
@@ -128,7 +117,7 @@ export function AdminProductForm({
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="atributos" className="text-right">Atributos</Label>
-                <Textarea id="atributos" name="atributos" defaultValue={atributosString} placeholder="Ej: Marca: Zen, Peso: 30g" className="col-span-3" />
+                <Textarea id="atributos" name="atributos" defaultValue={atributosString} placeholder="Formato: Nombre:Valor, Otro:Valor" className="col-span-3" />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="imagenurl" className="text-right">URL de Imagen</Label>
@@ -136,7 +125,7 @@ export function AdminProductForm({
               </div>
                <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="porcentajeDescuento" className="text-right">% Descuento</Label>
-                <Input id="porcentajeDescuento" name="porcentajeDescuento" type="number" defaultValue={product?.porcentajeDescuento ?? ""} placeholder="Ej: 10" className="col-span-3" />
+                <Input id="porcentajeDescuento" name="porcentajeDescuento" type="number" defaultValue={product?.porcentajeDescuento ?? ""} placeholder="Ej: 10 (opcional)" className="col-span-3" />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="fechaInicioDescuento" className="text-right">Inicio Descuento</Label>
@@ -158,9 +147,10 @@ export function AdminProductForm({
                 Cancelar
               </Button>
             </DialogClose>
-            {/* El botón se deshabilita si la acción está pendiente. */}
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Guardando..." : "Guardar Cambios"}
+              {isPending
+                ? "Guardando..."
+                : "Guardar Cambios"}
             </Button>
           </DialogFooter>
         </form>

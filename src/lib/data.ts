@@ -3,80 +3,80 @@
 // NOTA PARA EL DESARROLLADOR:
 // Este archivo es el punto central para obtener datos desde tu API.
 // Contiene funciones que hacen 'fetch' a los endpoints de tu backend.
-// Deberías añadir aquí nuevas funciones para obtener usuarios, pedidos, etc.
 
 import type { Product, BlogArticle, User, Order } from './types';
 
 // Función para mapear la respuesta de la API al tipo 'Product' que usa el frontend.
 // Esto actúa como un "adaptador" entre el backend y el frontend.
 function mapApiToProduct(apiProduct: any): Product {
-  const onSale = apiProduct.porcentajeDescuento && apiProduct.porcentajeDescuento > 0;
+  const onSale = apiProduct.porcentajeDescuento && Number(apiProduct.porcentajeDescuento) > 0;
   return {
-    // Datos del backend
+    // Datos directos de la API
     id: apiProduct.id,
     nombre: apiProduct.nombre,
     descripcion: apiProduct.descripcion,
-    precio: apiProduct.precio,
-    stock: apiProduct.stock,
-    imagenurl: apiProduct.imagenurl,
+    precio: Number(apiProduct.precio),
+    stock: Number(apiProduct.stock),
     activo: apiProduct.activo,
     categoriaNombre: apiProduct.categoriaNombre,
-    mensaje: apiProduct.mensaje,
-    fragancias: apiProduct.fragancias,
-    porcentajeDescuento: apiProduct.porcentajeDescuento,
+    fragancias: apiProduct.fragancias || [],
+    porcentajeDescuento: apiProduct.porcentajeDescuento ? Number(apiProduct.porcentajeDescuento) : null,
     fechaInicioDescuento: apiProduct.fechaInicioDescuento,
     fechaFinDescuento: apiProduct.fechaFinDescuento,
-    precioFinal: apiProduct.precioFinal,
-    atributos: apiProduct.atributos,
-    precioMayorista: apiProduct.precioMayorista,
-    totalIngresado: apiProduct.totalIngresado,
+    precioFinal: Number(apiProduct.precioFinal),
+    atributos: apiProduct.atributos || [],
+    precioMayorista: apiProduct.precioMayorista ? Number(apiProduct.precioMayorista) : undefined,
+    totalIngresado: apiProduct.totalIngresado ? Number(apiProduct.totalIngresado) : undefined,
+    imagenurl: apiProduct.imagenurl,
+    mensaje: apiProduct.mensaje,
 
-    // Datos mapeados para compatibilidad con el frontend
+    // Datos derivados/mapeados para la UI del frontend
     name: apiProduct.nombre,
     description: apiProduct.descripcion,
-    price: apiProduct.precioFinal, // El precio para el cliente es el precio final
-    image: apiProduct.imagenurl || 'https://placehold.co/64x64/EEE/31343C?text=?',
+    price: Number(apiProduct.precioFinal), // El precio para el cliente es el precio final con descuento
+    image: apiProduct.imagenurl || 'https://placehold.co/600x600/EEE/31343C?text=?',
     category: apiProduct.categoriaNombre,
-    rating: 4.5, // Simulado, ya que no viene del backend
+    rating: 4.5, // Simulado
     reviews: 10, // Simulado
-    aromas: apiProduct.fragancias,
-    brand: apiProduct.atributos?.find((a: any) => a.nombre.toLowerCase() === 'brand')?.valor,
+    aromas: apiProduct.fragancias || [],
+    brand: apiProduct.atributos?.find((a: any) => a.nombre.toLowerCase() === 'marca')?.valor,
     onSale: onSale,
-    originalPrice: onSale ? apiProduct.precio : undefined, // El precio original es el base solo si hay oferta
+    originalPrice: onSale ? Number(apiProduct.precio) : undefined, // El precio original solo se muestra si hay oferta
   };
 }
 
 
 // --- CONEXIÓN AL BACKEND PARA PRODUCTOS ---
 
-// CONEXIÓN: Obtiene todos los productos desde tu API.
 export async function getProducts(): Promise<Product[]> {
   try {
-    const response = await fetch('https://apisahumerios.onrender.com/productos/listado', { cache: 'no-cache', credentials: 'omit' });
+    const response = await fetch('https://apisahumerios.onrender.com/productos/listado', { 
+      cache: 'no-cache', 
+      credentials: 'omit' 
+    });
     
     if (!response.ok) {
       throw new Error(`Error al obtener los productos: ${response.statusText}`);
     }
 
     const apiProducts = await response.json();
-    return apiProducts.map(mapApiToProduct);
+    return Array.isArray(apiProducts) ? apiProducts.map(mapApiToProduct) : [];
 
   } catch (error) {
     console.error("No se pudieron obtener los productos:", error);
-    // Devuelve un array vacío en caso de error para que la aplicación no se rompa.
     return [];
   }
 }
 
-// CONEXIÓN: Obtiene un producto específico por su ID desde tu API.
 export async function getProductById(id: string): Promise<Product | undefined> {
    try {
-    const response = await fetch(`https://apisahumerios.onrender.com/productos/${id}`, { cache: 'no-cache', credentials: 'omit' });
+    const response = await fetch(`https://apisahumerios.onrender.com/productos/${id}`, { 
+      cache: 'no-cache', 
+      credentials: 'omit' 
+    });
 
     if (!response.ok) {
-      if (response.status === 404) {
-        return undefined; 
-      }
+      if (response.status === 404) return undefined; 
       throw new Error(`Error al obtener el producto: ${response.statusText}`);
     }
 
@@ -90,53 +90,13 @@ export async function getProductById(id: string): Promise<Product | undefined> {
 }
 
 
-// --- DATOS DE MUESTRA (MOCK DATA) Y CONEXIONES POR HACER ---
-// NOTA: Las siguientes secciones usan datos de muestra.
-// Deberás reemplazarlos con llamadas a tu API, siguiendo el ejemplo de getProducts.
+// --- DATOS DE MUESTRA (MOCK DATA) ---
+// NOTA: Deberás reemplazarlos con llamadas a tu API.
 
-// CONEXIÓN (POR HACER): Crear una función `getUsers()` para obtener usuarios de tu API.
-// export async function getUsers(): Promise<User[]> { ... }
 export const users: User[] = [];
+export const orders: Order[] = [];
 
-// CONEXIÓN (POR HACER): Crear una función `getOrders()` para obtener pedidos de tu API.
-// export async function getOrders(): Promise<Order[]> { ... }
-export const orders: Order[] = [
-  {
-    id: 'ord_1',
-    customerName: 'Sarah L.',
-    date: '2023-10-20',
-    status: 'Delivered',
-    total: 62.98,
-    items: [
-      { productId: '2', productName: 'Ceramic Ultrasonic Diffuser', quantity: 1, price: 49.99 },
-      { productId: '1', productName: 'Sandalwood Incense Sticks', quantity: 1, price: 12.99 },
-    ],
-  },
-  {
-    id: 'ord_2',
-    customerName: 'Michael B.',
-    date: '2023-11-01',
-    status: 'Shipped',
-    total: 33.49,
-    items: [
-      { productId: '3', productName: 'Pure Lavender Essential Oil', quantity: 1, price: 18.50 },
-      { productId: '9', productName: 'Peppermint Essential Oil', quantity: 1, price: 13.50 },
-    ],
-  },
-   {
-    id: 'ord_3',
-    customerName: 'Jessica P.',
-    date: '2023-11-05',
-    status: 'Pending',
-    total: 15.00,
-    items: [
-      { productId: '4', productName: 'Palo Santo Sticks', quantity: 1, price: 15.00 },
-    ],
-  },
-];
-
-
-// Los artículos del blog pueden seguir siendo datos de muestra por ahora.
+// Los artículos del blog pueden seguir siendo datos de muestra.
 export const blogArticles: BlogArticle[] = [
   {
     slug: 'beginners-guide-to-aromatherapy',
