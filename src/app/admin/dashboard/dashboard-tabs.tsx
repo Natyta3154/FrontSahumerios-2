@@ -138,9 +138,9 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
                       <span className={`font-semibold ${product.onSale ? 'text-destructive' : ''}`}>
                         ${product.price.toFixed(2)}
                       </span>
-                      {product.onSale && (
+                      {product.onSale && product.originalPrice && (
                         <span className="text-xs text-muted-foreground line-through">
-                          ${product.originalPrice?.toFixed(2)}
+                          ${product.originalPrice.toFixed(2)}
                         </span>
                       )}
                     </div>
@@ -402,3 +402,5 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
       </Tabs>
   )
 }
+
+    
