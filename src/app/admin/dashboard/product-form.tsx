@@ -104,7 +104,7 @@ export function AdminProductForm({
               </div>
                <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="precioMayorista" className="text-right">Precio Mayorista</Label>
-                <Input id="precioMayorista" name="precioMayorista" type="number" step="0.01" defaultValue={product?.precioMayorista} className="col-span-3" placeholder="Opcional" />
+                <Input id="precioMayorista" name="precioMayorista" type="number" step="0.01" defaultValue={product?.precioMayorista ?? ''} className="col-span-3" placeholder="Opcional" />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="stock" className="text-right">Stock</Label>
