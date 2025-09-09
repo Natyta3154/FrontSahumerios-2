@@ -106,7 +106,7 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
                 <TableHead>Precio</TableHead>
                 <TableHead className="hidden lg:table-cell">Mayorista</TableHead>
                 <TableHead className="hidden md:table-cell">% Dto</TableHead>
-                <TableHead className="hidden md:table-cell">Ingresos</TableHead>
+                <TableHead className="hidden md:table-cell">Ingreso Total</TableHead>
                 <TableHead className="text-right">
                   <span className="sr-only">Acciones</span>
                 </TableHead>
@@ -402,3 +402,5 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
       </Tabs>
   )
 }
+
+    
