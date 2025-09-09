@@ -20,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogClose,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -40,11 +41,12 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Eye } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import type { Product, User, Order } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 // NOTA: Se importan las funciones (Server Actions) desde 'actions.ts' para conectar los formularios a la API.
 import { addProduct, editProduct, deleteProduct } from './actions';
+import { useToast } from '@/hooks/use-toast';
 
 
 export default function AdminDashboardPage() {
@@ -53,24 +55,59 @@ export default function AdminDashboardPage() {
   const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
   const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
   const [selectedOrder, setSelectedOrder] = React.useState<Order | null>(null);
+  const [isAddDialogOpen, setAddDialogOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
 
-  // EFECTO: Carga los productos desde la API cuando el componente se monta.
-  useEffect(() => {
-    const loadProducts = async () => {
+  const loadProducts = async () => {
       // VISUALIZACIÓN: Llama a getProducts (de data.ts) para obtener los datos.
       const fetchedProducts = await getProducts();
       setProducts(fetchedProducts);
-    };
+  };
+
+  // EFECTO: Carga los productos desde la API cuando el componente se monta.
+  useEffect(() => {
     loadProducts();
   }, []);
 
   // MANEJADOR: Llama a la Server Action para eliminar un producto y refresca la lista.
   const handleDeleteProduct = async (productId: number) => {
-    await deleteProduct(productId);
-    // Vuelve a cargar los productos para reflejar el cambio.
-    const fetchedProducts = await getProducts();
-    setProducts(fetchedProducts);
+    startTransition(async () => {
+        const result = await deleteProduct(productId);
+        if (result?.error) {
+            toast({ title: 'Error', description: result.error, variant: 'destructive' });
+        } else {
+            toast({ title: 'Éxito', description: 'Producto eliminado correctamente.' });
+            await loadProducts();
+        }
+    });
   };
+
+  const handleAddProduct = async (formData: FormData) => {
+    startTransition(async () => {
+        const result = await addProduct(formData);
+        if (result?.error) {
+            toast({ title: 'Error al añadir', description: result.error, variant: 'destructive' });
+        } else {
+            toast({ title: 'Éxito', description: 'Producto añadido correctamente.' });
+            await loadProducts();
+            setAddDialogOpen(false); // Cierra el diálogo en caso de éxito
+        }
+    });
+  }
+
+  const handleEditProduct = async (formData: FormData) => {
+     startTransition(async () => {
+        const result = await editProduct(formData);
+        if (result?.error) {
+            toast({ title: 'Error al editar', description: result.error, variant: 'destructive' });
+        } else {
+            toast({ title: 'Éxito', description: 'Producto editado correctamente.' });
+            await loadProducts();
+            setSelectedProduct(null); // Cierra el diálogo de edición
+        }
+    });
+  }
 
 
   return (
@@ -94,13 +131,13 @@ export default function AdminDashboardPage() {
             {/* Pestaña de Productos */}
             <TabsContent value="products" className="mt-6">
               <div className="flex justify-end mb-4">
-                 <Dialog>
+                 <Dialog open={isAddDialogOpen} onOpenChange={setAddDialogOpen}>
                     <DialogTrigger asChild>
                       <Button>Añadir Producto</Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px]">
-                      {/* CONEXIÓN: El 'action={addProduct}' conecta este formulario directamente a la Server Action. */}
-                      <form action={addProduct}>
+                      {/* CONEXIÓN: El 'action' ahora llama a nuestra función manejadora. */}
+                      <form action={handleAddProduct}>
                         <DialogHeader>
                           <DialogTitle className="font-headline">Añadir Nuevo Producto</DialogTitle>
                           <DialogDescription>Completa los detalles del nuevo producto.</DialogDescription>
@@ -142,8 +179,11 @@ export default function AdminDashboardPage() {
                         </div>
                         <DialogFooter>
                             <DialogClose asChild>
-                                <Button type="submit">Guardar Producto</Button>
+                                <Button type="button" variant="secondary">Cancelar</Button>
                             </DialogClose>
+                            <Button type="submit" disabled={isPending}>
+                                {isPending ? 'Guardando...' : 'Guardar Producto'}
+                            </Button>
                         </DialogFooter>
                       </form>
                     </DialogContent>
@@ -440,7 +480,7 @@ export default function AdminDashboardPage() {
         <Dialog open={!!selectedProduct} onOpenChange={(isOpen) => !isOpen && setSelectedProduct(null)}>
             <DialogContent className="sm:max-w-[425px]">
                 {/* CONEXIÓN: Este formulario llama a la Server Action 'editProduct'. */}
-                <form action={editProduct}>
+                <form action={handleEditProduct}>
                     <DialogHeader>
                         <DialogTitle className="font-headline">Editar Producto</DialogTitle>
                         <DialogDescription>Haz cambios en los detalles del producto.</DialogDescription>
@@ -483,9 +523,9 @@ export default function AdminDashboardPage() {
                         <DialogClose asChild>
                            <Button type="button" variant="secondary" onClick={() => setSelectedProduct(null)}>Cancelar</Button>
                         </DialogClose>
-                        <DialogClose asChild>
-                           <Button type="submit">Guardar Cambios</Button>
-                        </DialogClose>
+                           <Button type="submit" disabled={isPending}>
+                             {isPending ? 'Guardando...' : 'Guardar Cambios'}
+                           </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>
