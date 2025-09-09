@@ -59,13 +59,13 @@ function buildProductPayload(formData: FormData) {
     totalIngresado: getIntOrNull('totalIngresado'),
     precioMayorista: getNumberOrNull('precioMayorista'),
     porcentajeDescuento: getNumberOrNull('porcentajeDescuento'),
-    fechaInicioDescuento: getStringOrNull('fechaInicioDescuento'),
-    fechaFinDescuento: getStringOrNull('fechaFinDescuento'),
+    fechaInicioDescuento: getStringOrNull('fechaInicioDescuento') || null,
+    fechaFinDescuento: getStringOrNull('fechaFinDescuento') || null,
   };
   
   // Elimina las claves con valores nulos para que no se envíen al backend
    Object.keys(payload).forEach(key => {
-    if (payload[key] === null) {
+    if (payload[key] === null || payload[key] === undefined) {
       delete payload[key];
     }
   });
@@ -79,6 +79,10 @@ function buildProductPayload(formData: FormData) {
 // Ahora acepta el token para la autorización.
 export async function addProduct(formData: FormData, token: string | null) {
   const newProduct = buildProductPayload(formData);
+  
+  console.log('--- Intentando Añadir Producto ---');
+  console.log('Token utilizado:', token ? `Bearer ${token}`.substring(0, 15) + '...' : 'No hay token');
+  console.log('Payload a enviar:', JSON.stringify(newProduct, null, 2));
 
   try {
     const response = await fetch('https://apisahumerios.onrender.com/productos/agregar', {
@@ -90,8 +94,16 @@ export async function addProduct(formData: FormData, token: string | null) {
       body: JSON.stringify(newProduct),
     });
 
+    console.log('Respuesta de la API (Añadir):', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+    });
+
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
+      console.error('Datos del error (Añadir):', errorData);
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
 
@@ -100,7 +112,7 @@ export async function addProduct(formData: FormData, token: string | null) {
     return { success: true };
 
   } catch (error) {
-    console.error('Error en addProduct:', error);
+    console.error('Error CATCH en addProduct:', error);
     return { error: (error as Error).message };
   }
 }
@@ -115,6 +127,11 @@ export async function editProduct(formData: FormData, token: string | null) {
 
   const updatedProduct = buildProductPayload(formData);
 
+  console.log(`--- Intentando Editar Producto ID: ${productId} ---`);
+  console.log('Token utilizado:', token ? `Bearer ${token}`.substring(0, 15) + '...' : 'No hay token');
+  console.log('Payload a enviar:', JSON.stringify(updatedProduct, null, 2));
+
+
    try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
       method: 'PUT',
@@ -125,8 +142,15 @@ export async function editProduct(formData: FormData, token: string | null) {
       body: JSON.stringify(updatedProduct),
     });
 
+    console.log('Respuesta de la API (Editar):', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+    });
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
+      console.error('Datos del error (Editar):', errorData);
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
 
@@ -136,7 +160,7 @@ export async function editProduct(formData: FormData, token: string | null) {
     return { success: true };
 
   } catch (error) {
-    console.error('Error en editProduct:', error);
+    console.error('Error CATCH en editProduct:', error);
     return { error: (error as Error).message };
   }
 }
@@ -147,6 +171,9 @@ export async function deleteProduct(productId: number, token: string | null) {
   if (!productId) {
     return { error: 'No se proporcionó ID de producto.' };
   }
+  
+  console.log(`--- Intentando Eliminar Producto ID: ${productId} ---`);
+  console.log('Token utilizado:', token ? `Bearer ${token}`.substring(0, 15) + '...' : 'No hay token');
 
   try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
@@ -157,8 +184,15 @@ export async function deleteProduct(productId: number, token: string | null) {
       },
     });
 
+    console.log('Respuesta de la API (Eliminar):', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+    });
+
     if (!response.ok) {
        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+       console.error('Datos del error (Eliminar):', errorData);
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
     
@@ -167,7 +201,7 @@ export async function deleteProduct(productId: number, token: string | null) {
     return { success: true };
 
   } catch (error) {
-    console.error('Error en deleteProduct:', error);
+    console.error('Error CATCH en deleteProduct:', error);
     return { error: (error as Error).message };
   }
 }
