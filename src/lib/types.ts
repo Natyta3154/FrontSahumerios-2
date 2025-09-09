@@ -4,7 +4,7 @@ export type Product = {
   descripcion: string;
   precio: number;
   stock: number;
-  imagenUrl: string;
+  imagenurl: string; // Corregido a 'imagenurl'
   activo: boolean;
   categoriaNombre: 'incense' | 'diffusers' | 'oils' | 'Aceite' | 'Sahumerios' | string; // Permitir más categorías
   mensaje?: string | null;

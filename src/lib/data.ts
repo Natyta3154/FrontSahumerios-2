@@ -16,7 +16,7 @@ function mapApiToProduct(apiProduct: any): Product {
     descripcion: apiProduct.descripcion,
     precio: apiProduct.precio,
     stock: apiProduct.stock,
-    imagenUrl: apiProduct.imagenUrl,
+    imagenurl: apiProduct.imagenurl, // Corregido a 'imagenurl'
     activo: apiProduct.activo,
     categoriaNombre: apiProduct.categoriaNombre,
     mensaje: apiProduct.mensaje,
@@ -31,7 +31,7 @@ function mapApiToProduct(apiProduct: any): Product {
     name: apiProduct.nombre,
     description: apiProduct.descripcion,
     price: apiProduct.precioFinal, 
-    image: apiProduct.imagenUrl,
+    image: apiProduct.imagenurl,
     category: apiProduct.categoriaNombre,
     rating: 4.5, // Simulado, ya que no viene del backend
     reviews: 10, // Simulado

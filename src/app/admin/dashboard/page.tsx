@@ -169,8 +169,8 @@ export default function AdminDashboardPage() {
                             <Input id="fragancias-add" name="fragancias" placeholder="Ej: Sándalo, Lavanda" className="col-span-3" />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="imagenUrl-add" className="text-right">URL de Imagen</Label>
-                            <Input id="imagenUrl-add" name="imagenUrl" placeholder="https://ejemplo.com/imagen.jpg" className="col-span-3" required />
+                            <Label htmlFor="imagenurl-add" className="text-right">URL de Imagen</Label>
+                            <Input id="imagenurl-add" name="imagenurl" placeholder="https://ejemplo.com/imagen.jpg" className="col-span-3" required />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="descripcion-add" className="text-right">Descripción</Label>
@@ -512,8 +512,8 @@ export default function AdminDashboardPage() {
                           <Input id="fragancias-edit" name="fragancias" defaultValue={selectedProduct.fragancias?.join(', ')} className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="imagenUrl-edit" className="text-right">URL de Imagen</Label>
-                          <Input id="imagenUrl-edit" name="imagenUrl" defaultValue={selectedProduct.imagenUrl} className="col-span-3" required />
+                          <Label htmlFor="imagenurl-edit" className="text-right">URL de Imagen</Label>
+                          <Input id="imagenurl-edit" name="imagenurl" defaultValue={selectedProduct.imagenurl} className="col-span-3" required />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                           <Label htmlFor="descripcion-edit" className="text-right">Descripción</Label>                          <Textarea id="descripcion-edit" name="descripcion" defaultValue={selectedProduct.descripcion} className="col-span-3" required />

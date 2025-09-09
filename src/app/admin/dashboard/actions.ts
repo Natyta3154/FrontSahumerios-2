@@ -17,7 +17,7 @@ export async function addProduct(formData: FormData) {
     descripcion: formData.get('descripcion'),
     precio: Number(formData.get('precio')),
     stock: Number(formData.get('stock')),
-    imagenUrl: formData.get('imagenUrl'),
+    imagenurl: formData.get('imagenurl'), // Corregido a 'imagenurl'
     activo: true, // Asumimos que un nuevo producto siempre está activo
     categoriaNombre: formData.get('categoriaNombre'),
     fragancias: (formData.get('fragancias') as string || '').split(',').map(f => f.trim()).filter(f => f),
@@ -68,7 +68,7 @@ export async function editProduct(formData: FormData) {
     descripcion: formData.get('descripcion'),
     precio: Number(formData.get('precio')),
     stock: Number(formData.get('stock')),
-    imagenUrl: formData.get('imagenUrl'),
+    imagenurl: formData.get('imagenurl'), // Corregido a 'imagenurl'
     activo: true, 
     categoriaNombre: formData.get('categoriaNombre'),
     fragancias: (formData.get('fragancias') as string || '').split(',').map(f => f.trim()).filter(f => f),
