@@ -16,7 +16,7 @@ function mapApiToProduct(apiProduct: any): Product {
     descripcion: apiProduct.descripcion,
     precio: apiProduct.precio,
     stock: apiProduct.stock,
-    imagenurl: apiProduct.imagenurl, // Corregido a 'imagenurl'
+    imagenurl: apiProduct.imagenurl,
     activo: apiProduct.activo,
     categoriaNombre: apiProduct.categoriaNombre,
     mensaje: apiProduct.mensaje,
@@ -59,6 +59,7 @@ export async function getProducts(): Promise<Product[]> {
 
   } catch (error) {
     console.error("No se pudieron obtener los productos:", error);
+    // Devuelve un array vacío en caso de error para que la aplicación no se rompa.
     return [];
   }
 }
@@ -166,3 +167,5 @@ export const blogArticles: BlogArticle[] = [
     content: '<p>The ritual of burning incense has been used for centuries across various cultures to sanctify spaces and elevate consciousness. The simple act of lighting an incense stick and watching the smoke curl can be a powerful anchor for mindfulness.</p><h3>Choosing Your Scent</h3><p>Different scents evoke different moods. For a calming space, try Sandalwood or Lavender. For an energizing and cleansing atmosphere, Palo Santo or Sage are excellent choices. Experiment to find what resonates with you.</p><h3>The Ritual</h3><p>Find a quiet corner in your home. Place your incense in a proper holder. As you light it, set an intention for your practice, whether it\'s for meditation, creative work, or simply to unwind. Allow the aroma to fill your space and your senses, bringing you into the present moment.</p>'
   },
 ];
+
+    
