@@ -22,10 +22,10 @@ export default function ProductsPage() {
   const [brandFilter, setBrandFilter] = useState<Brand>('all');
   
   useEffect(() => {
-    async function loadProducts() {
+    const loadProducts = async () => {
       const fetchedProducts = await getProducts();
       setProducts(fetchedProducts);
-    }
+    };
     loadProducts();
   }, []);
 
