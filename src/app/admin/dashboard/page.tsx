@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { getProducts, users, orders } from '@/lib/data';
@@ -197,7 +198,7 @@ export default function AdminDashboardPage() {
                     <TableHead>Nombre</TableHead>
                     <TableHead>Categoría</TableHead>
                     <TableHead className="hidden md:table-cell">Marca</TableHead>
-                    <TableHead className="hidden md:table-cell">Precio Final</TableHead>
+                    <TableHead className="hidden md:table-cell">Precio</TableHead>
                     <TableHead>
                       <span className="sr-only">Acciones</span>
                     </TableHead>
@@ -220,7 +221,7 @@ export default function AdminDashboardPage() {
                         <Badge variant="outline">{product.category}</Badge>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">{product.brand || 'N/A'}</TableCell>
-                      <TableCell className="hidden md:table-cell">${product.price.toFixed(2)}</TableCell>
+                      <TableCell className="hidden md:table-cell">${product.precio.toFixed(2)}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
                            <Dialog>
@@ -535,3 +536,5 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    
