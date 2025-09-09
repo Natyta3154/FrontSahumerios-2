@@ -1,13 +1,13 @@
 
 export type Product = {
-  id: number; // Cambiado a number para coincidir con el backend
+  id: number;
   nombre: string;
   descripcion: string;
   precio: number;
   stock: number;
-  imagenurl: string; // Corregido a 'imagenurl'
+  imagenurl: string; 
   activo: boolean;
-  categoriaNombre: 'incense' | 'diffusers' | 'oils' | 'Aceite' | 'Sahumerios' | string; // Permitir más categorías
+  categoriaNombre: 'incense' | 'diffusers' | 'oils' | 'Aceite' | 'Sahumerios' | string;
   mensaje?: string | null;
   fragancias?: string[];
   porcentajeDescuento?: number | null;
@@ -19,16 +19,14 @@ export type Product = {
     valor: string;
   }[];
 
-  // Mantener campos antiguos por compatibilidad temporal donde sea necesario o mapear
-  // Esto es para que el resto de la aplicación no se rompa de inmediato.
-  // Idealmente, se refactoriza todo para usar los nuevos nombres.
+  // Datos mapeados para compatibilidad con el frontend
   name: string;
   description: string;
   price: number;
   image: string;
   category: 'incense' | 'diffusers' | 'oils' | 'Aceite' | 'Sahumerios' | string;
-  rating: number; // Simulado o mapeado si no viene del backend
-  reviews: number; // Simulado o mapeado
+  rating: number; // Simulado
+  reviews: number; // Simulado
   aromas?: string[];
   brand?: string;
   onSale?: boolean;
@@ -72,4 +70,3 @@ export type Order = {
   total: number;
   items: OrderItem[];
 };
-
