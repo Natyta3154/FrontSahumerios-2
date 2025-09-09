@@ -86,9 +86,11 @@ export function AppHeader() {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/admin/dashboard">Panel de Admin</Link>
-                  </DropdownMenuItem>
+                  {user.rol === 'ROLE_ADMIN' && (
+                     <DropdownMenuItem asChild>
+                       <Link href="/admin/dashboard">Panel de Admin</Link>
+                     </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={logout}>Cerrar Sesión</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

@@ -26,12 +26,15 @@ export default function AdminLoginPage() {
     const password = formData.get('password') as string;
 
     try {
-      await login(email, password, true); // Llama a la función login del contexto
+      // Llama a la función login del contexto, indicando que es un login de admin.
+      await login(email, password, true); 
+      
       toast({
         title: "Inicio de Sesión Exitoso",
         description: `Bienvenido. Redirigiendo al panel...`,
       });
       router.push('/admin/dashboard');
+
     } catch (error) {
        toast({
         title: "Error de Inicio de Sesión",

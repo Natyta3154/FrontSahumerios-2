@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
+import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 // Define la estructura del objeto de usuario para que coincida con el backend
@@ -17,7 +17,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
-  login: (email: string, password: string, isAdminLogin: boolean) => Promise<void>;
+  login: (emailOrUser: string | User, password?: string, isAdminLogin?: boolean) => Promise<void>;
   logout: () => void;
 }
 
@@ -32,7 +32,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   // Función para "iniciar sesión"
-  const login = useCallback(async (email: string, password: string, isAdminLogin: boolean) => {
+  const login = useCallback(async (emailOrUser: string | User, password?: string, isAdminLogin: boolean = false) => {
+    // Si se pasa un objeto de usuario directamente (después del registro), se establece como usuario
+    if (typeof emailOrUser !== 'string') {
+        setUser(emailOrUser);
+        return;
+    }
+      
     setLoading(true);
     setError(null);
     try {
@@ -42,7 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           'Content-Type': 'application/json',
         },
         credentials: 'omit',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: emailOrUser, password }),
       });
       
       const data = await response.json();
@@ -51,6 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error(data.message || data.mensaje || 'Error de autenticación.');
       }
 
+      // Si es un intento de login de admin, se verifica el rol
       if (isAdminLogin && data.usuario.rol !== 'ROLE_ADMIN') {
         throw new Error('Acceso denegado. Se requiere rol de administrador.');
       }
