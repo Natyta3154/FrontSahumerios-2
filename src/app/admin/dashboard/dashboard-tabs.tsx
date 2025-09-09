@@ -44,6 +44,7 @@ import { deleteProduct } from './actions';
 import { AdminProductForm } from './product-form';
 import { useToast } from '@/hooks/use-toast';
 import { useTransition } from 'react';
+import { useAuth } from '@/context/auth-context';
 
 
 interface DashboardTabsProps {
@@ -57,10 +58,12 @@ interface DashboardTabsProps {
 export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
+  const { token } = useAuth(); // Obtenemos el token desde el contexto
 
   const handleDelete = (productId: number) => {
     startTransition(async () => {
-      const result = await deleteProduct(productId);
+      // Pasamos el token a la Server Action
+      const result = await deleteProduct(productId, token);
       if (result?.error) {
         toast({
           title: "Error al eliminar",

@@ -1,13 +1,14 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from "react";
+import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import type { User } from "@/lib/types";
 
 // Define el tipo para el contexto de autenticación
 interface AuthContextType {
   user: User | null;
+  token: string | null; // Añadimos el token al contexto
   loading: boolean;
   error: string | null;
   login: (email: string, password?: string, isAdminLogin?: boolean) => Promise<void>;
@@ -21,6 +22,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // Define el proveedor del contexto de autenticación
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null); // Estado para el token
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -51,6 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       setUser(data.usuario as User);
+      setToken(data.token); // Guardamos el token
 
     } catch (err: any) {
       setError(err.message);
@@ -87,6 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Después de un registro exitoso, se "inicia sesión" automáticamente.
       setUser(data.usuario as User);
+      setToken(data.token); // Guardamos el token también al registrarse
 
     } catch(err: any) {
         setError(err.message);
@@ -101,18 +105,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Función para "cerrar sesión"
   const logout = useCallback(() => {
     setUser(null);
+    setToken(null); // Limpiamos el token al cerrar sesión
     router.push('/'); // Redirige al inicio después de cerrar sesión
   }, [router]);
 
   // Memoriza el valor del contexto para evitar re-renderizados innecesarios
   const value = useMemo(() => ({
     user,
+    token, // Exponemos el token
     loading,
     error,
     login,
     signup,
     logout
-  }), [user, loading, error, login, signup, logout]);
+  }), [user, token, loading, error, login, signup, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

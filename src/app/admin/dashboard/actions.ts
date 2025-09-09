@@ -53,13 +53,17 @@ function buildProductPayload(formData: FormData) {
 // --- ACCIONES DE PRODUCTOS ---
 
 // Conexión con el endpoint para AÑADIR un nuevo producto.
-export async function addProduct(formData: FormData) {
+// Ahora acepta el token para la autorización.
+export async function addProduct(formData: FormData, token: string | null) {
   const newProduct = buildProductPayload(formData);
 
   try {
     const response = await fetch('https://apisahumerios.onrender.com/productos/agregar', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // Se añade el token a la cabecera
+      },
       credentials: 'omit',
       body: JSON.stringify(newProduct),
     });
@@ -80,7 +84,8 @@ export async function addProduct(formData: FormData) {
 }
   
 // Conexión con el endpoint para EDITAR un producto existente.
-export async function editProduct(formData: FormData) {
+// Ahora acepta el token para la autorización.
+export async function editProduct(formData: FormData, token: string | null) {
   const productId = formData.get('id');
   if (!productId) {
     return { error: 'No se proporcionó ID de producto.' };
@@ -91,7 +96,10 @@ export async function editProduct(formData: FormData) {
    try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // Se añade el token a la cabecera
+      },
       credentials: 'omit',
       body: JSON.stringify(updatedProduct),
     });
@@ -113,7 +121,8 @@ export async function editProduct(formData: FormData) {
 }
 
 // Conexión con el endpoint para ELIMINAR un producto.
-export async function deleteProduct(productId: number) {
+// Ahora acepta el token para la autorización.
+export async function deleteProduct(productId: number, token: string | null) {
   if (!productId) {
     return { error: 'No se proporcionó ID de producto.' };
   }
@@ -121,10 +130,17 @@ export async function deleteProduct(productId: number) {
   try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
       method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}` // Se añade el token a la cabecera
+      },
       credentials: 'omit',
     });
 
     if (!response.ok) {
+       // El error "Unauthorized" puede venir con un cuerpo vacío, así que lo manejamos.
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("No autorizado. Inicia sesión de nuevo.");
+      }
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }

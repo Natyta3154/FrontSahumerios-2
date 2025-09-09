@@ -21,6 +21,7 @@ import type { Product } from "@/lib/types"
 import React, { useTransition, useState } from "react"
 import { addProduct, editProduct } from "./actions"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useAuth } from "@/context/auth-context"
 
 export function AdminProductForm({
   product,
@@ -31,12 +32,14 @@ export function AdminProductForm({
   const { toast } = useToast()
   const [isDialogOpen, setDialogOpen] = useState(false)
   const formRef = React.useRef<HTMLFormElement>(null)
+  const { token } = useAuth(); // Obtenemos el token del contexto
 
   const formAction = async (formData: FormData) => {
     startTransition(async () => {
+      // Pasamos el token a la Server Action
       const result = product
-        ? await editProduct(formData)
-        : await addProduct(formData)
+        ? await editProduct(formData, token)
+        : await addProduct(formData, token)
       
       if (result?.error) {
         toast({
