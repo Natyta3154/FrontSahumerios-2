@@ -8,94 +8,95 @@
       Este archivo define las variables de color globales para tu aplicación.
       Los colores se definen usando el formato HSL (Tono, Saturación, Luminosidad).
       Puedes obtener estos valores desde herramientas en línea como "HSL Color Picker".
+      
+      Paleta de colores "Aromanza" - Inspirada en Dorado y Mármol.
     */
 
-    /* Color de fondo principal de la aplicación */
-    --background: 260 30% 98%;
-    /* Color del texto principal */
-    --foreground: 260 20% 15%;
+    /* Color de fondo principal (blanco marmoleado claro) */
+    --background: 0 0% 98%;
+    /* Color del texto principal (gris oscuro) */
+    --foreground: 240 10% 3.9%;
 
     /* Color de fondo para elementos tipo "tarjeta" (cards) */
-    --card: 260 30% 100%;
+    --card: 0 0% 100%;
     /* Color del texto dentro de las tarjetas */
-    --card-foreground: 260 20% 15%;
+    --card-foreground: 240 10% 3.9%;
 
     /* Color de fondo para elementos emergentes (popovers) */
-    --popover: 260 30% 100%;
+    --popover: 0 0% 100%;
     /* Color del texto dentro de los popovers */
-    --popover-foreground: 260 20% 15%;
+    --popover-foreground: 240 10% 3.9%;
 
-    /* Color primario (Violeta/Morado para espiritualidad y sabiduría) */
-    --primary: 270 55% 60%;
-    /* Color del texto sobre el color primario */
+    /* Color primario (Dorado del logo) */
+    --primary: 45 80% 50%;
+    /* Color del texto sobre el color primario (blanco para contraste) */
     --primary-foreground: 0 0% 100%;
     
-    /* Color secundario (Plateado para capacidades psíquicas) */
-    --secondary: 240 10% 94%;
+    /* Color secundario (gris claro para fondos sutiles) */
+    --secondary: 240 4.8% 95.9%;
     /* Color del texto sobre el color secundario */
-    --secondary-foreground: 260 20% 15%;
+    --secondary-foreground: 240 5.9% 10%;
 
     /* Color para textos y elementos "apagados" o sutiles */
-    --muted: 240 10% 94%;
+    --muted: 240 4.8% 95.9%;
     /* Color del texto "apagado" o sutil */
-    --muted-foreground: 260 15% 45%;
+    --muted-foreground: 240 3.8% 46.1%;
 
-    /* Color de acento (Dorado para lucidez y vitalidad) */
-    --accent: 45 80% 95%;
+    /* Color de acento (Dorado muy claro, para fondos de sección) */
+    --accent: 45 90% 96%;
     /* Color del texto sobre el color de acento */
-    --accent-foreground: 45 60% 30%;
+    --accent-foreground: 45 60% 20%;
 
     /* Color para acciones destructivas (botones de eliminar, errores) */
-    --destructive: 0 72% 51%;
+    --destructive: 0 84.2% 60.2%;
     /* Color del texto sobre el color destructivo */
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 0 0% 98%;
 
     /* Color para bordes y separadores */
-    --border: 260 20% 90%;
+    --border: 240 5.9% 90%;
     /* Color para campos de entrada (inputs) */
-    --input: 260 20% 90%;
+    --input: 240 5.9% 90%;
     /* Color para el "anillo" de foco (outline al hacer focus) */
-    --ring: 270 55% 60%;
+    --ring: 45 80% 50%;
 
     /* Colores para gráficos (si los usas) */
-    --chart-1: 270 60% 65%;
-    --chart-2: 45 85% 65%;
-    --chart-3: 240 20% 50%;
-    --chart-4: 300 50% 70%;
-    --chart-5: 210 30% 70%;
+    --chart-1: 45 80% 50%;
+    --chart-2: 240 50% 60%;
+    --chart-3: 20 80% 60%;
+    --chart-4: 280 50% 70%;
+    --chart-5: 180 30% 70%;
     
     /* Radio de borde para elementos como tarjetas y botones */
     --radius: 0.5rem;
   }
   .dark {
     /* 
-      Tema Oscuro:
-      Aquí se definen las mismas variables pero con valores para el modo oscuro.
+      Tema Oscuro "Aromanza"
     */
-    --background: 260 20% 11%;
-    --foreground: 260 20% 98%;
-    --card: 260 20% 15%;
-    --card-foreground: 260 20% 98%;
-    --popover: 260 20% 11%;
-    --popover-foreground: 260 20% 98%;
-    --primary: 270 60% 70%;
-    --primary-foreground: 270 20% 10%;
-    --secondary: 260 15% 25%;
-    --secondary-foreground: 260 20% 98%;
-    --muted: 260 15% 25%;
-    --muted-foreground: 260 15% 65%;
-    --accent: 45 70% 25%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 45 70% 60%;
+    --primary-foreground: 45 90% 5%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 40 50% 15%;
     --accent-foreground: 45 80% 95%;
-    --destructive: 0 63% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 260 15% 30%;
-    --input: 260 15% 30%;
-    --ring: 270 60% 70%;
-    --chart-1: 270 60% 65%;
-    --chart-2: 45 85% 65%;
-    --chart-3: 240 20% 50%;
-    --chart-4: 300 50% 70%;
-    --chart-5: 210 30% 70%;
+    --destructive: 0 62.8% 50.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 45 70% 60%;
+    --chart-1: 45 70% 60%;
+    --chart-2: 240 50% 60%;
+    --chart-3: 20 80% 60%;
+    --chart-4: 280 50% 70%;
+    --chart-5: 180 30% 70%;
   }
 }
 
@@ -106,7 +107,7 @@
   body {
     @apply text-foreground;
     background-color: hsl(var(--background));
-    background-image: radial-gradient(circle at top right, hsl(var(--primary) / 0.1), transparent 50%),
-                      radial-gradient(circle at bottom left, hsl(var(--accent) / 0.1), transparent 50%);
+    background-image: radial-gradient(circle at top right, hsl(var(--primary) / 0.05), transparent 50%),
+                      radial-gradient(circle at bottom left, hsl(var(--accent) / 0.05), transparent 50%);
   }
 }

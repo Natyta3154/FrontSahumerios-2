@@ -7,7 +7,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/context/auth-context';
 
 export const metadata: Metadata = {
-  title: 'AromaZen Boutique',
+  title: 'Aromanza - Aromas Intensos',
   description: 'Tu santuario para la aromaterapia y el bienestar.',
 };
 

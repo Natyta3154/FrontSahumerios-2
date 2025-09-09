@@ -8,7 +8,7 @@ export default function PrivacyPolicyPage() {
           <strong>Última actualización: {new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</strong>
         </p>
         <p>
-          Bienvenido a AromaZen Boutique. Tu privacidad es de suma importancia para nosotros. Esta Política de Privacidad describe cómo recopilamos, usamos, procesamos y divulgamos tu información, incluida la información personal, en conjunto con tu acceso y uso de nuestro sitio web.
+          Bienvenido a Aromanza. Tu privacidad es de suma importancia para nosotros. Esta Política de Privacidad describe cómo recopilamos, usamos, procesamos y divulgamos tu información, incluida la información personal, en conjunto con tu acceso y uso de nuestro sitio web.
         </p>
         
         <h2>1. Información que Recopilamos</h2>
@@ -17,9 +17,9 @@ export default function PrivacyPolicyPage() {
         </p>
         <h3>1.1 Información que Nos Proporcionas.</h3>
         <ul>
-          <li><strong>Información de la Cuenta:</strong> Cuando te registras para una cuenta de AromaZen, requerimos cierta información como tu nombre, apellido, dirección de correo electrónico y fecha de nacimiento.</li>
+          <li><strong>Información de la Cuenta:</strong> Cuando te registras para una cuenta de Aromanza, requerimos cierta información como tu nombre, apellido, dirección de correo electrónico y fecha de nacimiento.</li>
           <li><strong>Información de Pago:</strong> Para procesar pedidos, podemos recopilar cierta información financiera (como los detalles de tu tarjeta de crédito o cuenta bancaria) a través de nuestros proveedores de servicios de pago.</li>
-          <li><strong>Comunicaciones con AromaZen:</strong> Cuando te comunicas con AromaZen, recopilamos información sobre tu comunicación y cualquier información que elijas proporcionar.</li>
+          <li><strong>Comunicaciones con Aromanza:</strong> Cuando te comunicas con Aromanza, recopilamos información sobre tu comunicación y cualquier información que elijas proporcionar.</li>
         </ul>
         <h3>1.2 Información que Recopilamos Automáticamente de Tu Uso del Sitio Web.</h3>
         <p>
@@ -28,7 +28,7 @@ export default function PrivacyPolicyPage() {
         
         <h2>2. Cómo Utilizamos la Información que Recopilamos</h2>
         <p>
-          Utilizamos, almacenamos y procesamos información, incluida la información personal, sobre ti para proporcionar, comprender, mejorar y desarrollar el sitio web de AromaZen, crear y mantener un entorno de confianza y más seguro y cumplir con nuestras obligaciones legales.
+          Utilizamos, almacenamos y procesamos información, incluida la información personal, sobre ti para proporcionar, comprender, mejorar y desarrollar el sitio web de Aromanza, crear y mantener un entorno de confianza y más seguro y cumplir con nuestras obligaciones legales.
         </p>
 
         <h2>3. Uso Compartido y Divulgación</h2>
@@ -48,12 +48,12 @@ export default function PrivacyPolicyPage() {
 
         <h2>6. Cambios a esta Política de Privacidad</h2>
         <p>
-          AromaZen Boutique se reserva el derecho de modificar esta Política de Privacidad en cualquier momento. Si realizamos cambios a esta Política de Privacidad, publicaremos la política revisada en el sitio web y actualizaremos la fecha de "Última actualización" en la parte superior.
+          Aromanza se reserva el derecho de modificar esta Política de Privacidad en cualquier momento. Si realizamos cambios a esta Política de Privacidad, publicaremos la política revisada en el sitio web y actualizaremos la fecha de "Última actualización" en la parte superior.
         </p>
 
         <h2>7. Contacto</h2>
         <p>
-          Si tienes alguna pregunta o queja sobre esta Política de Privacidad o las prácticas de información de AromaZen, puedes enviarnos un correo electrónico a <a href="mailto:privacy@aromazen.com">privacy@aromazen.com</a>.
+          Si tienes alguna pregunta o queja sobre esta Política de Privacidad o las prácticas de información de Aromanza, puedes enviarnos un correo electrónico a <a href="mailto:privacy@aromanza.com">privacy@aromanza.com</a>.
         </p>
       </article>
     </div>

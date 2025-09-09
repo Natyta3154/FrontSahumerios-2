@@ -2,7 +2,8 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Facebook, Instagram, Twitter, Flower2 } from "lucide-react";
+import { Facebook, Instagram, Twitter } from "lucide-react";
+import { LotusIcon } from "@/components/icons/lotus-icon";
 
 export function AppFooter() {
   return (
@@ -11,8 +12,8 @@ export function AppFooter() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
             <div className="flex items-center space-x-2">
-                <Flower2 className="h-7 w-7 text-primary" />
-                <h3 className="font-headline text-2xl text-primary">AromaZen</h3>
+                <LotusIcon className="h-7 w-7 text-primary" />
+                <h3 className="font-headline text-2xl text-primary">Aromanza</h3>
             </div>
             <p className="mt-2 text-muted-foreground">
               Tu santuario para la aromaterapia y el bienestar.
@@ -59,7 +60,7 @@ export function AppFooter() {
           </div>
         </div>
         <div className="mt-12 border-t pt-8 text-center text-muted-foreground text-sm">
-          <p>&copy; {new Date().getFullYear()} AromaZen Boutique. Todos los derechos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} Aromanza. Todos los derechos reservados.</p>
           <div className="mt-2 space-x-4">
             <Link href="/privacy-policy" className="hover:text-primary">Política de Privacidad</Link>
             <span>&bull;</span>

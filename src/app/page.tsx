@@ -146,7 +146,7 @@ export default function Home() {
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="font-headline text-3xl md:text-4xl text-foreground">Nuestra Filosofía</h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              En AromaZen, creemos en el poder del aroma para transformar espacios y elevar el ánimo. Nos dedicamos a ofrecer productos naturales de alta calidad que promueven el bienestar y la serenidad en tu vida diaria.
+              En Aromanza, creemos en el poder del aroma para transformar espacios y elevar el ánimo. Nos dedicamos a ofrecer productos naturales de alta calidad que promueven el bienestar y la serenidad en tu vida diaria.
             </p>
           </div>
         </div>

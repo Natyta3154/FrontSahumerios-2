@@ -51,7 +51,7 @@ export default function ContactPage() {
                 <div>
                     <h3 className="text-lg font-semibold">Email</h3>
                     <p className="text-muted-foreground">Envíanos un email para cualquier consulta.</p>
-                    <a href="mailto:contact@aromazen.com" className="text-primary hover:underline">contact@aromazen.com</a>
+                    <a href="mailto:contact@aromanza.com" className="text-primary hover:underline">contact@aromanza.com</a>
                 </div>
             </div>
              <div className="flex items-start space-x-4">

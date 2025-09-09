@@ -1,4 +1,4 @@
-# AromaZen Boutique - Un Proyecto de Firebase Studio
+# Aromanza - Un Proyecto de Firebase Studio
 
 Este es un proyecto de comercio electrónico creado con Next.js y la asistencia de la IA de Firebase Studio. La aplicación está diseñada para ser una tienda en línea de productos de aromaterapia, completamente funcional y lista para ser conectada a un backend.
 

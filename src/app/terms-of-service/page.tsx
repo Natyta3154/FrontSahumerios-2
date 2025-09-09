@@ -8,7 +8,7 @@ export default function TermsOfServicePage() {
           <strong>Última actualización: {new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</strong>
         </p>
         <p>
-          Estos Términos de Servicio ("Términos") rigen tu acceso y uso del sitio web, productos y servicios de AromaZen Boutique ("nosotros" o "nuestro"). Por favor, lee estos Términos cuidadosamente.
+          Estos Términos de Servicio ("Términos") rigen tu acceso y uso del sitio web, productos y servicios de Aromanza ("nosotros" o "nuestro"). Por favor, lee estos Términos cuidadosamente.
         </p>
         
         <h2>1. Aceptación de los Términos</h2>
@@ -22,12 +22,12 @@ export default function TermsOfServicePage() {
         </p>
         <h3>2.1 Tu Cuenta</h3>
         <p>
-          Es posible que necesites una cuenta de AromaZen para utilizar algunos de nuestros servicios. Eres responsable de la actividad que ocurre en o a través de tu cuenta. Intenta no reutilizar la contraseña de tu cuenta en aplicaciones de terceros.
+          Es posible que necesites una cuenta de Aromanza para utilizar algunos de nuestros servicios. Eres responsable de la actividad que ocurre en o a través de tu cuenta. Intenta no reutilizar la contraseña de tu cuenta en aplicaciones de terceros.
         </p>
 
         <h2>3. Compras</h2>
         <p>
-          Si deseas comprar cualquier producto o servicio puesto a disposición a través del servicio ("Compra"), es posible que se te pida que proporciones cierta información relevante para tu Compra, incluyendo, sin limitación, tu número de tarjeta de crédito, la fecha de vencimiento de tu tarjeta de crédito, tu dirección de facturación y tu información de envío.
+          Si deseas comprar cualquier producto o servicio puesto a disposición través del servicio ("Compra"), es posible que se te pida que proporciones cierta información relevante para tu Compra, incluyendo, sin limitación, tu número de tarjeta de crédito, la fecha de vencimiento de tu tarjeta de crédito, tu dirección de facturación y tu información de envío.
         </p>
 
         <h2>4. Contenido</h2>
@@ -42,7 +42,7 @@ export default function TermsOfServicePage() {
 
         <h2>6. Limitación de Responsabilidad</h2>
         <p>
-          En la máxima medida permitida por la ley aplicable, AromaZen Boutique no será responsable de ningún daño indirecto, incidental, especial, consecuente o punitivo, ni de ninguna pérdida de beneficios o ingresos, ya sea incurrida directa o indirectamente, ni de ninguna pérdida de datos, uso, fondo de comercio u otras pérdidas intangibles, resultantes de (i) tu acceso o uso o incapacidad para acceder o usar el servicio; (ii) cualquier conducta o contenido de cualquier tercero en el servicio.
+          En la máxima medida permitida por la ley aplicable, Aromanza no será responsable de ningún daño indirecto, incidental, especial, consecuente o punitivo, ni de ninguna pérdida de beneficios o ingresos, ya sea incurrida directa o indirectamente, ni de ninguna pérdida de datos, uso, fondo de comercio u otras pérdidas intangibles, resultantes de (i) tu acceso o uso o incapacidad para acceder o usar el servicio; (ii) cualquier conducta o contenido de cualquier tercero en el servicio.
         </p>
         
         <h2>7. Cambios</h2>
@@ -52,7 +52,7 @@ export default function TermsOfServicePage() {
 
         <h2>8. Contacto</h2>
         <p>
-          Si tienes alguna pregunta sobre estos Términos, por favor contáctanos en <a href="mailto:terms@aromazen.com">terms@aromazen.com</a>.
+          Si tienes alguna pregunta sobre estos Términos, por favor contáctanos en <a href="mailto:terms@aromanza.com">terms@aromanza.com</a>.
         </p>
       </article>
     </div>

@@ -26,7 +26,7 @@ export default function AboutPage() {
           <div className="space-y-6">
             <h2 className="font-headline text-3xl text-primary">De la Naturaleza, Con Amor</h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              AromaZen Boutique nació de una simple creencia: que la naturaleza tiene la llave del bienestar. Empezamos como un pequeño taller, impulsados por la pasión por la botánica y un profundo respeto por las antiguas tradiciones de la aromaterapia. Nuestros fundadores viajaron por el mundo para obtener los ingredientes más puros, desde los campos de lavanda de Provenza hasta los bosques de sándalo de la India.
+              Aromanza nació de una simple creencia: que la naturaleza tiene la llave del bienestar. Empezamos como un pequeño taller, impulsados por la pasión por la botánica y un profundo respeto por las antiguas tradiciones de la aromaterapia. Nuestros fundadores viajaron por el mundo para obtener los ingredientes más puros, desde los campos de lavanda de Provenza hasta los bosques de sándalo de la India.
             </p>
             <p className="text-muted-foreground leading-relaxed">
               Estamos comprometidos con el abastecimiento ético, la sostenibilidad y la artesanía. Cada producto que ofrecemos es un testimonio de este compromiso: vertido a mano, enrollado a mano y mezclado con intención.
