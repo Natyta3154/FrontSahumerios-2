@@ -147,7 +147,7 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">${product.precioMayorista?.toFixed(2) ?? 'N/A'}</TableCell>
                   <TableCell className="hidden md:table-cell">{product.porcentajeDescuento ?? '—'}</TableCell>
-                   <TableCell className="hidden md:table-cell">${product.totalIngresado?.toFixed(2) ?? '0.00'}</TableCell>
+                   <TableCell className="hidden md:table-cell">{product.totalIngresado ?? 0}</TableCell>
                   <TableCell>
                     <div className="flex gap-2 justify-end">
                        {/* Pasamos el producto específico para que el formulario sepa que es una edición */}
