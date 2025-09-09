@@ -34,6 +34,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await fetch('https://apisahumerios.onrender.com/usuarios/login', {
         method: 'POST',
+        mode: 'cors',
+        credentials: 'omit',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -69,6 +71,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
        const response = await fetch('https://apisahumerios.onrender.com/usuarios/registrar', {
         method: 'POST',
+        mode: 'cors',
+        credentials: 'omit',
         headers: {
           'Content-Type': 'application/json',
         },

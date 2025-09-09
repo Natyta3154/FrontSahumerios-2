@@ -29,7 +29,10 @@ function buildProductPayload(formData: FormData) {
     const value = formData.get(field) as string;
     // Si el valor es una cadena vacía o no es un número válido, devuelve null.
     // De lo contrario, lo convierte a número.
-    return value && !isNaN(parseFloat(value)) ? Number(value) : null;
+    if (value === null || value.trim() === '' || isNaN(Number(value))) {
+        return null;
+    }
+    return Number(value);
   };
 
   const getStringOrNull = (field: string) => {
@@ -44,7 +47,7 @@ function buildProductPayload(formData: FormData) {
     precio: getNumberOrNull('precio'),
     stock: getNumberOrNull('stock'),
     imagenurl: formData.get('imagenurl'),
-    activo: formData.get('activo') === 'on', // Un switch de HTML envía "on" si está activo, o nada si no.
+    activo: formData.get('activo') === 'on',
     categoriaNombre: formData.get('categoriaNombre'),
     fragancias: fragancias,
     atributos: atributos,
@@ -54,6 +57,13 @@ function buildProductPayload(formData: FormData) {
     fechaInicioDescuento: getStringOrNull('fechaInicioDescuento'),
     fechaFinDescuento: getStringOrNull('fechaFinDescuento'),
   };
+  
+  // Elimina las claves con valores nulos para que no se envíen al backend
+   Object.keys(payload).forEach(key => {
+    if (payload[key] === null) {
+      delete payload[key];
+    }
+  });
   
   return payload;
 }
@@ -68,6 +78,8 @@ export async function addProduct(formData: FormData, token: string | null) {
   try {
     const response = await fetch('https://apisahumerios.onrender.com/productos/agregar', {
       method: 'POST',
+      mode: 'cors',
+      credentials: 'omit',
       headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // Se añade el token a la cabecera con el formato correcto
@@ -103,6 +115,8 @@ export async function editProduct(formData: FormData, token: string | null) {
    try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
       method: 'PUT',
+      mode: 'cors',
+      credentials: 'omit',
       headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // Se añade el token a la cabecera con el formato correcto
@@ -136,7 +150,10 @@ export async function deleteProduct(productId: number, token: string | null) {
   try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
       method: 'DELETE',
+      mode: 'cors',
+      credentials: 'omit',
       headers: {
+        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // Se añade el token a la cabecera con el formato correcto
       },
     });
