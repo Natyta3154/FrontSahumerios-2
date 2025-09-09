@@ -72,10 +72,10 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
               <TableRow>
                 <TableHead className="hidden w-[100px] sm:table-cell">Imagen</TableHead>
                 <TableHead>Nombre</TableHead>
-                <TableHead>Categoría</TableHead>
-                <TableHead className="hidden md:table-cell">Marca</TableHead>
-                <TableHead className="hidden md:table-cell">Precio Base</TableHead>
-                <TableHead>
+                <TableHead className="hidden md:table-cell">Estado</TableHead>
+                <TableHead className="hidden md:table-cell">Stock</TableHead>
+                <TableHead>Precio</TableHead>
+                <TableHead className="text-right">
                   <span className="sr-only">Acciones</span>
                 </TableHead>
               </TableRow>
@@ -92,14 +92,30 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
                       width="64"
                     />
                   </TableCell>
-                  <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{product.category}</Badge>
+                  <TableCell className="font-medium">
+                    {product.name}
+                    <div className="text-xs text-muted-foreground">{product.category}</div>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">{product.brand || 'N/A'}</TableCell>
-                  <TableCell className="hidden md:table-cell">${product.precio.toFixed(2)}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    <Badge variant={product.activo ? "default" : "destructive"} className="capitalize">
+                      {product.activo ? 'Activo' : 'Inactivo'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
+                   <TableCell>
+                    <div className="flex flex-col">
+                      <span className={`font-semibold ${product.onSale ? 'text-destructive' : ''}`}>
+                        ${product.price.toFixed(2)}
+                      </span>
+                      {product.onSale && (
+                        <span className="text-xs text-muted-foreground line-through">
+                          ${product.originalPrice?.toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 justify-end">
                        <AdminProductForm product={product} products={products} />
                        <AlertDialog>
                           <AlertDialogTrigger asChild>
