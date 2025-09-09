@@ -2,6 +2,8 @@
 import { getProducts } from "@/lib/data";
 import { ProductFilters } from "./product-filters";
 import type { Product } from "@/lib/types";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // 1. Esta página ahora es un Componente de Servidor.
 // Se ejecuta en el servidor en cada solicitud, obteniendo datos frescos.
@@ -27,12 +29,38 @@ export default async function ProductsPage() {
       </div>
       
       {/* 4. Pasamos los datos al componente cliente que manejará la interactividad. */}
-      <ProductFilters
-        products={allProducts}
-        categories={categories}
-        brands={brands}
-      />
+      {/*    Envolvemos el componente en Suspense para que useSearchParams funcione correctamente. */}
+      <Suspense fallback={<FiltersSkeleton />}>
+        <ProductFilters
+          products={allProducts}
+          categories={categories}
+          brands={brands}
+        />
+      </Suspense>
     </div>
   );
 }
 
+// Componente de esqueleto para mostrar mientras se cargan los filtros
+function FiltersSkeleton() {
+  return (
+    <div>
+      <div className="flex flex-col items-center mb-12 gap-4">
+        <div className="flex justify-center flex-wrap gap-2 md:gap-4">
+          <Skeleton className="h-10 w-32" />
+          <Skeleton className="h-10 w-24" />
+          <Skeleton className="h-10 w-28" />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="flex flex-col gap-2">
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-6 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
