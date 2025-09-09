@@ -47,7 +47,7 @@ function buildProductPayload(formData: FormData) {
   // Limpia valores nulos o vacíos para que no se envíen al backend si no son necesarios.
   // Esto es crucial si tu API no espera campos nulos para todo.
    for (const key in payload) {
-    if (payload[key] === null || payload[key] === '') {
+    if (payload[key] === null || payload[key] === '' || (Array.isArray(payload[key]) && payload[key].length === 0)) {
       delete payload[key];
     }
   }
@@ -70,7 +70,7 @@ export async function addProduct(formData: FormData, token: string | null) {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // Se añade el token a la cabecera
+        'Authorization': `Bearer ${token}` // Se añade el token a la cabecera con el formato correcto
       },
       body: JSON.stringify(newProduct),
     });
@@ -105,12 +105,15 @@ export async function editProduct(formData: FormData, token: string | null) {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // Se añade el token a la cabecera
+        'Authorization': `Bearer ${token}` // Se añade el token a la cabecera con el formato correcto
       },
       body: JSON.stringify(updatedProduct),
     });
 
     if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("No autorizado. Inicia sesión de nuevo.");
+      }
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
@@ -137,7 +140,7 @@ export async function deleteProduct(productId: number, token: string | null) {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${token}` // Se añade el token a la cabecera
+        'Authorization': `Bearer ${token}` // Se añade el token a la cabecera con el formato correcto
       },
     });
 
