@@ -37,7 +37,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'omit',
         body: JSON.stringify({ email: email, password }),
       });
       
@@ -73,7 +72,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'omit',
         body: JSON.stringify({
           nombre: name,
           email: email,

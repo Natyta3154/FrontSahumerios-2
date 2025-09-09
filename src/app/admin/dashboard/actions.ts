@@ -27,7 +27,9 @@ function buildProductPayload(formData: FormData) {
 
   const getNumberOrNull = (field: string) => {
     const value = formData.get(field) as string;
-    return value ? Number(value) : null;
+    // Si el valor es una cadena vacía o no es un número válido, devuelve null.
+    // De lo contrario, lo convierte a número.
+    return value && !isNaN(parseFloat(value)) ? Number(value) : null;
   };
 
   const getStringOrNull = (field: string) => {
