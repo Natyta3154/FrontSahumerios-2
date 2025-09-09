@@ -27,8 +27,6 @@ function buildProductPayload(formData: FormData) {
 
   const getNumberOrNull = (field: string) => {
     const value = formData.get(field) as string;
-    // Si el valor es una cadena vacía o no es un número válido, devuelve null.
-    // De lo contrario, lo convierte a número.
     if (value === null || value.trim() === '' || isNaN(Number(value))) {
         return null;
     }
@@ -40,7 +38,6 @@ function buildProductPayload(formData: FormData) {
     return value || null;
   };
   
-
   const payload: any = {
     nombre: formData.get('nombre'),
     descripcion: formData.get('descripcion'),
@@ -79,10 +76,9 @@ export async function addProduct(formData: FormData, token: string | null) {
     const response = await fetch('https://apisahumerios.onrender.com/productos/agregar', {
       method: 'POST',
       mode: 'cors',
-      credentials: 'omit',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // Se añade el token a la cabecera con el formato correcto
+        'Authorization': `Bearer ${token}` 
       },
       body: JSON.stringify(newProduct),
     });
@@ -116,10 +112,9 @@ export async function editProduct(formData: FormData, token: string | null) {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
       method: 'PUT',
       mode: 'cors',
-      credentials: 'omit',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // Se añade el token a la cabecera con el formato correcto
+        'Authorization': `Bearer ${token}` 
       },
       body: JSON.stringify(updatedProduct),
     });
@@ -151,10 +146,9 @@ export async function deleteProduct(productId: number, token: string | null) {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
       method: 'DELETE',
       mode: 'cors',
-      credentials: 'omit',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // Se añade el token a la cabecera con el formato correcto
+        'Authorization': `Bearer ${token}`
       },
     });
 
