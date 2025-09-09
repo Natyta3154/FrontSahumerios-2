@@ -13,25 +13,25 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'placehold.co',
+        hostname: 'placehold.co', // Para las imágenes de marcador de posición
         port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'picsum.photos',
+        hostname: 'picsum.photos', // Para las imágenes de muestra
         port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'onrender.com',
+        hostname: 'onrender.com', // Para las imágenes de tu API
         port: '',
         pathname: '/**',
       },
       {
-        protocol: 'https',
-        hostname: 'media.istockphoto.com',
+        protocol: 'https' ,
+        hostname: 'media.istockphoto.com', // Para las imágenes de stock
         port: '',
         pathname: '/**',
       }

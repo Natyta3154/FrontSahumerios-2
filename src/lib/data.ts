@@ -35,7 +35,7 @@ function mapApiToProduct(apiProduct: any): Product {
     name: apiProduct.nombre,
     description: apiProduct.descripcion,
     price: apiProduct.precioFinal, // El precio para el cliente es el precio final
-    image: apiProduct.imagenurl,
+    image: apiProduct.imagenurl || 'https://placehold.co/64x64/EEE/31343C?text=?',
     category: apiProduct.categoriaNombre,
     rating: 4.5, // Simulado, ya que no viene del backend
     reviews: 10, // Simulado
