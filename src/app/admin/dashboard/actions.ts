@@ -33,6 +33,14 @@ function buildProductPayload(formData: FormData) {
     return Number(value);
   };
 
+  const getIntOrNull = (field: string) => {
+    const value = formData.get(field) as string;
+    if (value === null || value.trim() === '' || isNaN(Number(value))) {
+        return null;
+    }
+    return parseInt(value, 10);
+  };
+  
   const getStringOrNull = (field: string) => {
     const value = formData.get(field) as string;
     return value || null;
@@ -42,13 +50,13 @@ function buildProductPayload(formData: FormData) {
     nombre: formData.get('nombre'),
     descripcion: formData.get('descripcion'),
     precio: getNumberOrNull('precio'),
-    stock: getNumberOrNull('stock'),
+    stock: getIntOrNull('stock'),
     imagenurl: formData.get('imagenurl'),
     activo: formData.get('activo') === 'on',
     categoriaNombre: formData.get('categoriaNombre'),
     fragancias: fragancias,
     atributos: atributos,
-    totalIngresado: getNumberOrNull('totalIngresado'),
+    totalIngresado: getIntOrNull('totalIngresado'),
     precioMayorista: getNumberOrNull('precioMayorista'),
     porcentajeDescuento: getNumberOrNull('porcentajeDescuento'),
     fechaInicioDescuento: getStringOrNull('fechaInicioDescuento'),
@@ -75,7 +83,6 @@ export async function addProduct(formData: FormData, token: string | null) {
   try {
     const response = await fetch('https://apisahumerios.onrender.com/productos/agregar', {
       method: 'POST',
-      mode: 'cors',
       headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` 
@@ -111,7 +118,6 @@ export async function editProduct(formData: FormData, token: string | null) {
    try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
       method: 'PUT',
-      mode: 'cors',
       headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` 
@@ -145,7 +151,6 @@ export async function deleteProduct(productId: number, token: string | null) {
   try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
       method: 'DELETE',
-      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`

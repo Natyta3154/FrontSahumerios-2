@@ -51,7 +51,6 @@ export async function getProducts(): Promise<Product[]> {
   try {
     const response = await fetch('https://apisahumerios.onrender.com/productos/listado', { 
       cache: 'no-cache',
-      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -74,7 +73,6 @@ export async function getProductById(id: string): Promise<Product | undefined> {
    try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/${id}`, { 
       cache: 'no-cache',
-      mode: 'cors',
        headers: {
         'Content-Type': 'application/json',
       },
