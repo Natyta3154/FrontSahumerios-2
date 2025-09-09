@@ -133,15 +133,15 @@ export function AdminProductForm({
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="fechaInicioDescuento" className="text-right">Inicio Descuento</Label>
-                <Input id="fechaInicioDescuento" name="fechaInicioDescuento" type="date" defaultValue={product?.fechaInicioDescuento?.split('T')[0]} className="col-span-3" />
+                <Input id="fechaInicioDescuento" name="fechaInicioDescuento" type="date" defaultValue={product?.fechaInicioDescuento?.split('T')[0] ?? ""} className="col-span-3" />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="fechaFinDescuento" className="text-right">Fin Descuento</Label>
-                <Input id="fechaFinDescuento" name="fechaFinDescuento" type="date" defaultValue={product?.fechaFinDescuento?.split('T')[0]} className="col-span-3" />
+                <Input id="fechaFinDescuento" name="fechaFinDescuento" type="date" defaultValue={product?.fechaFinDescuento?.split('T')[0] ?? ""} className="col-span-3" />
               </div>
                <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="totalIngresado" className="text-right">Ingreso Total</Label>
-                <Input id="totalIngresado" name="totalIngresado" type="number" step="0.01" defaultValue={product?.totalIngresado ?? ''} className="col-span-3" placeholder="Opcional" />
+                <Input id="totalIngresado" name="totalIngresado" type="number" step="1" defaultValue={product?.totalIngresado ?? ''} className="col-span-3" placeholder="Opcional" />
               </div>
                <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="activo" className="text-right">Activo</Label>

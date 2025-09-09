@@ -35,19 +35,22 @@ function buildProductPayload(formData: FormData) {
     categoriaNombre: formData.get('categoriaNombre'),
     fragancias: fragancias,
     atributos: atributos,
-    precioMayorista: Number(formData.get('precioMayorista')) || null,
-    porcentajeDescuento: Number(formData.get('porcentajeDescuento')) || null,
+    // Usamos parseInt para asegurar que el valor sea un entero. Opcional.
+    totalIngresado: formData.get('totalIngresado') ? parseInt(formData.get('totalIngresado') as string, 10) : null,
+    // Campos opcionales que pueden ser nulos
+    precioMayorista: formData.get('precioMayorista') ? Number(formData.get('precioMayorista')) : null,
+    porcentajeDescuento: formData.get('porcentajeDescuento') ? Number(formData.get('porcentajeDescuento')) : null,
     fechaInicioDescuento: formData.get('fechaInicioDescuento') || null,
     fechaFinDescuento: formData.get('fechaFinDescuento') || null,
-    totalIngresado: Number(formData.get('totalIngresado')) || null,
   };
   
   // Limpia valores nulos o vacíos para que no se envíen al backend si no son necesarios.
-  if (!payload.precioMayorista) delete payload.precioMayorista;
-  if (!payload.porcentajeDescuento) delete payload.porcentajeDescuento;
-  if (!payload.fechaInicioDescuento) delete payload.fechaInicioDescuento;
-  if (!payload.fechaFinDescuento) delete payload.fechaFinDescuento;
-  if (!payload.totalIngresado) delete payload.totalIngresado;
+  // Esto es crucial si tu API no espera campos nulos para todo.
+   for (const key in payload) {
+    if (payload[key] === null || payload[key] === '') {
+      delete payload[key];
+    }
+  }
   
   // Para el caso de edición, el ID no debe estar en el cuerpo del payload, sino en la URL.
   // Pero lo necesitamos para la lógica de la acción, así que no lo eliminamos aquí.
