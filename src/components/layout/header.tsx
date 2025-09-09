@@ -86,7 +86,7 @@ export function AppHeader() {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {user.rol === 'ROLE_ADMIN' && (
+                  {user.rol === 'ADMIN' && (
                      <DropdownMenuItem asChild>
                        <Link href="/admin/dashboard">Panel de Admin</Link>
                      </DropdownMenuItem>

@@ -9,7 +9,7 @@ interface User {
   id: number;
   nombre: string;
   email: string;
-  rol: 'user' | 'ROLE_ADMIN' | string;
+  rol: 'user' | 'ADMIN' | string;
 }
 
 // Define el tipo para el contexto de autenticación
@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Si es un intento de login de admin, se verifica el rol
-      if (isAdminLogin && data.usuario.rol !== 'ROLE_ADMIN') {
+      if (isAdminLogin && data.usuario.rol !== 'ADMIN') {
         throw new Error('Acceso denegado. Se requiere rol de administrador.');
       }
       
@@ -99,3 +99,4 @@ export function useAuth() {
   }
   return context;
 }
+
