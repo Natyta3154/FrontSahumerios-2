@@ -1,7 +1,5 @@
 
 
-"use client";
-
 import { getProducts, users, orders } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -42,74 +40,17 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Eye } from 'lucide-react';
-import React, { useEffect, useState, useTransition } from 'react';
+import React, { useState, useTransition } from 'react';
 import type { Product, User, Order } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 // NOTA: Se importan las funciones (Server Actions) desde 'actions.ts' para conectar los formularios a la API.
 import { addProduct, editProduct, deleteProduct } from './actions';
 import { useToast } from '@/hooks/use-toast';
+import { AdminProductForm } from './product-form';
 
 
-export default function AdminDashboardPage() {
-  // ESTADO: Almacena la lista de productos, usuarios y pedidos.
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
-  const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
-  const [selectedOrder, setSelectedOrder] = React.useState<Order | null>(null);
-  const [isAddDialogOpen, setAddDialogOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
-  const { toast } = useToast();
-
-  const loadProducts = async () => {
-      // VISUALIZACIÓN: Llama a getProducts (de data.ts) para obtener los datos.
-      const fetchedProducts = await getProducts();
-      setProducts(fetchedProducts);
-  };
-
-  // EFECTO: Carga los productos desde la API cuando el componente se monta.
-  useEffect(() => {
-    loadProducts();
-  }, []);
-
-  // MANEJADOR: Llama a la Server Action para eliminar un producto y refresca la lista.
-  const handleDeleteProduct = async (productId: number) => {
-    startTransition(async () => {
-        const result = await deleteProduct(productId);
-        if (result?.error) {
-            toast({ title: 'Error', description: result.error, variant: 'destructive' });
-        } else {
-            toast({ title: 'Éxito', description: 'Producto eliminado correctamente.' });
-            await loadProducts();
-        }
-    });
-  };
-
-  const handleAddProduct = async (formData: FormData) => {
-    startTransition(async () => {
-        const result = await addProduct(formData);
-        if (result?.error) {
-            toast({ title: 'Error al añadir', description: result.error, variant: 'destructive' });
-        } else {
-            toast({ title: 'Éxito', description: 'Producto añadido correctamente.' });
-            await loadProducts();
-            setAddDialogOpen(false); // Cierra el diálogo en caso de éxito
-        }
-    });
-  }
-
-  const handleEditProduct = async (formData: FormData) => {
-     startTransition(async () => {
-        const result = await editProduct(formData);
-        if (result?.error) {
-            toast({ title: 'Error al editar', description: result.error, variant: 'destructive' });
-        } else {
-            toast({ title: 'Éxito', description: 'Producto editado correctamente.' });
-            await loadProducts();
-            setSelectedProduct(null); // Cierra el diálogo de edición
-        }
-    });
-  }
-
+export default async function AdminDashboardPage() {
+  const products = await getProducts();
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -132,63 +73,7 @@ export default function AdminDashboardPage() {
             {/* Pestaña de Productos */}
             <TabsContent value="products" className="mt-6">
               <div className="flex justify-end mb-4">
-                 <Dialog open={isAddDialogOpen} onOpenChange={setAddDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button>Añadir Producto</Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      {/* CONEXIÓN: El 'action' ahora llama a nuestra función manejadora. */}
-                      <form action={handleAddProduct}>
-                        <DialogHeader>
-                          <DialogTitle className="font-headline">Añadir Nuevo Producto</DialogTitle>
-                          <DialogDescription>Completa los detalles del nuevo producto.</DialogDescription>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                          {/* Campos del formulario */}
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="nombre-add" className="text-right">Nombre</Label>
-                            <Input id="nombre-add" name="nombre" className="col-span-3" required />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="precio-add" className="text-right">Precio</Label>
-                            <Input id="precio-add" name="precio" type="number" step="0.01" className="col-span-3" required />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="stock-add" className="text-right">Stock</Label>
-                            <Input id="stock-add" name="stock" type="number" className="col-span-3" required />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="categoriaNombre-add" className="text-right">Categoría</Label>
-                            <Input id="categoriaNombre-add" name="categoriaNombre" placeholder="Ej: Aceite" className="col-span-3" required />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="brand-add" className="text-right">Marca</Label>
-                            <Input id="brand-add" name="brand" placeholder="Ej: ZenScents" className="col-span-3" />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="fragancias-add" className="text-right">Fragancias</Label>
-                            <Input id="fragancias-add" name="fragancias" placeholder="Ej: Sándalo, Lavanda" className="col-span-3" />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="imagenurl-add" className="text-right">URL de Imagen</Label>
-                            <Input id="imagenurl-add" name="imagenurl" placeholder="https://ejemplo.com/imagen.jpg" className="col-span-3" required />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="descripcion-add" className="text-right">Descripción</Label>
-                            <Textarea id="descripcion-add" name="descripcion" className="col-span-3" required />
-                          </div>
-                        </div>
-                        <DialogFooter>
-                            <DialogClose asChild>
-                                <Button type="button" variant="secondary">Cancelar</Button>
-                            </DialogClose>
-                            <Button type="submit" disabled={isPending}>
-                                {isPending ? 'Guardando...' : 'Guardar Producto'}
-                            </Button>
-                        </DialogFooter>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
+                 <AdminProductForm products={products} />
               </div>
               {/* VISUALIZACIÓN: Tabla que muestra los productos obtenidos de la API. */}
               <Table>
@@ -224,12 +109,7 @@ export default function AdminDashboardPage() {
                       <TableCell className="hidden md:table-cell">${product.precio.toFixed(2)}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                           <Dialog>
-                              <DialogTrigger asChild>
-                                <Button variant="outline" size="sm" onClick={() => setSelectedProduct(product)}>Editar</Button>
-                              </DialogTrigger>
-                              {/* El contenido del diálogo de edición se renderiza más abajo */}
-                           </Dialog>
+                           <AdminProductForm product={product} products={products} />
                            <AlertDialog>
                               <AlertDialogTrigger asChild>
                                  <Button variant="destructive" size="sm">Eliminar</Button>
@@ -244,7 +124,12 @@ export default function AdminDashboardPage() {
                                  <AlertDialogFooter>
                                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
                                     {/* CONEXIÓN: Llama a la función que ejecuta la Server Action de eliminar. */}
-                                    <AlertDialogAction onClick={() => handleDeleteProduct(product.id)}>Eliminar</AlertDialogAction>
+                                    <form action={async () => {
+                                      "use server"
+                                      await deleteProduct(product.id)
+                                    }}>
+                                      <AlertDialogAction type="submit">Eliminar</AlertDialogAction>
+                                    </form>
                                  </AlertDialogFooter>
                               </AlertDialogContent>
                            </AlertDialog>
@@ -283,7 +168,7 @@ export default function AdminDashboardPage() {
                           {/* CONEXIÓN (POR HACER): Conectar este diálogo a una Server Action 'editUser'. */}
                           <Dialog>
                             <DialogTrigger asChild>
-                              <Button variant="outline" size="sm" onClick={() => setSelectedUser(user)}>Editar</Button>
+                              <Button variant="outline" size="sm">Editar</Button>
                             </DialogTrigger>
                              <DialogContent>
                                 <DialogHeader>
@@ -413,7 +298,7 @@ export default function AdminDashboardPage() {
                             {/* CONEXIÓN (POR HACER): Conectar este diálogo a una Server Action 'updateOrderStatus'. */}
                             <Dialog>
                                <DialogTrigger asChild>
-                                  <Button variant="outline" size="sm" onClick={() => setSelectedOrder(order)}>Editar</Button>
+                                  <Button variant="outline" size="sm">Editar</Button>
                                </DialogTrigger>
                                <DialogContent>
                                 <DialogHeader>
@@ -476,65 +361,6 @@ export default function AdminDashboardPage() {
         </CardContent>
       </Card>
       
-      {/* VISUALIZACIÓN: Diálogo para editar un producto. Se muestra cuando 'selectedProduct' no es nulo. */}
-      {selectedProduct && (
-        <Dialog open={!!selectedProduct} onOpenChange={(isOpen) => !isOpen && setSelectedProduct(null)}>
-            <DialogContent className="sm:max-w-[425px]">
-                {/* CONEXIÓN: Este formulario llama a la Server Action 'editProduct'. */}
-                <form action={handleEditProduct}>
-                    <DialogHeader>
-                        <DialogTitle className="font-headline">Editar Producto</DialogTitle>
-                        <DialogDescription>Haz cambios en los detalles del producto.</DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <Input type="hidden" name="id" defaultValue={selectedProduct.id} />
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="nombre-edit" className="text-right">Nombre</Label>
-                          <Input id="nombre-edit" name="nombre" defaultValue={selectedProduct.nombre} className="col-span-3" required />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="precio-edit" className="text-right">Precio</Label>
-                          <Input id="precio-edit" name="precio" type="number" step="0.01" defaultValue={selectedProduct.precio} className="col-span-3" required />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="stock-edit" className="text-right">Stock</Label>
-                            <Input id="stock-edit" name="stock" type="number" defaultValue={selectedProduct.stock} className="col-span-3" required />
-                          </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="categoriaNombre-edit" className="text-right">Categoría</Label>
-                          <Input id="categoriaNombre-edit" name="categoriaNombre" defaultValue={selectedProduct.categoriaNombre} className="col-span-3" required />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="brand-edit" className="text-right">Marca</Label>
-                          <Input id="brand-edit" name="brand" defaultValue={selectedProduct.brand} className="col-span-3" />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="fragancias-edit" className="text-right">Fragancias</Label>
-                          <Input id="fragancias-edit" name="fragancias" defaultValue={selectedProduct.fragancias?.join(', ')} className="col-span-3" />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="imagenurl-edit" className="text-right">URL de Imagen</Label>
-                          <Input id="imagenurl-edit" name="imagenurl" defaultValue={selectedProduct.imagenurl} className="col-span-3" required />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="descripcion-edit" className="text-right">Descripción</Label>                          <Textarea id="descripcion-edit" name="descripcion" defaultValue={selectedProduct.descripcion} className="col-span-3" required />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <DialogClose asChild>
-                           <Button type="button" variant="secondary" onClick={() => setSelectedProduct(null)}>Cancelar</Button>
-                        </DialogClose>
-                           <Button type="submit" disabled={isPending}>
-                             {isPending ? 'Guardando...' : 'Guardar Cambios'}
-                           </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-      )}
-
     </div>
   );
 }
-
-    
