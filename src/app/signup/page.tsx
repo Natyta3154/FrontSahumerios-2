@@ -10,16 +10,19 @@ import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 export default function SignupPage() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { signup } = useAuth();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   // MANEJADOR: Se ejecuta cuando el usuario envía el formulario de registro.
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading(true);
+
     const formData = new FormData(event.currentTarget);
     const name = formData.get('name') as string;
     const email = formData.get('email') as string;
@@ -32,44 +35,16 @@ export default function SignupPage() {
         description: "Las contraseñas no coinciden.",
         variant: "destructive",
       });
+      setIsLoading(false);
       return;
     }
 
     try {
-      // CONEXIÓN: Esta es la llamada 'fetch' al endpoint de tu API para registrar un nuevo usuario.
-      const response = await fetch('https://apisahumerios.onrender.com/usuarios/registrar', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'omit',
-        body: JSON.stringify({
-          nombre: name,
-          email: email,
-          password: password,
-          rol: 'user', // Registrar siempre como usuario común
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.mensaje || 'Ocurrió un error al registrarse.');
-      }
-
-      // LÓGICA: Si el registro es exitoso, se "inicia sesión" automáticamente.
-      const newUser = {
-        id: data.usuario.id,
-        nombre: data.usuario.nombre,
-        email: data.usuario.email,
-        rol: data.usuario.rol,
-      };
-      
-      login(newUser);
+      await signup(name, email, password);
 
       toast({
         title: "¡Registro Exitoso!",
-        description: data.mensaje,
+        description: "Tu cuenta ha sido creada. ¡Bienvenido!",
       });
 
       router.push('/'); // Redirige al inicio después de registrarse
@@ -80,6 +55,8 @@ export default function SignupPage() {
         description: (error as Error).message,
         variant: "destructive",
       });
+    } finally {
+        setIsLoading(false);
     }
   };
 
@@ -104,22 +81,22 @@ export default function SignupPage() {
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Nombre</Label>
-              <Input id="name" name="name" placeholder="John Doe" required />
+              <Input id="name" name="name" placeholder="John Doe" required disabled={isLoading}/>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" type="email" placeholder="tu@email.com" required />
+              <Input id="email" name="email" type="email" placeholder="tu@email.com" required disabled={isLoading}/>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Contraseña</Label>
-              <Input id="password" name="password" type="password" required />
+              <Input id="password" name="password" type="password" required disabled={isLoading}/>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="confirm-password">Confirmar Contraseña</Label>
-              <Input id="confirm-password" name="confirm-password" type="password" required />
+              <Input id="confirm-password" name="confirm-password" type="password" required disabled={isLoading}/>
             </div>
-            <Button type="submit" className="w-full">
-              Crear Cuenta
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Creando Cuenta..." : "Crear Cuenta"}
             </Button>
           </CardContent>
           <CardFooter className="text-center text-sm">

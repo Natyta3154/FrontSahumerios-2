@@ -3,21 +3,15 @@
 
 import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-// Define la estructura del objeto de usuario para que coincida con el backend
-interface User {
-  id: number;
-  nombre: string;
-  email: string;
-  rol: 'user' | 'ADMIN' | string;
-}
+import type { User } from "@/lib/types";
 
 // Define el tipo para el contexto de autenticación
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
-  login: (emailOrUser: string | User, password?: string, isAdminLogin?: boolean) => Promise<void>;
+  login: (email: string, password?: string, isAdminLogin?: boolean) => Promise<void>;
+  signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -32,13 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   // Función para "iniciar sesión"
-  const login = useCallback(async (emailOrUser: string | User, password?: string, isAdminLogin: boolean = false) => {
-    // Si se pasa un objeto de usuario directamente (después del registro), se establece como usuario
-    if (typeof emailOrUser !== 'string') {
-        setUser(emailOrUser);
-        return;
-    }
-      
+  const login = useCallback(async (email: string, password?: string, isAdminLogin: boolean = false) => {
     setLoading(true);
     setError(null);
     try {
@@ -48,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           'Content-Type': 'application/json',
         },
         credentials: 'omit',
-        body: JSON.stringify({ email: emailOrUser, password }),
+        body: JSON.stringify({ email: email, password }),
       });
       
       const data = await response.json();
@@ -73,6 +61,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const signup = useCallback(async (name: string, email: string, password: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+       const response = await fetch('https://apisahumerios.onrender.com/usuarios/registrar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'omit',
+        body: JSON.stringify({
+          nombre: name,
+          email: email,
+          password: password,
+          rol: 'user', // Registrar siempre como usuario común
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.mensaje || 'Ocurrió un error al registrarse.');
+      }
+
+      // Después de un registro exitoso, se "inicia sesión" automáticamente.
+      setUser(data.usuario as User);
+
+    } catch(err: any) {
+        setError(err.message);
+        throw err;
+    } finally {
+        setLoading(false);
+    }
+
+  }, []);
+
+
   // Función para "cerrar sesión"
   const logout = useCallback(() => {
     setUser(null);
@@ -85,8 +110,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loading,
     error,
     login,
+    signup,
     logout
-  }), [user, loading, error, login, logout]);
+  }), [user, loading, error, login, signup, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
@@ -99,4 +125,3 @@ export function useAuth() {
   }
   return context;
 }
-
