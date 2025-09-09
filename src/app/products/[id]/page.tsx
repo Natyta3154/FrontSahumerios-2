@@ -53,7 +53,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
                   </CardTitle>
                 </Link>
                 <div className="flex items-baseline gap-2">
-                  <p className={`font-bold text-md ${relatedProduct.onSale ? 'text-destructive' : 'text-foreground'}`}>
+                  <p className={`font-bold text-lg ${relatedProduct.onSale ? 'text-destructive' : 'text-foreground'}`}>
                     ${relatedProduct.price.toFixed(2)}
                   </p>
                   {relatedProduct.onSale && relatedProduct.originalPrice && (
