@@ -1,3 +1,4 @@
+
 export type Product = {
   id: number; // Cambiado a number para coincidir con el backend
   nombre: string;

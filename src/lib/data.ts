@@ -1,3 +1,4 @@
+
 // NOTA PARA EL DESARROLLADOR:
 // Este archivo es el punto central para obtener datos desde tu API.
 // Contiene funciones que hacen 'fetch' a los endpoints de tu backend.
@@ -30,7 +31,7 @@ function mapApiToProduct(apiProduct: any): Product {
     // Datos mapeados para compatibilidad con el frontend
     name: apiProduct.nombre,
     description: apiProduct.descripcion,
-    price: apiProduct.precioFinal, 
+    price: apiProduct.precioFinal, // El precio para el cliente es el precio final
     image: apiProduct.imagenurl,
     category: apiProduct.categoriaNombre,
     rating: 4.5, // Simulado, ya que no viene del backend
@@ -38,7 +39,7 @@ function mapApiToProduct(apiProduct: any): Product {
     aromas: apiProduct.fragancias,
     brand: apiProduct.atributos?.find((a: any) => a.nombre.toLowerCase() === 'brand')?.valor,
     onSale: onSale,
-    originalPrice: onSale ? apiProduct.precio : undefined,
+    originalPrice: onSale ? apiProduct.precio : undefined, // El precio original es el base solo si hay oferta
   };
 }
 

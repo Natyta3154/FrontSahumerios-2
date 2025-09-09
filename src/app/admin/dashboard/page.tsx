@@ -197,7 +197,7 @@ export default function AdminDashboardPage() {
                     <TableHead>Nombre</TableHead>
                     <TableHead>Categoría</TableHead>
                     <TableHead className="hidden md:table-cell">Marca</TableHead>
-                    <TableHead className="hidden md:table-cell">Precio</TableHead>
+                    <TableHead className="hidden md:table-cell">Precio Final</TableHead>
                     <TableHead>
                       <span className="sr-only">Acciones</span>
                     </TableHead>
