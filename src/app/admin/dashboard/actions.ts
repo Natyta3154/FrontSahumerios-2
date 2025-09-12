@@ -108,7 +108,7 @@ export async function editProduct(formData: FormData, token: string | null) {
   const updatedProduct = buildProductPayload(formData);
   
    try {
-    const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
+    const response = await fetch(`https://apisahumerios.onrender.com/productos/editaProducto/${productId}`, {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
