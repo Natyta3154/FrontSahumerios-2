@@ -11,16 +11,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogClose,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -32,14 +22,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Eye } from 'lucide-react';
-import type { Product, User, Order } from '@/lib/types';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { Product } from '@/lib/types';
 import { deleteProduct } from './actions';
 import { AdminProductForm } from './product-form';
 import { useToast } from '@/hooks/use-toast';
@@ -49,13 +34,11 @@ import { useAuth } from '@/context/auth-context';
 
 interface DashboardTabsProps {
     products: Product[];
-    users: User[];
-    orders: Order[];
 }
 
 // Este componente ya no usa Tabs, ahora solo renderiza la tabla de productos.
 // El nombre se mantiene por simplicidad, pero su rol ha cambiado.
-export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
+export function DashboardTabs({ products }: DashboardTabsProps) {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
   const { token } = useAuth(); // Obtenemos el token desde el contexto

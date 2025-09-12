@@ -1,6 +1,5 @@
 
-import { getProducts, users, orders } from '@/lib/data';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { getProducts } from '@/lib/data';
 import { DashboardTabs } from './dashboard-tabs';
 
 // Esta página ahora solo muestra el contenido principal del dashboard.
@@ -9,6 +8,9 @@ export default async function AdminDashboardPage() {
   
   // Obtenemos los datos de productos directamente en el servidor.
   const products = await getProducts();
+  
+  // Los datos de usuarios y pedidos ahora se cargan en sus respectivas páginas.
+  // Ya no es necesario pasarlos aquí.
 
   return (
     // Ya no se usa una Card para envolver todo, el layout principal lo maneja.
@@ -19,8 +21,8 @@ export default async function AdminDashboardPage() {
             <p className="text-muted-foreground">Gestiona los productos de tu tienda.</p>
           </div>
       </div>
-      {/* Pasamos los datos pre-cargados al componente que renderiza la tabla/contenido. */}
-      <DashboardTabs products={products} users={users} orders={orders} />
+      {/* Pasamos solo los datos de productos. El componente ya no espera users ni orders. */}
+      <DashboardTabs products={products} />
     </>
   );
 }
