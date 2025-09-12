@@ -75,6 +75,10 @@ export function AdminProductForm({
         <form 
           ref={formRef}
           action={formAction}
+          onSubmit={(e) => {
+            e.preventDefault();
+            formAction(new FormData(e.currentTarget));
+          }}
         >
           <DialogHeader>
             <DialogTitle className="font-headline">
