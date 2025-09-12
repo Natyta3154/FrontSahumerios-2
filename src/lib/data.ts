@@ -14,15 +14,15 @@ function mapApiToProduct(apiProduct: any): Product {
     id: apiProduct.id,
     nombre: apiProduct.nombre,
     descripcion: apiProduct.descripcion,
-    precio: Number(apiProduct.precio),
-    stock: Number(apiProduct.stock),
+    precio: Number(apiProduct.precio) || 0,
+    stock: Number(apiProduct.stock) || 0,
     activo: apiProduct.activo,
     categoriaNombre: apiProduct.categoriaNombre,
     fragancias: apiProduct.fragancias || [],
     porcentajeDescuento: apiProduct.porcentajeDescuento ? Number(apiProduct.porcentajeDescuento) : null,
     fechaInicioDescuento: apiProduct.fechaInicioDescuento,
     fechaFinDescuento: apiProduct.fechaFinDescuento,
-    precioFinal: Number(apiProduct.precioFinal),
+    precioFinal: Number(apiProduct.precioFinal) || 0,
     atributos: apiProduct.atributos || [],
     precioMayorista: apiProduct.precioMayorista ? Number(apiProduct.precioMayorista) : undefined,
     totalIngresado: apiProduct.totalIngresado ? Number(apiProduct.totalIngresado) : undefined,
@@ -32,7 +32,7 @@ function mapApiToProduct(apiProduct: any): Product {
     // Datos derivados/mapeados para la UI del frontend
     name: apiProduct.nombre,
     description: apiProduct.descripcion,
-    price: Number(apiProduct.precioFinal), // El precio para el cliente es el precio final con descuento
+    price: Number(apiProduct.precioFinal) || 0, // El precio para el cliente es el precio final con descuento
     image: apiProduct.imagenurl || `https://picsum.photos/600/600?random=${apiProduct.id}`,
     category: apiProduct.categoriaNombre,
     rating: 4.5, // Simulado

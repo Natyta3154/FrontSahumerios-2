@@ -286,7 +286,7 @@ export function DashboardTabs({ products, users, orders }: DashboardTabsProps) {
                   <TableCell>{order.customerName}</TableCell>
                   <TableCell>{order.date}</TableCell>
                   <TableCell>
-                    <Badge variant={order.status === 'Delivered' ? 'default' : 'secondary'}>
+                    <Badge variant={order.status === 'Delivered' ? "default" : "secondary"}>
                       {order.status}
                     </Badge>
                   </TableCell>
