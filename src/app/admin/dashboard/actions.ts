@@ -80,6 +80,9 @@ function buildProductPayload(formData: FormData) {
 export async function addProduct(formData: FormData, token: string | null) {
   const newProduct = buildProductPayload(formData);
   
+  console.log("Intentando añadir producto. Token:", token ? "Presente" : "Ausente");
+  console.log("Payload enviado:", JSON.stringify(newProduct, null, 2));
+
   try {
     const response = await fetch('https://apisahumerios.onrender.com/productos/agregar', {
       method: 'POST',
@@ -89,9 +92,15 @@ export async function addProduct(formData: FormData, token: string | null) {
       },
       body: JSON.stringify(newProduct),
     });
+    
+    console.log("Respuesta de la API (Añadir):", {
+      status: response.status,
+      statusText: response.statusText,
+    });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
+      console.error("Error al añadir producto:", errorData);
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
 
@@ -100,6 +109,7 @@ export async function addProduct(formData: FormData, token: string | null) {
     return { success: true };
 
   } catch (error) {
+    console.error("Error de red o de fetch (Añadir):", error);
     return { error: (error as Error).message };
   }
 }
@@ -113,6 +123,9 @@ export async function editProduct(formData: FormData, token: string | null) {
   }
 
   const updatedProduct = buildProductPayload(formData);
+  
+  console.log(`Intentando editar producto ID: ${productId}. Token:`, token ? "Presente" : "Ausente");
+  console.log("Payload enviado:", JSON.stringify(updatedProduct, null, 2));
 
    try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
@@ -123,9 +136,16 @@ export async function editProduct(formData: FormData, token: string | null) {
       },
       body: JSON.stringify(updatedProduct),
     });
+    
+    console.log("Respuesta de la API (Editar):", {
+      status: response.status,
+      statusText: response.statusText,
+    });
+
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
+      console.error("Error al editar producto:", errorData);
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
 
@@ -135,6 +155,7 @@ export async function editProduct(formData: FormData, token: string | null) {
     return { success: true };
 
   } catch (error) {
+    console.error("Error de red o de fetch (Editar):", error);
     return { error: (error as Error).message };
   }
 }
@@ -146,6 +167,8 @@ export async function deleteProduct(productId: number, token: string | null) {
     return { error: 'No se proporcionó ID de producto.' };
   }
   
+  console.log(`Intentando eliminar producto ID: ${productId}. Token:`, token ? "Presente" : "Ausente");
+
   try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
       method: 'DELETE',
@@ -155,8 +178,14 @@ export async function deleteProduct(productId: number, token: string | null) {
       },
     });
 
+    console.log("Respuesta de la API (Eliminar):", {
+      status: response.status,
+      statusText: response.statusText,
+    });
+
     if (!response.ok) {
        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+       console.error("Error al eliminar producto:", errorData);
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
     
@@ -165,6 +194,7 @@ export async function deleteProduct(productId: number, token: string | null) {
     return { success: true };
 
   } catch (error) {
+    console.error("Error de red o de fetch (Eliminar):", error);
     return { error: (error as Error).message };
   }
 }

@@ -9,12 +9,17 @@ import type { Product, BlogArticle, User, Order } from './types';
 // Esto actúa como un "adaptador" entre el backend y el frontend.
 function mapApiToProduct(apiProduct: any): Product {
   const onSale = apiProduct.porcentajeDescuento && Number(apiProduct.porcentajeDescuento) > 0;
+  
+  // Aseguramos que los precios sean números, con 0 como valor por defecto.
+  const basePrice = Number(apiProduct.precio) || 0;
+  const finalPrice = Number(apiProduct.precioFinal) || basePrice;
+  
   return {
     // Datos directos de la API
     id: apiProduct.id,
     nombre: apiProduct.nombre,
     descripcion: apiProduct.descripcion,
-    precio: Number(apiProduct.precio) || 0,
+    precio: basePrice,
     stock: Number(apiProduct.stock) || 0,
     activo: apiProduct.activo,
     categoriaNombre: apiProduct.categoriaNombre,
@@ -22,7 +27,7 @@ function mapApiToProduct(apiProduct: any): Product {
     porcentajeDescuento: apiProduct.porcentajeDescuento ? Number(apiProduct.porcentajeDescuento) : null,
     fechaInicioDescuento: apiProduct.fechaInicioDescuento,
     fechaFinDescuento: apiProduct.fechaFinDescuento,
-    precioFinal: Number(apiProduct.precioFinal) || 0,
+    precioFinal: finalPrice,
     atributos: apiProduct.atributos || [],
     precioMayorista: apiProduct.precioMayorista ? Number(apiProduct.precioMayorista) : undefined,
     totalIngresado: apiProduct.totalIngresado ? Number(apiProduct.totalIngresado) : undefined,
@@ -32,7 +37,7 @@ function mapApiToProduct(apiProduct: any): Product {
     // Datos derivados/mapeados para la UI del frontend
     name: apiProduct.nombre,
     description: apiProduct.descripcion,
-    price: Number(apiProduct.precioFinal) || 0, // El precio para el cliente es el precio final con descuento
+    price: finalPrice, // El precio para el cliente es el precio final con descuento
     image: apiProduct.imagenurl || `https://picsum.photos/600/600?random=${apiProduct.id}`,
     category: apiProduct.categoriaNombre,
     rating: 4.5, // Simulado
@@ -40,7 +45,7 @@ function mapApiToProduct(apiProduct: any): Product {
     aromas: apiProduct.fragancias || [],
     brand: apiProduct.atributos?.find((a: any) => a.nombre.toLowerCase() === 'marca')?.valor,
     onSale: onSale,
-    originalPrice: onSale ? Number(apiProduct.precio) : undefined, // El precio original solo se muestra si hay oferta
+    originalPrice: onSale ? basePrice : undefined, // El precio original solo se muestra si hay oferta
   };
 }
 
@@ -62,16 +67,6 @@ export async function getProducts(): Promise<Product[]> {
 
     const apiProducts = await response.json();
     const mappedProducts = Array.isArray(apiProducts) ? apiProducts.map(mapApiToProduct) : [];
-
-    // --- SIMULACIÓN DE OFERTA ---
-    // Forzamos a los primeros 8 productos a estar en oferta para demostración visual.
-    if (mappedProducts.length > 0) {
-      for(let i = 0; i < Math.min(mappedProducts.length, 8); i++) {
-        mappedProducts[i].onSale = true;
-        mappedProducts[i].originalPrice = mappedProducts[i].price * 1.25; // Simulamos un 25% de descuento
-      }
-    }
-    // --- FIN DE SIMULACIÓN ---
     
     return mappedProducts;
 
