@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -10,11 +11,9 @@ import { revalidatePath } from 'next/cache';
 // Helper para construir el payload del producto con la estructura EXACTA que espera el backend.
 function buildProductPayload(formData: FormData) {
   
-  // Procesa las fragancias: convierte un string "a, b, c" en un array ["a", "b", "c"]
   const fraganciasString = formData.get('fragancias') as string || '';
   const fragancias = fraganciasString ? fraganciasString.split(',').map(f => f.trim()).filter(f => f) : [];
 
-  // Procesa los atributos: convierte un string "nombre:valor, nombre2:valor2" en un array de objetos
   const atributosString = formData.get('atributos') as string || '';
   const atributos = atributosString
     .split(',')
@@ -63,7 +62,6 @@ function buildProductPayload(formData: FormData) {
     fechaFinDescuento: getStringOrNull('fechaFinDescuento') || null,
   };
   
-  // Elimina las claves con valores nulos para que no se envíen al backend
    Object.keys(payload).forEach(key => {
     if (payload[key] === null || payload[key] === undefined) {
       delete payload[key];
@@ -74,15 +72,9 @@ function buildProductPayload(formData: FormData) {
 }
 
 // --- ACCIONES DE PRODUCTOS ---
-
-// Conexión con el endpoint para AÑADIR un nuevo producto.
-// Ahora acepta el token para la autorización.
 export async function addProduct(formData: FormData, token: string | null) {
   const newProduct = buildProductPayload(formData);
   
-  console.log("Intentando añadir producto. Token:", token ? "Presente" : "Ausente");
-  console.log("Payload enviado:", JSON.stringify(newProduct, null, 2));
-
   try {
     const response = await fetch('https://apisahumerios.onrender.com/productos/agregar', {
       method: 'POST',
@@ -93,14 +85,8 @@ export async function addProduct(formData: FormData, token: string | null) {
       body: JSON.stringify(newProduct),
     });
     
-    console.log("Respuesta de la API (Añadir):", {
-      status: response.status,
-      statusText: response.statusText,
-    });
-
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
-      console.error("Error al añadir producto:", errorData);
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
 
@@ -109,13 +95,10 @@ export async function addProduct(formData: FormData, token: string | null) {
     return { success: true };
 
   } catch (error) {
-    console.error("Error de red o de fetch (Añadir):", error);
     return { error: (error as Error).message };
   }
 }
   
-// Conexión con el endpoint para EDITAR un producto existente.
-// Ahora acepta el token para la autorización.
 export async function editProduct(formData: FormData, token: string | null) {
   const productId = formData.get('id');
   if (!productId) {
@@ -124,9 +107,6 @@ export async function editProduct(formData: FormData, token: string | null) {
 
   const updatedProduct = buildProductPayload(formData);
   
-  console.log(`Intentando editar producto ID: ${productId}. Token:`, token ? "Presente" : "Ausente");
-  console.log("Payload enviado:", JSON.stringify(updatedProduct, null, 2));
-
    try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
       method: 'PUT',
@@ -137,15 +117,8 @@ export async function editProduct(formData: FormData, token: string | null) {
       body: JSON.stringify(updatedProduct),
     });
     
-    console.log("Respuesta de la API (Editar):", {
-      status: response.status,
-      statusText: response.statusText,
-    });
-
-
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
-      console.error("Error al editar producto:", errorData);
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
 
@@ -155,20 +128,15 @@ export async function editProduct(formData: FormData, token: string | null) {
     return { success: true };
 
   } catch (error) {
-    console.error("Error de red o de fetch (Editar):", error);
     return { error: (error as Error).message };
   }
 }
 
-// Conexión con el endpoint para ELIMINAR un producto.
-// Ahora acepta el token para la autorización.
 export async function deleteProduct(productId: number, token: string | null) {
   if (!productId) {
     return { error: 'No se proporcionó ID de producto.' };
   }
   
-  console.log(`Intentando eliminar producto ID: ${productId}. Token:`, token ? "Presente" : "Ausente");
-
   try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
       method: 'DELETE',
@@ -178,14 +146,8 @@ export async function deleteProduct(productId: number, token: string | null) {
       },
     });
 
-    console.log("Respuesta de la API (Eliminar):", {
-      status: response.status,
-      statusText: response.statusText,
-    });
-
     if (!response.ok) {
        const errorData = await response.json().catch(() => ({ message: response.statusText }));
-       console.error("Error al eliminar producto:", errorData);
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
     
@@ -194,7 +156,90 @@ export async function deleteProduct(productId: number, token: string | null) {
     return { success: true };
 
   } catch (error) {
-    console.error("Error de red o de fetch (Eliminar):", error);
     return { error: (error as Error).message };
   }
 }
+
+// --- ACCIONES GENÉRICAS ---
+async function manageEntity(
+  entityName: string,
+  formData: FormData,
+  token: string | null,
+  idField: string = 'id'
+) {
+  const entityId = formData.get(idField);
+  const isEdit = !!entityId;
+  const endpoint = `https://apisahumerios.onrender.com/${entityName}${isEdit ? `/${entityId}` : ''}`;
+  const method = isEdit ? 'PUT' : 'POST';
+
+  const payload = Object.fromEntries(formData.entries());
+  // Remueve el id del payload si es una edición para evitar enviarlo dos veces
+  if(isEdit) delete payload[idField];
+
+
+  try {
+    const response = await fetch(endpoint, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: response.statusText }));
+      throw new Error(errorData.message || `Error en ${entityName}: ${response.status}`);
+    }
+    
+    revalidatePath(`/admin/${entityName}`);
+    return { success: true };
+  } catch (error) {
+    return { error: (error as Error).message };
+  }
+}
+
+async function deleteEntity(entityName: string, entityId: number | string, token: string | null) {
+  if (!entityId) {
+    return { error: 'No se proporcionó ID.' };
+  }
+
+  try {
+    const response = await fetch(`https://apisahumerios.onrender.com/${entityName}/${entityId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: response.statusText }));
+      throw new Error(errorData.message || `Error al eliminar en ${entityName}: ${response.status}`);
+    }
+
+    revalidatePath(`/admin/${entityName}`);
+    return { success: true };
+  } catch (error) {
+    return { error: (error as Error).message };
+  }
+}
+
+
+// --- ACCIONES PARA CADA ENTIDAD ---
+
+export const saveUser = async (formData: FormData, token: string | null) => await manageEntity('usuarios', formData, token);
+export const deleteUser = async (id: number, token: string | null) => await deleteEntity('usuarios', id, token);
+
+export const saveOrder = async (formData: FormData, token: string | null) => await manageEntity('pedidos', formData, token);
+export const deleteOrder = async (id: string, token: string | null) => await deleteEntity('pedidos', id, token);
+
+export const saveDeal = async (formData: FormData, token: string | null) => await manageEntity('ofertas', formData, token);
+export const deleteDeal = async (id: number, token: string | null) => await deleteEntity('ofertas', id, token);
+
+export const saveAttribute = async (formData: FormData, token: string | null) => await manageEntity('atributos', formData, token);
+export const deleteAttribute = async (id: number, token: string | null) => await deleteEntity('atributos', id, token);
+
+export const saveFragrance = async (formData: FormData, token: string | null) => await manageEntity('fragancias', formData, token);
+export const deleteFragrance = async (id: number, token: string | null) => await deleteEntity('fragancias', id, token);
+

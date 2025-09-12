@@ -56,6 +56,7 @@ export type User = {
   nombre: string;
   email: string;
   rol: 'ADMIN' | 'USER';
+  fechaRegistro: string;
 };
 
 export type OrderItem = {
@@ -69,7 +70,25 @@ export type Order = {
   id: string;
   customerName: string;
   date: string;
-  status: 'Pending' | 'Shipped' | 'Delivered';
+  status: 'Pending' | 'Shipped' | 'Delivered' | 'Procesando' | 'Enviado' | 'Entregado';
   total: number;
   items: OrderItem[];
 };
+
+export type Deal = {
+    id: number;
+    productoId: number;
+    porcentajeDescuento: number;
+    fechaInicio: string;
+    fechaFin: string;
+}
+
+export type ProductAttribute = {
+    id: number;
+    nombre: string;
+}
+
+export type Fragrance = {
+    id: number;
+    nombre: string;
+}

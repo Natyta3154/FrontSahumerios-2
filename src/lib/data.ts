@@ -1,21 +1,20 @@
 
+
 // NOTA PARA EL DESARROLLADOR:
 // Este archivo es el punto central para obtener datos desde tu API.
 // Contiene funciones que hacen 'fetch' a los endpoints de tu backend.
 
-import type { Product, BlogArticle, User, Order } from './types';
+import type { Product, BlogArticle, User, Order, Deal, ProductAttribute, Fragrance } from './types';
 
-// Función para mapear la respuesta de la API al tipo 'Product' que usa el frontend.
-// Esto actúa como un "adaptador" entre el backend y el frontend.
+// --- ADAPTADORES DE API A TIPO DE FRONTEND ---
+
 function mapApiToProduct(apiProduct: any): Product {
   const onSale = apiProduct.porcentajeDescuento && Number(apiProduct.porcentajeDescuento) > 0;
   
-  // Aseguramos que los precios sean números, con 0 como valor por defecto.
   const basePrice = Number(apiProduct.precio) || 0;
   const finalPrice = Number(apiProduct.precioFinal) || basePrice;
   
   return {
-    // Datos directos de la API
     id: apiProduct.id,
     nombre: apiProduct.nombre,
     descripcion: apiProduct.descripcion,
@@ -33,11 +32,9 @@ function mapApiToProduct(apiProduct: any): Product {
     totalIngresado: apiProduct.totalIngresado ? Number(apiProduct.totalIngresado) : undefined,
     imagenurl: apiProduct.imagenurl,
     mensaje: apiProduct.mensaje,
-
-    // Datos derivados/mapeados para la UI del frontend
     name: apiProduct.nombre,
     description: apiProduct.descripcion,
-    price: finalPrice, // El precio para el cliente es el precio final con descuento
+    price: finalPrice,
     image: apiProduct.imagenurl || `https://picsum.photos/600/600?random=${apiProduct.id}`,
     category: apiProduct.categoriaNombre,
     rating: 4.5, // Simulado
@@ -45,12 +42,59 @@ function mapApiToProduct(apiProduct: any): Product {
     aromas: apiProduct.fragancias || [],
     brand: apiProduct.atributos?.find((a: any) => a.nombre.toLowerCase() === 'marca')?.valor,
     onSale: onSale,
-    originalPrice: onSale ? basePrice : undefined, // El precio original solo se muestra si hay oferta
+    originalPrice: onSale ? basePrice : undefined,
   };
 }
 
+function mapApiToUser(apiUser: any): User {
+    return {
+        id: apiUser.id,
+        nombre: apiUser.nombre,
+        email: apiUser.email,
+        rol: apiUser.rol,
+        fechaRegistro: apiUser.fechaRegistro,
+    }
+}
 
-// --- CONEXIÓN AL BACKEND PARA PRODUCTOS ---
+function mapApiToOrder(apiOrder: any): Order {
+    return {
+        id: apiOrder.id,
+        customerName: apiOrder.usuario.nombre, // Asumiendo que la API anida el usuario
+        date: apiOrder.fecha,
+        status: apiOrder.estado,
+        total: Number(apiOrder.total) || 0,
+        items: apiOrder.detalles?.map((d: any) => ({
+            productId: d.producto.id,
+            productName: d.producto.nombre,
+            quantity: d.cantidad,
+            price: Number(d.precio) || 0
+        })) || []
+    }
+}
+
+
+// --- CONEXIONES AL BACKEND ---
+
+async function fetchData<T>(endpoint: string, token: string | null, mapper: (item: any) => T): Promise<T[]> {
+  try {
+    const response = await fetch(`https://apisahumerios.onrender.com${endpoint}`, {
+      cache: 'no-cache',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : '',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener datos de ${endpoint}: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return Array.isArray(data) ? data.map(mapper) : [];
+  } catch (error) {
+    console.error(`No se pudieron obtener datos de ${endpoint}:`, error);
+    return [];
+  }
+}
 
 export async function getProducts(): Promise<Product[]> {
   try {
@@ -99,14 +143,18 @@ export async function getProductById(id: string): Promise<Product | undefined> {
   }
 }
 
+// --- Nuevas funciones para el panel de admin ---
+export const getUsers = (token: string | null) => fetchData('/usuarios', token, mapApiToUser);
+export const getOrders = (token: string | null) => fetchData('/pedidos', token, mapApiToOrder);
+
+// Asumiendo que estos endpoints existen y devuelven un array de objetos.
+// Los mappers son simples, se pueden ajustar si la API devuelve una estructura diferente.
+export const getDeals = (token: string | null): Promise<Deal[]> => fetchData('/ofertas', token, item => item as Deal);
+export const getAttributes = (token: string | null): Promise<ProductAttribute[]> => fetchData('/atributos', token, item => item as ProductAttribute);
+export const getFragrances = (token: string | null): Promise<Fragrance[]> => fetchData('/fragancias', token, item => item as Fragrance);
+
 
 // --- DATOS DE MUESTRA (MOCK DATA) ---
-// NOTA: Deberás reemplazarlos con llamadas a tu API.
-
-export const users: User[] = [];
-export const orders: Order[] = [];
-
-// Los artículos del blog pueden seguir siendo datos de muestra.
 export const blogArticles: BlogArticle[] = [
   {
     slug: 'beginners-guide-to-aromatherapy',
