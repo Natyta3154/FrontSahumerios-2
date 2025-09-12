@@ -64,14 +64,22 @@ export function ProductDetails({ product }: { product: Product }) {
           <div className="mt-4">
             <ProductRating rating={product.rating} reviews={product.reviews} />
           </div>
-          <div className="flex items-baseline gap-2 mt-4">
-            <p className={`font-bold text-3xl ${product.onSale ? 'text-destructive' : 'text-foreground'}`}>
-              ${product.price.toFixed(2)}
-            </p>
-            {product.onSale && product.originalPrice && (
-              <p className="text-xl text-muted-foreground line-through">
-                ${product.originalPrice.toFixed(2)}
-              </p>
+          <div className="space-y-2 mt-4">
+            <div className="flex items-baseline gap-2">
+                <p className={`font-bold text-3xl ${product.onSale ? 'text-destructive' : 'text-foreground'}`}>
+                ${product.price.toFixed(2)}
+                </p>
+                {product.onSale && product.originalPrice && (
+                <p className="text-xl text-muted-foreground line-through">
+                    ${product.originalPrice.toFixed(2)}
+                </p>
+                )}
+            </div>
+            {product.precioMayorista && (
+                <div className="flex items-baseline gap-2">
+                    <p className="text-lg font-semibold text-muted-foreground">Precio Mayorista:</p>
+                    <p className="font-bold text-xl text-foreground">${product.precioMayorista.toFixed(2)}</p>
+                </div>
             )}
           </div>
         </div>
