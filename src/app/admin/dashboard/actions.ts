@@ -230,27 +230,33 @@ async function deleteEntity(entityName: string, entityId: number | string, token
 
 // --- ACCIONES PARA CADA ENTIDAD ---
 
-export const saveUser = async (formData: FormData, token: string | null) => await manageEntity('usuarios', formData, token);
-export const deleteUser = async (id: number, token: string | null) => await deleteEntity('usuarios', id, token);
+export async function saveUser(formData: FormData, token: string | null) {
+  return await manageEntity('usuarios', formData, token);
+}
+export async function deleteUser(id: number, token: string | null) {
+  return await deleteEntity('usuarios', id, token);
+}
 
-export const saveOrder = async (formData: FormData, token: string | null) => await manageEntity('pedidos', formData, token);
-export const deleteOrder = async (id: string, token: string | null) => await deleteEntity('pedidos', id, token);
+export async function saveOrder(formData: FormData, token: string | null) {
+  return await manageEntity('pedidos', formData, token);
+}
+export async function deleteOrder(id: string, token: string | null) {
+  return await deleteEntity('pedidos', id, token);
+}
 
 export async function saveDeal(formData: FormData, token: string | null) {
   const dealId = formData.get('id');
   const isEdit = !!dealId;
 
-  // Usa los endpoints específicos para ofertas que nos diste
   const endpoint = isEdit
     ? `https://apisahumerios.onrender.com/api/ofertas/editar/${dealId}`
     : `https://apisahumerios.onrender.com/api/ofertas/crearOferta`;
   
   const method = isEdit ? 'PUT' : 'POST';
 
-  // El backend espera el ID de producto como `productoId`, no como un objeto anidado
   const payload = {
     productoId: Number(formData.get('productoId')),
-    porcentajeDescuento: Number(formData.get('porcentajeDescuento')),
+    valor_descuento: Number(formData.get('porcentajeDescuento')), // Clave corregida
     fechaInicio: formData.get('fechaInicio'),
     fechaFin: formData.get('fechaFin'),
   };
@@ -301,8 +307,16 @@ export async function deleteDeal(id: number, token: string | null) {
     }
 }
 
-export const saveAttribute = async (formData: FormData, token: string | null) => await manageEntity('atributos', formData, token);
-export const deleteAttribute = async (id: number, token: string | null) => await deleteEntity('atributos', id, token);
+export async function saveAttribute(formData: FormData, token: string | null) {
+  return await manageEntity('atributos', formData, token);
+}
+export async function deleteAttribute(id: number, token: string | null) {
+  return await deleteEntity('atributos', id, token);
+}
 
-export const saveFragrance = async (formData: FormData, token: string | null) => await manageEntity('fragancias', formData, token);
-export const deleteFragrance = async (id: number, token: string | null) => await deleteEntity('fragancias', id, token);
+export async function saveFragrance(formData: FormData, token: string | null) {
+  return await manageEntity('fragancias', formData, token);
+}
+export async function deleteFragrance(id: number, token: string | null) {
+  return await deleteEntity('fragancias', id, token);
+}
