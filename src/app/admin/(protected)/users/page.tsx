@@ -25,7 +25,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useTransition, useState, useEffect } from 'react';
 import { useAuth } from '@/context/auth-context';
-import { deleteUser } from '../../dashboard/actions';
+import { deleteUser } from '../dashboard/actions';
 import { AdminUserForm } from './user-form';
 import { Badge } from '@/components/ui/badge';
 
@@ -36,14 +36,16 @@ export default function AdminUsersPage() {
     const { toast } = useToast();
     const { token } = useAuth();
 
-    useEffect(() => {
-        async function fetchUsers() {
+    const fetchUsers = async () => {
+        if (token) {
             const fetchedUsers = await getUsers(token);
             setUsers(fetchedUsers);
         }
-        if (token) {
-            fetchUsers();
-        }
+    }
+
+    useEffect(() => {
+        fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
     const handleDelete = (userId: number) => {
@@ -60,7 +62,7 @@ export default function AdminUsersPage() {
                     title: "Éxito",
                     description: "Usuario eliminado correctamente.",
                 });
-                setUsers(prev => prev.filter(u => u.id !== userId));
+                await fetchUsers();
             }
         });
     };
@@ -72,7 +74,7 @@ export default function AdminUsersPage() {
                 <h1 className="font-headline text-2xl">Usuarios</h1>
                 <p className="text-muted-foreground">Gestiona las cuentas de los usuarios registrados.</p>
             </div>
-            <AdminUserForm onUserSaved={async () => setUsers(await getUsers(token))} />
+            <AdminUserForm onUserSaved={fetchUsers} />
         </div>
         <div className="bg-card border rounded-lg">
             <Table>
@@ -102,7 +104,7 @@ export default function AdminUsersPage() {
                     <TableCell>{new Date(user.fechaRegistro).toLocaleDateString()}</TableCell>
                     <TableCell>
                         <div className="flex gap-2 justify-end">
-                            <AdminUserForm user={user} onUserSaved={async () => setUsers(await getUsers(token))} />
+                            <AdminUserForm user={user} onUserSaved={fetchUsers} />
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <Button variant="destructive" size="sm" disabled={isPending}>Eliminar</Button>

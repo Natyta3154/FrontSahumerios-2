@@ -27,7 +27,7 @@ import { Deal } from "@/lib/types";
 import { useAuth } from "@/context/auth-context";
 import { useEffect, useState, useTransition } from "react";
 import { useToast } from '@/hooks/use-toast';
-import { deleteDeal } from '../../dashboard/actions';
+import { deleteDeal } from '../dashboard/actions';
 import { AdminDealForm } from './deal-form';
 import { Badge } from '@/components/ui/badge';
 

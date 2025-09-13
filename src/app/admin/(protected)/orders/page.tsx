@@ -26,7 +26,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { useTransition, useState, useEffect } from 'react';
 import { useAuth } from '@/context/auth-context';
-import { deleteOrder } from '../../dashboard/actions';
+import { deleteOrder } from '../dashboard/actions';
 
 
 export default function AdminOrdersPage() {

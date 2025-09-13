@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast"
 import type { ProductAttribute } from "@/lib/types"
 import React, { useTransition, useState } from "react"
 import { useAuth } from "@/context/auth-context"
-import { saveAttribute } from "../../dashboard/actions"
+import { saveAttribute } from "../dashboard/actions"
 
 export function AdminAttributeForm({
   attribute,

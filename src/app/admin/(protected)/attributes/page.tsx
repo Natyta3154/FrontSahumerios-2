@@ -26,7 +26,7 @@ import { ProductAttribute } from "@/lib/types";
 import { useAuth } from "@/context/auth-context";
 import { useEffect, useState, useTransition } from "react";
 import { useToast } from '@/hooks/use-toast';
-import { deleteAttribute } from '../../dashboard/actions';
+import { deleteAttribute } from '../dashboard/actions';
 import { AdminAttributeForm } from './attribute-form';
 
 export default function AdminAttributesPage() {
