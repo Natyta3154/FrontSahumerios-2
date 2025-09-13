@@ -72,6 +72,20 @@ function mapApiToOrder(apiOrder: any): Order {
     }
 }
 
+function mapApiToDeal(apiDeal: any): Deal {
+    return {
+        idOferta: apiDeal.idOferta,
+        nombreProducto: apiDeal.nombreProducto,
+        descripcion: apiDeal.descripcion,
+        precio: apiDeal.precio,
+        estado: apiDeal.estado,
+        tipoDescuento: apiDeal.tipoDescuento,
+        valorDescuento: apiDeal.valorDescuento,
+        fechaInicio: apiDeal.fechaInicio,
+        fechaFin: apiDeal.fechaFin,
+        productoId: apiDeal.productoId,
+    }
+}
 
 // --- CONEXIONES AL BACKEND ---
 
@@ -123,7 +137,7 @@ export async function getProducts(): Promise<Product[]> {
   }
 }
 
-export async function getProductById(id: string): Promise<Product | undefined> {
+export async function getProductById(id: string | number): Promise<Product | undefined> {
    try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/${id}`, { 
       cache: 'no-cache',
@@ -146,11 +160,23 @@ export async function getProductById(id: string): Promise<Product | undefined> {
   }
 }
 
+export async function getProductsOnDeal(): Promise<Product[]> {
+  const deals = await getDeals(null);
+  const activeDeals = deals.filter(deal => deal.estado);
+  const productsOnDeal = await Promise.all(
+    activeDeals.map(async (deal) => {
+      const product = await getProductById(deal.productoId);
+      return product;
+    })
+  );
+  return productsOnDeal.filter((p): p is Product => p !== undefined);
+}
+
 // --- Nuevas funciones para el panel de admin ---
 export const getUsers = (token: string | null) => fetchData('/usuarios', token, mapApiToUser);
 export const getOrders = (token: string | null) => fetchData('/pedidos', token, mapApiToOrder);
 
-export const getDeals = (token: string | null): Promise<Deal[]> => fetchData('/api/ofertas/listar', token, item => item as Deal);
+export const getDeals = (token: string | null): Promise<Deal[]> => fetchData('/api/ofertas/listar', token, mapApiToDeal);
 export const getAttributes = (token: string | null): Promise<ProductAttribute[]> => fetchData('/atributos/listado', token, item => item as ProductAttribute);
 export const getFragrances = (token: string | null): Promise<Fragrance[]> => fetchData('/fragancias', token, item => item as Fragrance);
 

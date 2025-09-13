@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 // Importamos los datos de muestra. En una aplicación real, estos datos vendrían de una llamada a tu backend.
-import { getProducts, blogArticles } from "@/lib/data";
+import { getProducts, blogArticles, getProductsOnDeal } from "@/lib/data";
 import { ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,8 +23,9 @@ export default function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       const allProducts = await getProducts();
-      // Filtramos para obtener solo los productos en oferta y tomamos los primeros 8
-      setSaleProducts(allProducts.filter(p => p.onSale).slice(0, 8));
+      // Obtenemos los productos que están en oferta real.
+      const productsOnDeal = await getProductsOnDeal();
+      setSaleProducts(productsOnDeal.slice(0, 8));
       // Tomamos los primeros 3 productos generales como destacados
       setFeaturedProducts(allProducts.slice(0, 3));
     }
@@ -343,7 +344,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
