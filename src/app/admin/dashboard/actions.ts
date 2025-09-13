@@ -248,6 +248,7 @@ export async function saveDeal(formData: FormData, token: string | null) {
   const dealId = formData.get('id');
   const isEdit = !!dealId;
 
+  // Usa los endpoints específicos para crear y editar
   const endpoint = isEdit
     ? `https://apisahumerios.onrender.com/api/ofertas/editar/${dealId}`
     : `https://apisahumerios.onrender.com/api/ofertas/crearOferta`;
@@ -267,17 +268,23 @@ export async function saveDeal(formData: FormData, token: string | null) {
     return value || null;
   };
 
+  // Construye el payload EXACTO que espera el backend
   const payload: any = {
-    nombre: getStringOrNull('nombre'),
-    descripcion: getStringOrNull('descripcion'),
-    precio: getNumberOrNull('precio'),
-    activo: formData.get('activo') === 'on',
-    tipo_descuento: getStringOrNull('tipo_descuento'),
-    valor_descuento: getNumberOrNull('valor_descuento'),
-    fecha_inicio: getStringOrNull('fecha_inicio'),
-    fecha_fin: getStringOrNull('fecha_fin'),
-    producto_id: getNumberOrNull('producto_id'),
+    productoId: getNumberOrNull('producto_id'),
+    valorDescuento: getNumberOrNull('valor_descuento'),
+    tipoDescuento: getStringOrNull('tipo_descuento'),
+    fechaInicio: getStringOrNull('fecha_inicio'),
+    fechaFin: getStringOrNull('fecha_fin'),
+    estado: formData.get('activo') === 'on',
   };
+  
+  // Para la edición, la API podría requerir todos los campos, así que los añadimos.
+  // Es más seguro enviar todos los campos que esperar que el backend los ignore.
+  if (isEdit) {
+    payload.nombre = getStringOrNull('nombre');
+    payload.descripcion = getStringOrNull('descripcion');
+    payload.precio = getNumberOrNull('precio');
+  }
   
   // Limpiar nulos para no enviarlos si no son necesarios
   Object.keys(payload).forEach(key => {
@@ -297,8 +304,9 @@ export async function saveDeal(formData: FormData, token: string | null) {
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: `${response.status} ${response.statusText}` }));
-      throw new Error(errorData.message || `Error en ofertas: ${response.status}`);
+      const errorText = await response.text();
+      const errorData = JSON.parse(errorText || '{}');
+      throw new Error(errorData.message || `Error en ofertas: ${response.status} ${response.statusText}`);
     }
     
     revalidatePath(`/admin/deals`);
@@ -345,3 +353,4 @@ export async function saveFragrance(formData: FormData, token: string | null) {
 export async function deleteFragrance(id: number, token: string | null) {
   return await deleteEntity('fragancias', id, token);
 }
+

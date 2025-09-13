@@ -47,6 +47,7 @@ export default function AdminDealsPage() {
 
   useEffect(() => {
     fetchDeals();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const handleDelete = (dealId: number) => {
@@ -83,7 +84,6 @@ export default function AdminDealsPage() {
                 <TableRow>
                     <TableHead>ID</TableHead>
                     <TableHead>Nombre</TableHead>
-                    <TableHead>Descripción</TableHead>
                     <TableHead>Producto ID</TableHead>
                     <TableHead>Valor Dto.</TableHead>
                     <TableHead>Activo</TableHead>
@@ -97,7 +97,6 @@ export default function AdminDealsPage() {
                     <TableRow key={deal.id || index}>
                         <TableCell className="font-mono text-xs">{deal.id}</TableCell>
                         <TableCell className="font-medium">{deal.nombre}</TableCell>
-                        <TableCell className="text-muted-foreground hidden md:table-cell">{deal.descripcion}</TableCell>
                         <TableCell>{deal.producto_id}</TableCell>
                         <TableCell>{deal.valor_descuento}</TableCell>
                          <TableCell>

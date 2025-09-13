@@ -84,7 +84,7 @@ export function AdminDealForm({
             <DialogDescription>
               {deal
                 ? "Haz cambios en los detalles de la oferta."
-                : "Completa todos los detalles de la nueva oferta."}
+                : "Completa los detalles requeridos para la nueva oferta."}
             </DialogDescription>
           </DialogHeader>
           <ScrollArea className="h-[60vh] pr-6">
@@ -92,29 +92,34 @@ export function AdminDealForm({
               {deal && (
                 <Input type="hidden" name="id" defaultValue={deal.id} />
               )}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="nombre" className="text-right">Nombre</Label>
-                <Input id="nombre" name="nombre" defaultValue={deal?.nombre} className="col-span-3" required />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="descripcion" className="text-right">Descripción</Label>
-                <Textarea id="descripcion" name="descripcion" defaultValue={deal?.descripcion} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="precio" className="text-right">Precio</Label>
-                <Input id="precio" name="precio" type="number" step="0.01" defaultValue={deal?.precio} className="col-span-3" placeholder="Opcional" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="tipo_descuento" className="text-right">Tipo Descuento</Label>
-                <Input id="tipo_descuento" name="tipo_descuento" defaultValue={deal?.tipo_descuento} className="col-span-3" placeholder="Ej: Porcentaje, Fijo" />
+              {/* Campos para edición que pueden no ser necesarios para creación */}
+              {deal && (
+                 <>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="nombre" className="text-right">Nombre</Label>
+                        <Input id="nombre" name="nombre" defaultValue={deal?.nombre} className="col-span-3" />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="descripcion" className="text-right">Descripción</Label>
+                        <Textarea id="descripcion" name="descripcion" defaultValue={deal?.descripcion} className="col-span-3" />
+                    </div>
+                     <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="precio" className="text-right">Precio</Label>
+                        <Input id="precio" name="precio" type="number" step="0.01" defaultValue={deal?.precio} className="col-span-3" placeholder="Opcional en edición" />
+                    </div>
+                 </>
+              )}
+               <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="producto_id" className="text-right">ID de Producto</Label>
+                <Input id="producto_id" name="producto_id" type="number" defaultValue={deal?.producto_id} className="col-span-3" required />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="valor_descuento" className="text-right">Valor Descuento</Label>
                 <Input id="valor_descuento" name="valor_descuento" type="number" step="0.01" defaultValue={deal?.valor_descuento} className="col-span-3" required />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="producto_id" className="text-right">ID de Producto</Label>
-                <Input id="producto_id" name="producto_id" type="number" defaultValue={deal?.producto_id} className="col-span-3" required />
+                <Label htmlFor="tipo_descuento" className="text-right">Tipo Descuento</Label>
+                <Input id="tipo_descuento" name="tipo_descuento" defaultValue={deal?.tipo_descuento} className="col-span-3" placeholder="Ej: PORCENTAJE, FIJO" required />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="fecha_inicio" className="text-right">Fecha Inicio</Label>
@@ -125,7 +130,7 @@ export function AdminDealForm({
                 <Input id="fecha_fin" name="fecha_fin" type="date" defaultValue={deal?.fecha_fin?.split('T')[0] ?? ""} className="col-span-3" required />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="activo" className="text-right">Activo</Label>
+                <Label htmlFor="activo" className="text-right">Activo (Estado)</Label>
                 <Switch id="activo" name="activo" defaultChecked={deal?.activo ?? true} />
               </div>
             </div>
