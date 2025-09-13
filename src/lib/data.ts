@@ -151,7 +151,7 @@ export const getUsers = (token: string | null) => fetchData('/usuarios', token, 
 export const getOrders = (token: string | null) => fetchData('/pedidos', token, mapApiToOrder);
 
 export const getDeals = (token: string | null): Promise<Deal[]> => fetchData('/api/ofertas/listar', token, item => item as Deal);
-export const getAttributes = (token: string | null): Promise<ProductAttribute[]> => fetchData('/atributos', token, item => item as ProductAttribute);
+export const getAttributes = (token: string | null): Promise<ProductAttribute[]> => fetchData('/atributos/listado', token, item => item as ProductAttribute);
 export const getFragrances = (token: string | null): Promise<Fragrance[]> => fetchData('/fragancias', token, item => item as Fragrance);
 
 
