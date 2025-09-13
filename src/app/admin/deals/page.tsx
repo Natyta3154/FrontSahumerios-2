@@ -1,11 +1,27 @@
 
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDeals } from "@/lib/data";
 import { Deal } from "@/lib/types";
+import { useAuth } from "@/context/auth-context";
+import { useEffect, useState } from "react";
 
 // TODO: Crear formulario y acciones para gestionar ofertas
-export default async function AdminDealsPage() {
-  const deals: Deal[] = await getDeals();
+export default function AdminDealsPage() {
+  const [deals, setDeals] = useState<Deal[]>([]);
+  const { token } = useAuth();
+
+  useEffect(() => {
+    async function fetchDeals() {
+      const fetchedDeals = await getDeals(token);
+      setDeals(fetchedDeals);
+    }
+    if (token) {
+      fetchDeals();
+    }
+  }, [token]);
+
 
   return (
     <>
@@ -31,4 +47,3 @@ export default async function AdminDealsPage() {
     </>
   );
 }
-

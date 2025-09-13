@@ -1,11 +1,27 @@
 
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAttributes } from "@/lib/data";
 import { ProductAttribute } from "@/lib/types";
+import { useAuth } from "@/context/auth-context";
+import { useEffect, useState } from "react";
 
 // TODO: Crear formulario y acciones para gestionar atributos
-export default async function AdminAttributesPage() {
-  const attributes: ProductAttribute[] = await getAttributes();
+export default function AdminAttributesPage() {
+  const [attributes, setAttributes] = useState<ProductAttribute[]>([]);
+  const { token } = useAuth();
+
+  useEffect(() => {
+    async function fetchAttributes() {
+      const fetchedAttributes = await getAttributes(token);
+      setAttributes(fetchedAttributes);
+    }
+    if (token) {
+      fetchAttributes();
+    }
+  }, [token]);
+
 
   return (
     <>
