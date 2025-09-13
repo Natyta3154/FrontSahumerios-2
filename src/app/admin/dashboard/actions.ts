@@ -234,11 +234,74 @@ export const deleteUser = async (id: number, token: string | null) => await dele
 export const saveOrder = async (formData: FormData, token: string | null) => await manageEntity('pedidos', formData, token);
 export const deleteOrder = async (id: string, token: string | null) => await deleteEntity('pedidos', id, token);
 
-export const saveDeal = async (formData: FormData, token: string | null) => await manageEntity('ofertas', formData, token);
-export const deleteDeal = async (id: number, token: string | null) => await deleteEntity('ofertas', id, token);
+export async function saveDeal(formData: FormData, token: string | null) {
+  const dealId = formData.get('id');
+  const isEdit = !!dealId;
+
+  // Usa los endpoints específicos para ofertas que nos diste
+  const endpoint = isEdit
+    ? `https://apisahumerios.onrender.com/api/ofertas/editar/${dealId}`
+    : `https://apisahumerios.onrender.com/api/ofertas/crearOferta`;
+  
+  const method = isEdit ? 'PUT' : 'POST';
+
+  // El backend espera el ID de producto como `productoId`, no como un objeto anidado
+  const payload = {
+    productoId: Number(formData.get('productoId')),
+    porcentajeDescuento: Number(formData.get('porcentajeDescuento')),
+    fechaInicio: formData.get('fechaInicio'),
+    fechaFin: formData.get('fechaFin'),
+  };
+
+  try {
+    const response = await fetch(endpoint, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: response.statusText }));
+      throw new Error(errorData.message || `Error en ofertas: ${response.status}`);
+    }
+    
+    revalidatePath(`/admin/deals`);
+    return { success: true };
+  } catch (error) {
+    return { error: (error as Error).message };
+  }
+}
+
+
+export async function deleteDeal(id: number, token: string | null) {
+    if (!id) {
+        return { error: 'No se proporcionó ID de oferta.' };
+    }
+    try {
+        const response = await fetch(`https://apisahumerios.onrender.com/api/ofertas/eliminar/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: response.statusText }));
+            throw new Error(errorData.message || `Error al eliminar la oferta: ${response.status}`);
+        }
+        revalidatePath(`/admin/deals`);
+        return { success: true };
+    } catch (error) {
+        return { error: (error as Error).message };
+    }
+}
 
 export const saveAttribute = async (formData: FormData, token: string | null) => await manageEntity('atributos', formData, token);
 export const deleteAttribute = async (id: number, token: string | null) => await deleteEntity('atributos', id, token);
 
 export const saveFragrance = async (formData: FormData, token: string | null) => await manageEntity('fragancias', formData, token);
 export const deleteFragrance = async (id: number, token: string | null) => await deleteEntity('fragancias', id, token);
+

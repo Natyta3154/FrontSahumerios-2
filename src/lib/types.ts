@@ -81,7 +81,7 @@ export type Deal = {
     porcentajeDescuento: number;
     fechaInicio: string;
     fechaFin: string;
-}
+};
 
 export type ProductAttribute = {
     id: number;
