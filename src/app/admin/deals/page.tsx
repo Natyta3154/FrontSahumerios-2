@@ -29,6 +29,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useToast } from '@/hooks/use-toast';
 import { deleteDeal } from '../dashboard/actions';
 import { AdminDealForm } from './deal-form';
+import { Badge } from '@/components/ui/badge';
 
 
 export default function AdminDealsPage() {
@@ -80,11 +81,12 @@ export default function AdminDealsPage() {
          <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>ID Oferta</TableHead>
-                    <TableHead>ID Producto</TableHead>
-                    <TableHead>% Descuento</TableHead>
-                    <TableHead>Fecha de Inicio</TableHead>
-                    <TableHead>Fecha de Fin</TableHead>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Nombre</TableHead>
+                    <TableHead>Descripción</TableHead>
+                    <TableHead>Producto ID</TableHead>
+                    <TableHead>Valor Dto.</TableHead>
+                    <TableHead>Activo</TableHead>
                     <TableHead className="text-right">
                         <span className="sr-only">Acciones</span>
                     </TableHead>
@@ -94,10 +96,15 @@ export default function AdminDealsPage() {
                 {deals.map((deal, index) => (
                     <TableRow key={deal.id || index}>
                         <TableCell className="font-mono text-xs">{deal.id}</TableCell>
-                        <TableCell>{deal.productoId}</TableCell>
-                        <TableCell>{deal.porcentajeDescuento}%</TableCell>
-                        <TableCell>{new Date(deal.fechaInicio).toLocaleDateString()}</TableCell>
-                        <TableCell>{new Date(deal.fechaFin).toLocaleDateString()}</TableCell>
+                        <TableCell className="font-medium">{deal.nombre}</TableCell>
+                        <TableCell className="text-muted-foreground hidden md:table-cell">{deal.descripcion}</TableCell>
+                        <TableCell>{deal.producto_id}</TableCell>
+                        <TableCell>{deal.valor_descuento}</TableCell>
+                         <TableCell>
+                          <Badge variant={deal.activo ? "default" : "destructive"} className="capitalize">
+                            {deal.activo ? 'Activo' : 'Inactivo'}
+                          </Badge>
+                        </TableCell>
                         <TableCell>
                             <div className="flex gap-2 justify-end">
                                 <AdminDealForm deal={deal} onDealSaved={fetchDeals} />
@@ -133,4 +140,3 @@ export default function AdminDealsPage() {
     </>
   );
 }
-

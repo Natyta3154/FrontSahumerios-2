@@ -76,11 +76,16 @@ export type Order = {
 };
 
 export type Deal = {
-    id: number;
-    productoId: number;
-    porcentajeDescuento: number;
-    fechaInicio: string;
-    fechaFin: string;
+  id: number;
+  nombre: string;
+  descripcion?: string;
+  precio?: number;
+  activo: boolean;
+  tipo_descuento?: string;
+  valor_descuento: number;
+  fecha_inicio: string;
+  fecha_fin: string;
+  producto_id: number;
 };
 
 export type ProductAttribute = {

@@ -254,13 +254,38 @@ export async function saveDeal(formData: FormData, token: string | null) {
   
   const method = isEdit ? 'PUT' : 'POST';
 
-  const payload = {
-    productoId: Number(formData.get('productoId')),
-    valor_descuento: Number(formData.get('porcentajeDescuento')), // Clave corregida
-    fechaInicio: formData.get('fechaInicio'),
-    fechaFin: formData.get('fechaFin'),
+  const getNumberOrNull = (field: string) => {
+    const value = formData.get(field) as string;
+    if (value === null || value.trim() === '' || isNaN(Number(value))) {
+        return null;
+    }
+    return Number(value);
+  };
+  
+  const getStringOrNull = (field: string) => {
+    const value = formData.get(field) as string;
+    return value || null;
   };
 
+  const payload: any = {
+    nombre: getStringOrNull('nombre'),
+    descripcion: getStringOrNull('descripcion'),
+    precio: getNumberOrNull('precio'),
+    activo: formData.get('activo') === 'on',
+    tipo_descuento: getStringOrNull('tipo_descuento'),
+    valor_descuento: getNumberOrNull('valor_descuento'),
+    fecha_inicio: getStringOrNull('fecha_inicio'),
+    fecha_fin: getStringOrNull('fecha_fin'),
+    producto_id: getNumberOrNull('producto_id'),
+  };
+  
+  // Limpiar nulos para no enviarlos si no son necesarios
+  Object.keys(payload).forEach(key => {
+    if (payload[key] === null) {
+      delete payload[key];
+    }
+  });
+  
   try {
     const response = await fetch(endpoint, {
       method,
@@ -272,7 +297,7 @@ export async function saveDeal(formData: FormData, token: string | null) {
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: response.statusText }));
+      const errorData = await response.json().catch(() => ({ message: `${response.status} ${response.statusText}` }));
       throw new Error(errorData.message || `Error en ofertas: ${response.status}`);
     }
     
