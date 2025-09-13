@@ -86,7 +86,8 @@ async function fetchData<T>(endpoint: string, token: string | null, mapper: (ite
     });
 
     if (!response.ok) {
-      throw new Error(`Error al obtener datos de ${endpoint}: ${response.statusText}`);
+      // Mejora del mensaje de error para incluir el status code
+      throw new Error(`Error al obtener datos de ${endpoint}: ${response.status} ${response.statusText}`);
     }
     const data = await response.json();
     return Array.isArray(data) ? data.map(mapper) : [];
@@ -149,7 +150,8 @@ export const getOrders = (token: string | null) => fetchData('/pedidos', token, 
 
 // Asumiendo que estos endpoints existen y devuelven un array de objetos.
 // Los mappers son simples, se pueden ajustar si la API devuelve una estructura diferente.
-export const getDeals = (token: string | null): Promise<Deal[]> => fetchData('/ofertas', token, item => item as Deal);
+// APUNTAMOS A ENDPOINTS ESPECÍFICOS PARA ADMIN
+export const getDeals = (token: string | null): Promise<Deal[]> => fetchData('/api/ofertas/listar', token, item => item as Deal);
 export const getAttributes = (token: string | null): Promise<ProductAttribute[]> => fetchData('/atributos', token, item => item as ProductAttribute);
 export const getFragrances = (token: string | null): Promise<Fragrance[]> => fetchData('/fragancias', token, item => item as Fragrance);
 
