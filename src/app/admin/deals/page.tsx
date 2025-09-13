@@ -91,8 +91,8 @@ export default function AdminDealsPage() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {deals.map((deal) => (
-                    <TableRow key={deal.id}>
+                {deals.map((deal, index) => (
+                    <TableRow key={deal.id || index}>
                         <TableCell className="font-mono text-xs">{deal.id}</TableCell>
                         <TableCell>{deal.productoId}</TableCell>
                         <TableCell>{deal.porcentajeDescuento}%</TableCell>
@@ -133,3 +133,4 @@ export default function AdminDealsPage() {
     </>
   );
 }
+
