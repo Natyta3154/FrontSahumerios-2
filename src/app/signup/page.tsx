@@ -11,12 +11,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
   const { signup } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // MANEJADOR: Se ejecuta cuando el usuario envía el formulario de registro.
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -87,13 +90,33 @@ export default function SignupPage() {
               <Label htmlFor="email">Email</Label>
               <Input id="email" name="email" type="email" placeholder="tu@email.com" required disabled={isLoading}/>
             </div>
-            <div className="grid gap-2">
+            <div className="grid gap-2 relative">
               <Label htmlFor="password">Contraseña</Label>
-              <Input id="password" name="password" type="password" required disabled={isLoading}/>
+              <Input id="password" name="password" type={showPassword ? 'text' : 'password'} required disabled={isLoading}/>
+               <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-[28px] h-9 w-9 text-muted-foreground"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
             </div>
-            <div className="grid gap-2">
+            <div className="grid gap-2 relative">
               <Label htmlFor="confirm-password">Confirmar Contraseña</Label>
-              <Input id="confirm-password" name="confirm-password" type="password" required disabled={isLoading}/>
+              <Input id="confirm-password" name="confirm-password" type={showConfirmPassword ? 'text' : 'password'} required disabled={isLoading}/>
+               <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-[28px] h-9 w-9 text-muted-foreground"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Creando Cuenta..." : "Crear Cuenta"}

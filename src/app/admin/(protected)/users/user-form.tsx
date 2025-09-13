@@ -20,6 +20,7 @@ import type { User } from "@/lib/types"
 import React, { useTransition, useState } from "react"
 import { useAuth } from "@/context/auth-context"
 import { saveUser } from "../dashboard/actions"
+import { Eye, EyeOff } from "lucide-react"
 
 export function AdminUserForm({
   user,
@@ -33,6 +34,7 @@ export function AdminUserForm({
   const [isDialogOpen, setDialogOpen] = useState(false)
   const formRef = React.useRef<HTMLFormElement>(null)
   const { token } = useAuth();
+  const [showPassword, setShowPassword] = useState(false)
 
   const formAction = async (formData: FormData) => {
     // Si no se edita, la contraseña es obligatoria
@@ -109,7 +111,19 @@ export function AdminUserForm({
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="password" className="text-right">Contraseña</Label>
-                <Input id="password" name="password" type="password" placeholder={user ? "Dejar en blanco para no cambiar" : ""} className="col-span-3" />
+                <div className="col-span-3 relative">
+                    <Input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder={user ? "Dejar en blanco para no cambiar" : ""} />
+                     <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-1 top-1/2 h-full -translate-y-1/2"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                    >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="rol" className="text-right">Rol</Label>

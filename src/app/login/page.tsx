@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 
 export default function LoginPage() {
@@ -18,6 +19,7 @@ export default function LoginPage() {
   const { login } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -59,14 +61,24 @@ export default function LoginPage() {
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" name="email" type="email" placeholder="tu@email.com" required disabled={isLoading} />
             </div>
-            <div className="grid gap-2">
+            <div className="grid gap-2 relative">
                 <div className="flex items-center">
                 <Label htmlFor="password">Contraseña</Label>
                 <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">
                     ¿Olvidaste tu contraseña?
                 </Link>
                 </div>
-                <Input id="password" name="password" type="password" required disabled={isLoading} />
+                <Input id="password" name="password" type={showPassword ? 'text' : 'password'} required disabled={isLoading} />
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-[28px] h-9 w-9 text-muted-foreground"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? 'Iniciando Sesión...' : 'Login'}

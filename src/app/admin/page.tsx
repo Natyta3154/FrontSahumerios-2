@@ -9,12 +9,14 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useAuth } from "@/context/auth-context";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   // MANEJADOR: Se ejecuta cuando se envía el formulario de login.
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
@@ -60,9 +62,19 @@ export default function AdminLoginPage() {
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" name="email" type="email" placeholder="admin@ejemplo.com" required disabled={isLoading} />
             </div>
-            <div className="grid gap-2">
+            <div className="grid gap-2 relative">
                 <Label htmlFor="password">Contraseña</Label>
-                <Input id="password" name="password" type="password" required disabled={isLoading} />
+                <Input id="password" name="password" type={showPassword ? 'text' : 'password'} required disabled={isLoading} />
+                 <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-[28px] h-9 w-9 text-muted-foreground"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? 'Accediendo...' : 'Acceder'}
