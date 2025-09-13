@@ -306,4 +306,3 @@ export const deleteAttribute = async (id: number, token: string | null) => await
 
 export const saveFragrance = async (formData: FormData, token: string | null) => await manageEntity('fragancias', formData, token);
 export const deleteFragrance = async (id: number, token: string | null) => await deleteEntity('fragancias', id, token);
-
