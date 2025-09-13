@@ -1,25 +1,19 @@
 
-"use client";
-
 import { getProductsOnDeal } from "@/lib/data";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
-import { Product } from "@/lib/types";
+import type { Product } from "@/lib/types";
 
-export default function DealsPage() {
-  const [dealProducts, setDealProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    const fetchDealProducts = async () => {
-      const productsOnDeal = await getProductsOnDeal();
-      setDealProducts(productsOnDeal);
-    };
-    fetchDealProducts();
-  }, []);
+// CONVERTIDO A COMPONENTE DE SERVIDOR
+// Los datos ahora se obtienen en el servidor antes de que la página se envíe al cliente.
+export default async function DealsPage() {
+  
+  // OBTENCIÓN DE DATOS DIRECTA
+  // Llamamos a la función asíncrona directamente para obtener los productos en oferta.
+  const dealProducts: Product[] = await getProductsOnDeal();
 
   return (
     <div className="container mx-auto px-4 py-16 md:py-24">
