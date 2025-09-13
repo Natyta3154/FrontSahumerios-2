@@ -122,4 +122,3 @@ export function ProductFilters({ products, categories, brands }: { products: Pro
     </>
   );
 }
-

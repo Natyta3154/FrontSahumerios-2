@@ -1,3 +1,4 @@
+
 import { getProductById, getProducts } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';

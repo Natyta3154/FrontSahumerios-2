@@ -1,7 +1,7 @@
 
 "use client";
 
-import { getProducts } from "@/lib/data";
+import { getProductsOnDeal } from "@/lib/data";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,8 +15,8 @@ export default function DealsPage() {
 
   useEffect(() => {
     const fetchDealProducts = async () => {
-      const allProducts = await getProducts();
-      setDealProducts(allProducts.filter(p => p.onSale));
+      const productsOnDeal = await getProductsOnDeal();
+      setDealProducts(productsOnDeal);
     };
     fetchDealProducts();
   }, []);
@@ -56,10 +56,10 @@ export default function DealsPage() {
                 <p className="text-sm text-muted-foreground mb-2">{product.brand}</p>
               )}
               <div className="flex items-baseline gap-2">
-                <p className="font-bold text-lg text-destructive">
+                <p className={`font-bold text-lg ${product.onSale ? 'text-destructive' : 'text-foreground'}`}>
                   ${product.price.toFixed(2)}
                 </p>
-                {product.originalPrice && (
+                {product.onSale && product.originalPrice && (
                     <p className="text-sm text-muted-foreground line-through">
                         ${product.originalPrice.toFixed(2)}
                     </p>
