@@ -248,10 +248,9 @@ export async function saveDeal(formData: FormData, token: string | null) {
   const dealId = formData.get('id');
   const isEdit = !!dealId;
 
-  // Usa los endpoints específicos para crear y editar
   const endpoint = isEdit
     ? `https://apisahumerios.onrender.com/api/ofertas/editar/${dealId}`
-    : `https://apisahumerios.onrender.com/api/ofertas/crearOferta`;
+    : 'https://apisahumerios.onrender.com/api/ofertas/crearOferta';
   
   const method = isEdit ? 'PUT' : 'POST';
 
@@ -268,7 +267,6 @@ export async function saveDeal(formData: FormData, token: string | null) {
     return value || null;
   };
 
-  // Construye el payload EXACTO que espera el backend
   const payload: any = {
     productoId: getNumberOrNull('producto_id'),
     valorDescuento: getNumberOrNull('valor_descuento'),
@@ -278,15 +276,12 @@ export async function saveDeal(formData: FormData, token: string | null) {
     estado: formData.get('activo') === 'on',
   };
   
-  // Para la edición, la API podría requerir todos los campos, así que los añadimos.
-  // Es más seguro enviar todos los campos que esperar que el backend los ignore.
   if (isEdit) {
-    payload.nombre = getStringOrNull('nombre');
+    payload.nombreProducto = getStringOrNull('nombreProducto');
     payload.descripcion = getStringOrNull('descripcion');
     payload.precio = getNumberOrNull('precio');
   }
   
-  // Limpiar nulos para no enviarlos si no son necesarios
   Object.keys(payload).forEach(key => {
     if (payload[key] === null) {
       delete payload[key];

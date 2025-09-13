@@ -90,18 +90,18 @@ export function AdminDealForm({
           <ScrollArea className="h-[60vh] pr-6">
             <div className="grid gap-4 py-4">
               {deal && (
-                <Input type="hidden" name="id" defaultValue={deal.id} />
+                <Input type="hidden" name="id" defaultValue={deal.idOferta} />
               )}
               {/* Campos para edición que pueden no ser necesarios para creación */}
               {deal && (
                  <>
                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="nombre" className="text-right">Nombre</Label>
-                        <Input id="nombre" name="nombre" defaultValue={deal?.nombre} className="col-span-3" />
+                        <Label htmlFor="nombreProducto" className="text-right">Nombre</Label>
+                        <Input id="nombreProducto" name="nombreProducto" defaultValue={deal?.nombreProducto} className="col-span-3" />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="descripcion" className="text-right">Descripción</Label>
-                        <Textarea id="descripcion" name="descripcion" defaultValue={deal?.descripcion} className="col-span-3" />
+                        <Textarea id="descripcion" name="descripcion" defaultValue={deal?.descripcion ?? ''} className="col-span-3" />
                     </div>
                      <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="precio" className="text-right">Precio</Label>
@@ -111,27 +111,27 @@ export function AdminDealForm({
               )}
                <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="producto_id" className="text-right">ID de Producto</Label>
-                <Input id="producto_id" name="producto_id" type="number" defaultValue={deal?.producto_id} className="col-span-3" required />
+                <Input id="producto_id" name="producto_id" type="number" defaultValue={deal?.productoId} className="col-span-3" required />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="valor_descuento" className="text-right">Valor Descuento</Label>
-                <Input id="valor_descuento" name="valor_descuento" type="number" step="0.01" defaultValue={deal?.valor_descuento} className="col-span-3" required />
+                <Input id="valor_descuento" name="valor_descuento" type="number" step="0.01" defaultValue={deal?.valorDescuento} className="col-span-3" required />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="tipo_descuento" className="text-right">Tipo Descuento</Label>
-                <Input id="tipo_descuento" name="tipo_descuento" defaultValue={deal?.tipo_descuento} className="col-span-3" placeholder="Ej: PORCENTAJE, FIJO" required />
+                <Input id="tipo_descuento" name="tipo_descuento" defaultValue={deal?.tipoDescuento} className="col-span-3" placeholder="Ej: PORCENTAJE, FIJO" required />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="fecha_inicio" className="text-right">Fecha Inicio</Label>
-                <Input id="fecha_inicio" name="fecha_inicio" type="date" defaultValue={deal?.fecha_inicio?.split('T')[0] ?? ""} className="col-span-3" required />
+                <Input id="fecha_inicio" name="fecha_inicio" type="date" defaultValue={deal?.fechaInicio?.split('T')[0] ?? ""} className="col-span-3" required />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="fecha_fin" className="text-right">Fecha Fin</Label>
-                <Input id="fecha_fin" name="fecha_fin" type="date" defaultValue={deal?.fecha_fin?.split('T')[0] ?? ""} className="col-span-3" required />
+                <Input id="fecha_fin" name="fecha_fin" type="date" defaultValue={deal?.fechaFin?.split('T')[0] ?? ""} className="col-span-3" required />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="activo" className="text-right">Activo (Estado)</Label>
-                <Switch id="activo" name="activo" defaultChecked={deal?.activo ?? true} />
+                <Switch id="activo" name="activo" defaultChecked={deal?.estado ?? true} />
               </div>
             </div>
           </ScrollArea>

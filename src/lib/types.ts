@@ -76,17 +76,16 @@ export type Order = {
 };
 
 export type Deal = {
-  id: number;
-  nombre: string;
-  descripcion: string;
+  idOferta: number;
+  nombreProducto: string;
+  descripcion: string | null;
   precio: number;
-  activo: boolean;
-  tipo_descuento: string;
-  valor_descuento: number;
-  fecha_inicio: string;
-  fecha_fin: string;
-  producto_id: number;
-  estado?: boolean; // El backend puede devolver `estado` o `activo`
+  estado: boolean;
+  tipoDescuento: string;
+  valorDescuento: number;
+  fechaInicio: string;
+  fechaFin: string;
+  productoId: number;
 };
 
 export type ProductAttribute = {

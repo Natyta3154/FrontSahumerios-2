@@ -83,7 +83,7 @@ export default function AdminDealsPage() {
             <TableHeader>
                 <TableRow>
                     <TableHead>ID</TableHead>
-                    <TableHead>Nombre</TableHead>
+                    <TableHead>Nombre Producto</TableHead>
                     <TableHead>Producto ID</TableHead>
                     <TableHead>Valor Dto.</TableHead>
                     <TableHead>Activo</TableHead>
@@ -94,14 +94,14 @@ export default function AdminDealsPage() {
             </TableHeader>
             <TableBody>
                 {deals.map((deal, index) => (
-                    <TableRow key={deal.id || index}>
-                        <TableCell className="font-mono text-xs">{deal.id}</TableCell>
-                        <TableCell className="font-medium">{deal.nombre}</TableCell>
-                        <TableCell>{deal.producto_id}</TableCell>
-                        <TableCell>{deal.valor_descuento}</TableCell>
+                    <TableRow key={deal.idOferta || index}>
+                        <TableCell className="font-mono text-xs">{deal.idOferta}</TableCell>
+                        <TableCell className="font-medium">{deal.nombreProducto}</TableCell>
+                        <TableCell>{deal.productoId}</TableCell>
+                        <TableCell>{deal.valorDescuento}</TableCell>
                          <TableCell>
-                          <Badge variant={deal.activo ? "default" : "destructive"} className="capitalize">
-                            {deal.activo ? 'Activo' : 'Inactivo'}
+                          <Badge variant={deal.estado ? "default" : "destructive"} className="capitalize">
+                            {deal.estado ? 'Activo' : 'Inactivo'}
                           </Badge>
                         </TableCell>
                         <TableCell>
@@ -121,7 +121,7 @@ export default function AdminDealsPage() {
                                         <AlertDialogFooter>
                                         <AlertDialogCancel>Cancelar</AlertDialogCancel>
                                         <AlertDialogAction
-                                            onClick={() => handleDelete(deal.id)}
+                                            onClick={() => handleDelete(deal.idOferta)}
                                             disabled={isPending}
                                         >
                                             {isPending ? "Eliminando..." : "Eliminar"}
