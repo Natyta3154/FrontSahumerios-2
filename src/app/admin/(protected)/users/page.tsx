@@ -44,7 +44,9 @@ export default function AdminUsersPage() {
     }
 
     useEffect(() => {
-        fetchUsers();
+        if (token) {
+            fetchUsers();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
