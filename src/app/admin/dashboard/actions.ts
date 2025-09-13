@@ -169,12 +169,14 @@ async function manageEntity(
 ) {
   const entityId = formData.get(idField);
   const isEdit = !!entityId;
-  const endpoint = `https://apisahumerios.onrender.com/${entityName}${isEdit ? `/${entityId}` : ''}`;
+  const endpoint = `https://apisahumerios.onrender.com/${entityName}${isEdit ? `/editar/${entityId}` : '/agregar'}`;
   const method = isEdit ? 'PUT' : 'POST';
 
   const payload = Object.fromEntries(formData.entries());
-  // Remueve el id del payload si es una edición para evitar enviarlo dos veces
-  if(isEdit) delete payload[idField];
+  
+  if(isEdit) {
+    delete payload[idField];
+  }
 
 
   try {
@@ -205,7 +207,7 @@ async function deleteEntity(entityName: string, entityId: number | string, token
   }
 
   try {
-    const response = await fetch(`https://apisahumerios.onrender.com/${entityName}/${entityId}`, {
+    const response = await fetch(`https://apisahumerios.onrender.com/${entityName}/eliminar/${entityId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
