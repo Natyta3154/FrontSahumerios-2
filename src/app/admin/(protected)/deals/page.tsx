@@ -27,7 +27,7 @@ import { Deal } from "@/lib/types";
 import { useAuth } from "@/context/auth-context";
 import { useEffect, useState, useTransition } from "react";
 import { useToast } from '@/hooks/use-toast';
-import { deleteDeal } from '../dashboard/actions';
+import { deleteDeal } from '../../dashboard/actions';
 import { AdminDealForm } from './deal-form';
 import { Badge } from '@/components/ui/badge';
 
@@ -82,19 +82,19 @@ export default function AdminDealsPage() {
          <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>ID</TableHead>
+                    <TableHead>ID Oferta</TableHead>
                     <TableHead>Nombre Producto</TableHead>
                     <TableHead>Producto ID</TableHead>
                     <TableHead>Valor Dto.</TableHead>
-                    <TableHead>Activo</TableHead>
+                    <TableHead>Estado</TableHead>
                     <TableHead className="text-right">
                         <span className="sr-only">Acciones</span>
                     </TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {deals.map((deal, index) => (
-                    <TableRow key={deal.idOferta || index}>
+                {deals.map((deal) => (
+                    <TableRow key={deal.idOferta}>
                         <TableCell className="font-mono text-xs">{deal.idOferta}</TableCell>
                         <TableCell className="font-medium">{deal.nombreProducto}</TableCell>
                         <TableCell>{deal.productoId}</TableCell>

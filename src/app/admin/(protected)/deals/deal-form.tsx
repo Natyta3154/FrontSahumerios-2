@@ -18,10 +18,9 @@ import { useToast } from "@/hooks/use-toast"
 import type { Deal } from "@/lib/types"
 import React, { useTransition, useState } from "react"
 import { useAuth } from "@/context/auth-context"
-import { saveDeal } from "../dashboard/actions"
+import { saveDeal } from "../../dashboard/actions"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
 
 export function AdminDealForm({
   deal,
@@ -90,25 +89,9 @@ export function AdminDealForm({
           <ScrollArea className="h-[60vh] pr-6">
             <div className="grid gap-4 py-4">
               {deal && (
-                <Input type="hidden" name="id" defaultValue={deal.idOferta} />
+                <Input type="hidden" name="idOferta" defaultValue={deal.idOferta} />
               )}
-              {/* Campos para edición que pueden no ser necesarios para creación */}
-              {deal && (
-                 <>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="nombreProducto" className="text-right">Nombre</Label>
-                        <Input id="nombreProducto" name="nombreProducto" defaultValue={deal?.nombreProducto} className="col-span-3" />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="descripcion" className="text-right">Descripción</Label>
-                        <Textarea id="descripcion" name="descripcion" defaultValue={deal?.descripcion ?? ''} className="col-span-3" />
-                    </div>
-                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="precio" className="text-right">Precio</Label>
-                        <Input id="precio" name="precio" type="number" step="0.01" defaultValue={deal?.precio} className="col-span-3" placeholder="Opcional en edición" />
-                    </div>
-                 </>
-              )}
+              {/* Para la creación, solo necesitamos los campos que espera la API */}
                <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="producto_id" className="text-right">ID de Producto</Label>
                 <Input id="producto_id" name="producto_id" type="number" defaultValue={deal?.productoId} className="col-span-3" required />

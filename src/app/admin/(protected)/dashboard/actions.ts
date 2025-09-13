@@ -245,9 +245,10 @@ export async function deleteOrder(id: string, token: string | null) {
 }
 
 export async function saveDeal(formData: FormData, token: string | null) {
-  const dealId = formData.get('id');
+  const dealId = formData.get('idOferta');
   const isEdit = !!dealId;
 
+  // Usa la API de creación o edición según corresponda
   const endpoint = isEdit
     ? `https://apisahumerios.onrender.com/api/ofertas/editar/${dealId}`
     : 'https://apisahumerios.onrender.com/api/ofertas/crearOferta';
@@ -256,10 +257,7 @@ export async function saveDeal(formData: FormData, token: string | null) {
 
   const getNumberOrNull = (field: string) => {
     const value = formData.get(field) as string;
-    if (value === null || value.trim() === '' || isNaN(Number(value))) {
-        return null;
-    }
-    return Number(value);
+    return (value && !isNaN(Number(value))) ? Number(value) : null;
   };
   
   const getStringOrNull = (field: string) => {
@@ -267,6 +265,7 @@ export async function saveDeal(formData: FormData, token: string | null) {
     return value || null;
   };
 
+  // Construye el payload exactamente como lo espera la API
   const payload: any = {
     productoId: getNumberOrNull('producto_id'),
     valorDescuento: getNumberOrNull('valor_descuento'),
@@ -276,18 +275,20 @@ export async function saveDeal(formData: FormData, token: string | null) {
     estado: formData.get('activo') === 'on',
   };
   
+  // Si es edición, pueden incluirse otros campos, de lo contrario, no
   if (isEdit) {
     payload.nombreProducto = getStringOrNull('nombreProducto');
     payload.descripcion = getStringOrNull('descripcion');
     payload.precio = getNumberOrNull('precio');
   }
-  
+
+  // Elimina las propiedades nulas para que coincidan con el ejemplo del payload
   Object.keys(payload).forEach(key => {
     if (payload[key] === null) {
       delete payload[key];
     }
   });
-  
+
   try {
     const response = await fetch(endpoint, {
       method,
@@ -300,8 +301,13 @@ export async function saveDeal(formData: FormData, token: string | null) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      const errorData = JSON.parse(errorText || '{}');
-      throw new Error(errorData.message || `Error en ofertas: ${response.status} ${response.statusText}`);
+      // Intenta parsear como JSON, si falla, usa el texto.
+      try {
+        const errorData = JSON.parse(errorText);
+        throw new Error(errorData.message || `Error en ofertas: ${response.status}`);
+      } catch (e) {
+        throw new Error(errorText || `Error en ofertas: ${response.status}`);
+      }
     }
     
     revalidatePath(`/admin/deals`);

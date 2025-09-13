@@ -25,7 +25,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useTransition, useState, useEffect } from 'react';
 import { useAuth } from '@/context/auth-context';
-import { deleteUser } from '../dashboard/actions';
+import { deleteUser } from '../../dashboard/actions';
 import { AdminUserForm } from './user-form';
 import { Badge } from '@/components/ui/badge';
 

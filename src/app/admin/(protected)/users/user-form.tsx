@@ -19,7 +19,7 @@ import { useToast } from "@/hooks/use-toast"
 import type { User } from "@/lib/types"
 import React, { useTransition, useState } from "react"
 import { useAuth } from "@/context/auth-context"
-import { saveUser } from "../dashboard/actions"
+import { saveUser } from "../../dashboard/actions"
 
 export function AdminUserForm({
   user,
