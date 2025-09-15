@@ -1,37 +1,23 @@
-
-"use client" // Este comentario indica que este componente se ejecuta en el cliente (navegador).
-
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-// Importamos los datos de muestra. En una aplicación real, estos datos vendrían de una llamada a tu backend.
 import { getProducts, blogArticles, getProductsOnDeal } from "@/lib/data";
 import { ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import Autoplay from "embla-carousel-autoplay"; // Importamos el plugin de autoplay para el carrusel.
-import React, { useEffect, useState } from "react";
 import type { Product } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
+import { HomeCarousel } from "./home-carousel";
 
-export default function Home() {
+// CONVERTIDO A COMPONENTE DE SERVIDOR
+// Los datos ahora se obtienen directamente en el servidor.
+export default async function Home() {
 
-  const [saleProducts, setSaleProducts] = useState<Product[]>([]);
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const allProducts = await getProducts();
-      // Obtenemos los productos que están en oferta real.
-      const productsOnDeal = await getProductsOnDeal();
-      setSaleProducts(productsOnDeal.slice(0, 8));
-      // Tomamos los primeros 3 productos generales como destacados
-      setFeaturedProducts(allProducts.slice(0, 3));
-    }
-    fetchProducts();
-  }, [])
-
+  // OBTENCIÓN DE DATOS EN EL SERVIDOR
+  // Se obtienen todos los productos y los que están en oferta de forma asíncrona.
+  const allProducts = await getProducts();
+  const saleProducts = (await getProductsOnDeal()).slice(0, 8);
+  const featuredProducts = allProducts.slice(0, 3);
 
   // Datos para la sección de testimonios. Idealmente, estos vendrían de tu base de datos.
   const testimonials = [
@@ -54,97 +40,13 @@ export default function Home() {
       image: "https://picsum.photos/100/100?random=15"
     }
   ];
-  
-  // Creamos una referencia para el plugin de autoplay del carrusel.
-  // Esto nos permite controlar el carrusel si es necesario (pausar, reanudar, etc.).
-  const plugin = React.useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: true })
-  );
 
   return (
     <div className="flex flex-col">
       {/* --- SECCIÓN PRINCIPAL (HERO CAROUSEL) --- */}
-      {/* Esta sección muestra un carrusel de imágenes a pantalla completa con un llamado a la acción. */}
-      <section className="relative h-[60vh] md:h-[80vh] w-full">
-        {/* 
-          Componente Carousel de ShadCN:
-          - `plugins={[plugin.current]}`: Activa el plugin de autoplay.
-          - `opts={{ loop: true }}`: Hace que el carrusel sea infinito.
-          - `onMouseEnter`, `onMouseLeave`: Pausa y reanuda el autoplay cuando el usuario interactúa.
-        */}
-        <Carousel 
-          className="w-full h-full" 
-          opts={{ loop: true }}
-          plugins={[plugin.current]}
-          onMouseEnter={plugin.current.stop}
-          onMouseLeave={plugin.current.reset}
-        >
-          <CarouselContent className="h-full">
-            {/* Cada `CarouselItem` es una diapositiva. Las imágenes son de un servicio de placeholders. */}
-            {/* Para conectar tu backend, reemplazarías las URLs de `src` con las de tus imágenes. */}
-            <CarouselItem className="h-full">
-              <div className="relative h-full w-full">
-                <Image
-                  src="https://picsum.photos/1600/900"
-                  alt="Varita de incienso brillante"
-                  data-ai-hint="incense stick"
-                  fill
-                  sizes="100vw"
-                  className="object-cover"
-                />
-                {/* Capa semitransparente para oscurecer la imagen y hacer el texto legible. */}
-                <div className="absolute inset-0 bg-black/50" />
-              </div>
-            </CarouselItem>
-            <CarouselItem className="h-full">
-              <div className="relative h-full w-full">
-                <Image
-                  src="https://picsum.photos/1600/901"
-                  alt="Difusor de aceite aromático"
-                  data-ai-hint="oil diffuser"
-                  fill
-                  sizes="100vw"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-black/50" />
-              </div>
-            </CarouselItem>
-            <CarouselItem className="h-full">
-              <div className="relative h-full w-full">
-                <Image
-                  src="https://picsum.photos/1600/902"
-                  alt="Botellas de aceite esencial"
-                  data-ai-hint="essential oils"
-                  fill
-                  sizes="100vw"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-black/50" />
-              </div>
-            </CarouselItem>
-          </CarouselContent>
-          {/* Controles de navegación del carrusel, ocultos en móviles. */}
-          <div className="hidden md:block">
-            <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2" />
-            <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2" />
-          </div>
-        </Carousel>
-        {/* Contenido de texto superpuesto en el carrusel. */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-          <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl text-white drop-shadow-lg">
-            Encuentra Tu Paz Interior
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg text-gray-200">
-            Descubre el arte de la aromaterapia con nuestra colección curada de inciensos, difusores y aceites esenciales.
-          </p>
-          <Button asChild size="lg" className="mt-8 bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Link href="/products">Comprar Ahora</Link>
-          </Button>
-        </div>
-      </section>
+      <HomeCarousel />
 
       {/* --- SECCIÓN DE FILOSOFÍA --- */}
-      {/* Un bloque simple para comunicar la misión de la marca. */}
       <section className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
@@ -166,7 +68,7 @@ export default function Home() {
           <Carousel
             opts={{
               align: "start",
-              loop: true,
+              loop: saleProducts.length > 4,
             }}
             className="w-full"
           >
@@ -196,7 +98,7 @@ export default function Home() {
                           <p className="font-bold text-lg text-destructive">
                             ${product.price.toFixed(2)}
                           </p>
-                          {product.originalPrice && (
+                          {product.onSale && product.originalPrice && (
                             <p className="text-sm text-muted-foreground line-through">
                               ${product.originalPrice.toFixed(2)}
                             </p>
@@ -267,7 +169,6 @@ export default function Home() {
       </section>
 
       {/* --- SECCIÓN DEL BLOG --- */}
-      {/* Muestra los últimos 3 artículos del blog. */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -275,10 +176,6 @@ export default function Home() {
             <p className="mt-2 text-lg text-muted-foreground">Ideas e historias del mundo de la aromaterapia.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* 
-              Se usa `.slice(0, 3)` para tomar solo los primeros 3 artículos.
-              En una aplicación real, tu API debería tener un endpoint para `/articles?limit=3`.
-            */}
             {blogArticles.slice(0, 3).map((article) => (
               <Card key={article.slug} className="overflow-hidden group">
                 <Link href={`/blog/${article.slug}`}>
@@ -309,7 +206,6 @@ export default function Home() {
       </section>
 
       {/* --- SECCIÓN DE TESTIMONIOS --- */}
-      {/* Muestra testimonios de clientes. */}
       <section className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -327,7 +223,6 @@ export default function Home() {
                   className="rounded-full"
                 />
                 <div className="flex mt-4 mb-2">
-                  {/* Renderiza las estrellas de calificación. */}
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className={`h-5 w-5 ${i < testimonial.rating ? 'text-primary fill-primary' : 'text-muted-foreground/50'}`} />
                   ))}
