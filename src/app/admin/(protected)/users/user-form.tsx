@@ -37,8 +37,10 @@ export function AdminUserForm({
   const [showPassword, setShowPassword] = useState(false)
 
   const formAction = async (formData: FormData) => {
-    // Si no se edita, la contraseña es obligatoria
-    if (!user && !formData.get('password')) {
+    const password = formData.get('password') as string;
+
+    // Si es un nuevo usuario, la contraseña es obligatoria.
+    if (!user && !password) {
         toast({
             title: `Error al añadir usuario`,
             description: "La contraseña es obligatoria para nuevos usuarios.",
@@ -112,7 +114,7 @@ export function AdminUserForm({
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="password" className="text-right">Contraseña</Label>
                 <div className="col-span-3 relative">
-                    <Input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder={user ? "Dejar en blanco para no cambiar" : ""} />
+                    <Input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder={user ? "Dejar en blanco para no cambiar" : ""} required={!user} />
                      <Button
                         type="button"
                         variant="ghost"

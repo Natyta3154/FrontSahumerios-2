@@ -172,10 +172,14 @@ async function manageEntity(
   const endpoint = `https://apisahumerios.onrender.com/${entityName}${isEdit ? `/editar/${entityId}` : '/agregar'}`;
   const method = isEdit ? 'PUT' : 'POST';
 
-  const payload = Object.fromEntries(formData.entries());
+  const payload: {[k: string]: any} = Object.fromEntries(formData.entries());
   
   if(isEdit) {
     delete payload[idField];
+    // Si la contraseña está vacía al editar, no la enviamos.
+    if ('password' in payload && payload.password === '') {
+        delete payload.password;
+    }
   }
 
 
@@ -231,7 +235,12 @@ async function deleteEntity(entityName: string, entityId: number | string, token
 // --- ACCIONES PARA CADA ENTIDAD ---
 
 export async function saveUser(formData: FormData, token: string | null) {
-  return await manageEntity('usuarios', formData, token);
+    // Si estamos editando y el campo de contraseña está vacío, lo eliminamos del formData
+    // para que manageEntity no lo incluya en el payload.
+    if (formData.get('id') && formData.get('password') === '') {
+        formData.delete('password');
+    }
+    return await manageEntity('usuarios', formData, token);
 }
 export async function deleteUser(id: number, token: string | null) {
   return await deleteEntity('usuarios', id, token);
@@ -354,4 +363,3 @@ export async function saveFragrance(formData: FormData, token: string | null) {
 export async function deleteFragrance(id: number, token: string | null) {
   return await deleteEntity('fragancias', id, token);
 }
-
