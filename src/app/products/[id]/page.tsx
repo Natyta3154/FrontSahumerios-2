@@ -10,6 +10,8 @@ import { ProductDetails } from './product-details';
 import { Button } from '@/components/ui/button';
 
 export default async function ProductDetailPage({ params }: { params: { id: string } }) {
+  // COMENTARIO: Se añade una validación para asegurar que el ID existe y es un string
+  // antes de intentar usarlo. Esto previene errores de compilación si la URL es incorrecta.
   if (typeof params.id !== 'string') {
     notFound();
   }
