@@ -56,7 +56,7 @@ export type User = {
   nombre: string;
   email: string;
   rol: 'ADMIN' | 'USER';
-  fechaRegistro: string;
+  fechaRegistro?: string;
 };
 
 export type OrderItem = {

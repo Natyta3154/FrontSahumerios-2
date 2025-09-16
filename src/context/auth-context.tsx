@@ -45,10 +45,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const handleAuthSuccess = (userData: User, userToken: string) => {
-    setUser(userData);
+    const userToStore: User = {
+      id: userData.id,
+      nombre: userData.nombre,
+      email: userData.email,
+      rol: userData.rol,
+      ...(userData.fechaRegistro && { fechaRegistro: userData.fechaRegistro }),
+    };
+    setUser(userToStore);
     setToken(userToken);
     localStorage.setItem("authToken", userToken);
-    localStorage.setItem("authUser", JSON.stringify(userData));
+    localStorage.setItem("authUser", JSON.stringify(userToStore));
   };
   
   const login = useCallback(async (email: string, password?: string, isAdminLogin: boolean = false) => {
