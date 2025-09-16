@@ -16,9 +16,6 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-// Declaración para que TypeScript reconozca el objeto MercadoPago
-declare const MercadoPago: any;
-
 export default function CheckoutPage() {
   const { cartItems, total, clearCart } = useCart();
   const { user, token } = useAuth();
@@ -76,21 +73,15 @@ export default function CheckoutPage() {
             throw new Error(data.message || 'Error al crear el pedido.');
         }
 
-        const preferenciaId = data.preferenciaId;
+        const paymentUrl = data.preferenciaId;
 
-        // Redirigir a Mercado Pago
-        const mp = new MercadoPago(process.env.NEXT_PUBLIC_MP_PUBLIC_KEY, {
-            locale: 'es-AR'
-        });
-
-        mp.checkout({
-            preference: {
-                id: preferenciaId
-            },
-            autoOpen: true,
-        });
-
-        clearCart();
+        if (paymentUrl) {
+            clearCart();
+            // Redirección directa a la URL de pago de Mercado Pago
+            window.location.href = paymentUrl;
+        } else {
+             throw new Error("No se recibió la URL de pago.");
+        }
 
     } catch (error) {
         toast({
@@ -235,6 +226,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-
-
-
