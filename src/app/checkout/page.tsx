@@ -66,12 +66,22 @@ export default function CheckoutPage() {
             },
             body: JSON.stringify(pedidoRequest)
         });
-
-        const data = await response.json();
-
+        
+        // Manejo de errores robusto
         if (!response.ok) {
-            throw new Error(data.message || 'Error al crear el pedido.');
+            // Intenta leer el cuerpo de la respuesta como texto para obtener más detalles del error
+            const errorText = await response.text();
+            try {
+                // Intenta parsear como JSON, por si el backend SÍ envió un error formateado
+                const errorData = JSON.parse(errorText);
+                throw new Error(errorData.message || 'Error al crear el pedido.');
+            } catch (e) {
+                // Si no es JSON, usa el texto del error directamente
+                throw new Error(errorText || `Error del servidor: ${response.status}`);
+            }
         }
+        
+        const data = await response.json();
 
         const paymentUrl = data.preferenciaId;
 
@@ -91,7 +101,6 @@ export default function CheckoutPage() {
         });
         setIsLoading(false);
     }
-    // No se pone setIsLoading(false) aquí porque el usuario será redirigido.
   };
   
   if (!user) {
