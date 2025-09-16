@@ -227,7 +227,7 @@ export default function CheckoutPage() {
             <span>Total</span>
             <span>${grandTotal.toFixed(2)}</span>
           </div>
-          <Button size="lg" className="w-full mt-6" onClick={handlePlaceOrder} disabled={isLoading}>
+          <Button size="lg" className="w-full mt-6" onClick={handlePlaceOrder} disabled={isLoading || cartItems.length === 0}>
             {isLoading ? 'Procesando...' : 'Realizar Pedido'}
           </Button>
         </div>
