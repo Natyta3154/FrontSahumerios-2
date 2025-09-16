@@ -1,19 +1,35 @@
 
 
-// NOTA PARA EL DESARROLLADOR:
-// Este archivo es el punto central para obtener datos desde tu API.
-// Contiene funciones que hacen 'fetch' a los endpoints de tu backend.
+// =================================================================================
+// CAPA DE DATOS (DATA LAYER)
+// Este archivo es el punto central para OBTENER datos de tu API.
+//
+// ¿QUÉ HACE?
+// 1. Define funciones para hacer `fetch` a los endpoints de tu backend.
+// 2. Contiene funciones "adaptadoras" (mappers) que transforman la respuesta
+//    de tu API al formato/tipo que el frontend espera (ej: `Product`, `User`).
+// 3. Centraliza las URLs de la API para que sean fáciles de modificar.
+//
+// NOTA: Este archivo se enfoca en peticiones GET (obtener datos).
+// Para POST, PUT, DELETE, se usan Server Actions en `src/app/admin/(protected)/dashboard/actions.ts`.
+// =================================================================================
+
 
 import type { Product, BlogArticle, User, Order, Deal, ProductAttribute, Fragrance } from './types';
 
 // --- ADAPTADORES DE API A TIPO DE FRONTEND ---
-
+// Estas funciones son cruciales. Toman el objeto JSON que viene de tu API
+// y lo convierten en el objeto `Product` que usa el frontend.
+// Esto desacopla el frontend del backend; si el backend cambia un nombre de campo,
+// solo necesitas actualizarlo aquí.
 function mapApiToProduct(apiProduct: any): Product {
+  // Determina si el producto está en oferta.
   const onSale = apiProduct.porcentajeDescuento && Number(apiProduct.porcentajeDescuento) > 0;
   
   const basePrice = Number(apiProduct.precio) || 0;
   const finalPrice = Number(apiProduct.precioFinal) || basePrice;
   
+  // Mapea campo por campo.
   return {
     id: apiProduct.id,
     nombre: apiProduct.nombre,
@@ -32,17 +48,20 @@ function mapApiToProduct(apiProduct: any): Product {
     totalIngresado: apiProduct.totalIngresado ? Number(apiProduct.totalIngresado) : undefined,
     imagenurl: apiProduct.imagenurl,
     mensaje: apiProduct.mensaje,
+
+    // Datos adicionales que el frontend usa para la visualización.
+    // Se llenan con los datos de la API para mantener consistencia.
     name: apiProduct.nombre,
     description: apiProduct.descripcion,
-    price: finalPrice,
-    image: apiProduct.imagenurl || `https://picsum.photos/600/600?random=${apiProduct.id}`,
+    price: finalPrice, // El precio que se muestra al usuario es el final.
+    image: apiProduct.imagenurl || `https://picsum.photos/600/600?random=${apiProduct.id}`, // Fallback a una imagen de placeholder.
     category: apiProduct.categoriaNombre,
-    rating: 4.5, // Simulado
-    reviews: 10, // Simulado
+    rating: 4.5, // Dato simulado, ya que no viene de la API.
+    reviews: 10, // Dato simulado.
     aromas: apiProduct.fragancias || [],
-    brand: apiProduct.atributos?.find((a: any) => a.nombre.toLowerCase() === 'marca')?.valor,
+    brand: apiProduct.atributos?.find((a: any) => a.nombre.toLowerCase() === 'marca')?.valor, // Extrae la marca de los atributos.
     onSale: onSale,
-    originalPrice: onSale ? basePrice : undefined,
+    originalPrice: onSale ? basePrice : undefined, // Si está en oferta, guarda el precio original para mostrarlo tachado.
   };
 }
 
@@ -59,7 +78,7 @@ function mapApiToUser(apiUser: any): User {
 function mapApiToOrder(apiOrder: any): Order {
     return {
         id: apiOrder.id,
-        customerName: apiOrder.usuario.nombre, // Asumiendo que la API anida el usuario
+        customerName: apiOrder.usuario.nombre, // Asume que la API anida el objeto de usuario.
         date: apiOrder.fecha,
         status: apiOrder.estado,
         total: Number(apiOrder.total) || 0,
@@ -87,21 +106,25 @@ function mapApiToDeal(apiDeal: any): Deal {
     }
 }
 
-// --- CONEXIONES AL BACKEND ---
+// --- CONEXIONES AL BACKEND (FUNCIONES FETCH) ---
 
+// Función genérica para obtener datos.
 async function fetchData<T>(endpoint: string, token: string | null, mapper: (item: any) => T): Promise<T[]> {
   try {
     
+    // Construye las cabeceras dinámicamente.
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
     };
 
+    // Solo añade la cabecera de autorización si hay un token.
+    // Esto evita enviar `Authorization: Bearer null` o `Authorization: ''`.
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
     const response = await fetch(`https://apisahumerios.onrender.com${endpoint}`, {
-      cache: 'no-cache',
+      cache: 'no-cache', // Evita que Next.js cachee los datos, útil para datos que cambian con frecuencia.
       headers,
     });
 
@@ -112,13 +135,16 @@ async function fetchData<T>(endpoint: string, token: string | null, mapper: (ite
       throw new Error(`Error al obtener datos de ${endpoint}: ${errorMessage}`);
     }
     const data = await response.json();
+    
+    // La API a veces devuelve un solo objeto en lugar de un array, así que lo manejamos.
     return Array.isArray(data) ? data.map(mapper) : [];
   } catch (error) {
     console.error(`No se pudieron obtener datos de ${endpoint}:`, error);
-    return [];
+    return []; // Devuelve un array vacío en caso de error para evitar que la UI se rompa.
   }
 }
 
+// Obtiene la lista pública de productos. No necesita token.
 export async function getProducts(): Promise<Product[]> {
   try {
     const response = await fetch('https://apisahumerios.onrender.com/productos/listado', { 
@@ -143,6 +169,7 @@ export async function getProducts(): Promise<Product[]> {
   }
 }
 
+// Obtiene un solo producto por su ID. Tampoco necesita token.
 export async function getProductById(id: string | number): Promise<Product | undefined> {
    try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/${id}`, { 
@@ -153,7 +180,7 @@ export async function getProductById(id: string | number): Promise<Product | und
     });
 
     if (!response.ok) {
-      if (response.status === 404) return undefined; 
+      if (response.status === 404) return undefined; // Si no lo encuentra, devuelve undefined.
       throw new Error(`Error al obtener el producto: ${response.statusText}`);
     }
 
@@ -166,28 +193,34 @@ export async function getProductById(id: string | number): Promise<Product | und
   }
 }
 
+
+// Obtiene los productos que están actualmente en oferta.
 export async function getProductsOnDeal(): Promise<Product[]> {
-  const deals = await getDeals(null);
-  const activeDeals = deals.filter(deal => deal.estado);
+  const deals = await getDeals(null); // Obtiene todas las ofertas.
+  const activeDeals = deals.filter(deal => deal.estado); // Filtra solo las activas.
+  
+  // Para cada oferta activa, busca los detalles completos del producto.
   const productsOnDeal = await Promise.all(
     activeDeals.map(async (deal) => {
       const product = await getProductById(deal.productoId);
       return product;
     })
   );
+  // Filtra cualquier resultado `undefined` (si un producto de una oferta no se encontrara).
   return productsOnDeal.filter((p): p is Product => p !== undefined);
 }
 
-// --- Nuevas funciones para el panel de admin ---
+// --- Funciones para el Panel de Administración (requieren token) ---
 export const getUsers = (token: string | null) => fetchData('/usuarios', token, mapApiToUser);
 export const getOrders = (token: string | null) => fetchData('/pedidos', token, mapApiToOrder);
-
 export const getDeals = (token: string | null): Promise<Deal[]> => fetchData('/api/ofertas/listar', token, mapApiToDeal);
 export const getAttributes = (token: string | null): Promise<ProductAttribute[]> => fetchData('/atributos/listado', token, item => item as ProductAttribute);
 export const getFragrances = (token: string | null): Promise<Fragrance[]> => fetchData('/fragancias', token, item => item as Fragrance);
 
 
 // --- DATOS DE MUESTRA (MOCK DATA) ---
+// Estos son los datos para el blog. Como no hay una API para el blog,
+// se usan estos datos estáticos.
 export const blogArticles: BlogArticle[] = [
   {
     slug: 'beginners-guide-to-aromatherapy',

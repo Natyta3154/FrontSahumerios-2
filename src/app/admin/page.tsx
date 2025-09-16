@@ -1,6 +1,19 @@
 
 "use client";
 
+// =================================================================================
+// PÁGINA DE LOGIN DE ADMINISTRADOR
+//
+// ¿QUÉ HACE?
+// 1. Muestra un formulario específico para el inicio de sesión de administradores.
+// 2. Al enviar el formulario, llama a la función `login` del `AuthContext`,
+//    pasando un flag `isAdminLogin: true`.
+// 3. El `AuthContext` se encargará de llamar a la Server Action que a su vez
+//    hará la petición al backend y validará que el rol del usuario sea 'ADMIN'.
+// 4. Si el login es exitoso, redirige al panel de control (`/admin/dashboard`).
+// =================================================================================
+
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,11 +27,13 @@ import { Eye, EyeOff } from "lucide-react";
 export default function AdminLoginPage() {
   const router = useRouter();
   const { toast } = useToast();
+  // Se obtiene la función `login` del contexto de autenticación.
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
-  // MANEJADOR: Se ejecuta cuando se envía el formulario de login.
+  // --- MANEJADOR DEL FORMULARIO ---
+  // Se ejecuta cuando el administrador envía el formulario.
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsLoading(true);
@@ -28,16 +43,20 @@ export default function AdminLoginPage() {
     const password = formData.get('password') as string;
 
     try {
-      // Llama a la función login del contexto, indicando que es un login de admin.
+      // --- LLAMADA A LA LÓGICA DE LOGIN ---
+      // Llama a la función `login` del contexto, indicando que es un login de admin.
+      // Esta es la conexión clave con el sistema de autenticación.
       await login(email, password, true); 
       
       toast({
         title: "Inicio de Sesión Exitoso",
         description: `Bienvenido. Redirigiendo al panel...`,
       });
+      // Redirección al panel principal si el login es correcto.
       router.push('/admin/dashboard');
 
     } catch (error) {
+       // Si `login` lanza un error (ej: credenciales incorrectas, no es admin), se muestra una notificación.
        toast({
         title: "Error de Inicio de Sesión",
         description: (error as Error).message,
@@ -48,8 +67,8 @@ export default function AdminLoginPage() {
     }
   }
 
+  // --- RENDERIZADO DEL FORMULARIO ---
   return (
-    // VISUALIZACIÓN: Renderiza el formulario de login para el administrador.
     <div className="flex items-center justify-center min-h-[calc(100vh-14rem)] py-12">
       <Card className="w-full max-w-sm">
         <form onSubmit={handleLogin}>

@@ -1,11 +1,24 @@
 
 'use server';
 
+// =================================================================================
+// SERVER ACTIONS
+// Este archivo contiene funciones que se ejecutan exclusivamente en el servidor.
+//
+// ¿QUÉ HACE?
+// 1. Proporciona una forma segura de interactuar con el backend para realizar
+//    operaciones de escritura (POST, PUT, DELETE).
+// 2. Se encarga de la lógica de autenticación y modificación de datos.
+// 3. Usa `revalidatePath` para indicarle a Next.js que debe refrescar los datos
+//    de ciertas páginas después de una modificación, manteniendo la UI actualizada.
+// =================================================================================
+
 import { revalidatePath } from 'next/cache';
 import type { User } from '@/lib/types';
 
 // --- ACCIONES DE AUTENTICACIÓN ---
 
+// CONEXIÓN CON EL BACKEND: Inicia sesión de usuario.
 export async function loginAction(email: string, password?: string, isAdminLogin: boolean = false): Promise<{user: User, token: string}> {
     try {
         const response = await fetch('https://apisahumerios.onrender.com/usuarios/login', {
@@ -13,8 +26,9 @@ export async function loginAction(email: string, password?: string, isAdminLogin
             headers: {
                 'Content-Type': 'application/json',
             },
+            // Se asegura de enviar siempre una contraseña, aunque sea vacía.
             body: JSON.stringify({ email: email, password: password || '' }),
-            cache: 'no-cache',
+            cache: 'no-cache', // No cachear la respuesta de login.
         });
         
         const data = await response.json();
@@ -23,6 +37,7 @@ export async function loginAction(email: string, password?: string, isAdminLogin
             throw new Error(data.message || data.mensaje || 'Error de autenticación.');
         }
 
+        // Si es un intento de login para el panel de admin, verifica el rol.
         if (isAdminLogin && data.usuario.rol !== 'ADMIN') {
             throw new Error('Acceso denegado. Se requiere rol de administrador.');
         }
@@ -30,10 +45,12 @@ export async function loginAction(email: string, password?: string, isAdminLogin
         return { user: data.usuario, token: data.token };
 
     } catch (err: any) {
+        // Relanza el error para que el `auth-context` lo pueda capturar.
         throw new Error(err.message);
     }
 }
 
+// CONEXIÓN CON EL BACKEND: Registra un nuevo usuario.
 export async function signupAction(name: string, email: string, password: string): Promise<{user: User, token: string}> {
     try {
         const response = await fetch('https://apisahumerios.onrender.com/usuarios/registrar', {
@@ -45,7 +62,7 @@ export async function signupAction(name: string, email: string, password: string
                 nombre: name,
                 email: email,
                 password: password,
-                rol: 'USER',
+                rol: 'USER', // Los usuarios siempre se registran con rol 'USER'.
             }),
             cache: 'no-cache',
         });
@@ -66,12 +83,15 @@ export async function signupAction(name: string, email: string, password: string
 
 // --- ACCIONES DE PRODUCTOS ---
 
-// Helper para construir el payload del producto con la estructura EXACTA que espera el backend.
+// Función de ayuda para construir el objeto (payload) del producto
+// con la estructura EXACTA que espera la API del backend.
 function buildProductPayload(formData: FormData) {
   
+  // Convierte strings separados por comas en arrays.
   const fraganciasString = formData.get('fragancias') as string || '';
   const fragancias = fraganciasString ? fraganciasString.split(',').map(f => f.trim()).filter(f => f) : [];
 
+  // Convierte el string de atributos en un array de objetos {nombre, valor}.
   const atributosString = formData.get('atributos') as string || '';
   const atributos = atributosString
     .split(',')
@@ -82,6 +102,7 @@ function buildProductPayload(formData: FormData) {
       return { nombre: nombre.trim(), valor: valorParts.join(':').trim() };
     });
 
+  // Funciones helper para asegurar que los tipos de datos son correctos.
   const getNumberOrNull = (field: string) => {
     const value = formData.get(field) as string;
     if (value === null || value.trim() === '' || isNaN(Number(value))) {
@@ -103,6 +124,7 @@ function buildProductPayload(formData: FormData) {
     return value || null;
   };
   
+  // Construcción del payload final.
   const payload: any = {
     nombre: formData.get('nombre'),
     descripcion: formData.get('descripcion'),
@@ -120,6 +142,7 @@ function buildProductPayload(formData: FormData) {
     fechaFinDescuento: getStringOrNull('fechaFinDescuento') || null,
   };
   
+   // Elimina cualquier campo que sea nulo o indefinido para no enviarlo al backend.
    Object.keys(payload).forEach(key => {
     if (payload[key] === null || payload[key] === undefined) {
       delete payload[key];
@@ -130,6 +153,7 @@ function buildProductPayload(formData: FormData) {
 }
 
 
+// CONEXIÓN CON EL BACKEND: Añade un nuevo producto.
 export async function addProduct(formData: FormData, token: string | null) {
   const newProduct = buildProductPayload(formData);
   
@@ -138,7 +162,7 @@ export async function addProduct(formData: FormData, token: string | null) {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` 
+        'Authorization': `Bearer ${token}` // Requiere token de admin.
       },
       body: JSON.stringify(newProduct),
     });
@@ -148,6 +172,8 @@ export async function addProduct(formData: FormData, token: string | null) {
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
 
+    // INVALIDACIÓN DE CACHÉ: Le dice a Next.js que la data de estas páginas cambió
+    // y que debe volver a obtenerla en la próxima visita.
     revalidatePath('/admin/dashboard');
     revalidatePath('/products');
     return { success: true };
@@ -156,7 +182,8 @@ export async function addProduct(formData: FormData, token: string | null) {
     return { error: (error as Error).message };
   }
 }
-  
+
+// CONEXIÓN CON EL BACKEND: Edita un producto existente.
 export async function editProduct(formData: FormData, token: string | null) {
   const productId = formData.get('id');
   if (!productId) {
@@ -180,6 +207,7 @@ export async function editProduct(formData: FormData, token: string | null) {
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
 
+    // Invalida las páginas afectadas.
     revalidatePath('/admin/dashboard');
     revalidatePath(`/products/${productId}`);
     revalidatePath('/products');
@@ -190,6 +218,7 @@ export async function editProduct(formData: FormData, token: string | null) {
   }
 }
 
+// CONEXIÓN CON EL BACKEND: Elimina un producto.
 export async function deleteProduct(productId: number, token: string | null) {
   if (!productId) {
     return { error: 'No se proporcionó ID de producto.' };
@@ -219,14 +248,18 @@ export async function deleteProduct(productId: number, token: string | null) {
 }
 
 // --- ACCIONES GENÉRICAS ---
+// Estas funciones reutilizan la lógica para diferentes entidades (usuarios, pedidos, etc.)
+
+// Gestiona la creación y edición de una entidad.
 async function manageEntity(
-  entityName: string,
+  entityName: string, // 'usuarios', 'pedidos', etc.
   formData: FormData,
   token: string | null,
-  idField: string = 'id'
+  idField: string = 'id' // Campo que identifica a la entidad (ej: 'id', 'idOferta')
 ) {
   const entityId = formData.get(idField);
   const isEdit = !!entityId;
+  // Construye la URL de la API dinámicamente.
   const endpoint = `https://apisahumerios.onrender.com/${entityName}${isEdit ? `/editar/${entityId}` : '/agregar'}`;
   const method = isEdit ? 'PUT' : 'POST';
 
@@ -234,7 +267,8 @@ async function manageEntity(
   
   if(isEdit) {
     delete payload[idField];
-    // Si la contraseña está vacía al editar, no la enviamos.
+    // Caso especial: Si se está editando y la contraseña está vacía, no se envía
+    // para evitar que el backend la cambie a una cadena vacía.
     if ('password' in payload && payload.password === '') {
         delete payload.password;
     }
@@ -263,6 +297,7 @@ async function manageEntity(
   }
 }
 
+// Gestiona la eliminación de una entidad.
 async function deleteEntity(entityName: string, entityId: number | string, token: string | null) {
   if (!entityId) {
     return { error: 'No se proporcionó ID.' };
@@ -291,10 +326,10 @@ async function deleteEntity(entityName: string, entityId: number | string, token
 
 
 // --- ACCIONES PARA CADA ENTIDAD ---
+// Estas funciones usan los helpers `manageEntity` y `deleteEntity`.
 
 export async function saveUser(formData: FormData, token: string | null) {
-    // Si estamos editando y el campo de contraseña está vacío, lo eliminamos del formData
-    // para que manageEntity no lo incluya en el payload.
+    // Lógica especial para el campo de contraseña de usuario.
     if (formData.get('id') && formData.get('password') === '') {
         formData.delete('password');
     }
@@ -311,11 +346,11 @@ export async function deleteOrder(id: string, token: string | null) {
   return await deleteEntity('pedidos', id, token);
 }
 
+// Lógica específica para guardar/editar ofertas.
 export async function saveDeal(formData: FormData, token: string | null) {
   const dealId = formData.get('idOferta');
   const isEdit = !!dealId;
 
-  // Usa la API de creación o edición según corresponda
   const endpoint = isEdit
     ? `https://apisahumerios.onrender.com/api/ofertas/editar/${dealId}`
     : 'https://apisahumerios.onrender.com/api/ofertas/crearOferta';
@@ -332,7 +367,6 @@ export async function saveDeal(formData: FormData, token: string | null) {
     return value || null;
   };
 
-  // Construye el payload exactamente como lo espera la API
   const payload: any = {
     productoId: getNumberOrNull('producto_id'),
     valorDescuento: getNumberOrNull('valor_descuento'),
@@ -342,14 +376,12 @@ export async function saveDeal(formData: FormData, token: string | null) {
     estado: formData.get('activo') === 'on',
   };
   
-  // Si es edición, pueden incluirse otros campos, de lo contrario, no
   if (isEdit) {
     payload.nombreProducto = getStringOrNull('nombreProducto');
     payload.descripcion = getStringOrNull('descripcion');
     payload.precio = getNumberOrNull('precio');
   }
 
-  // Elimina las propiedades nulas para que coincidan con el ejemplo del payload
   Object.keys(payload).forEach(key => {
     if (payload[key] === null) {
       delete payload[key];
@@ -368,7 +400,6 @@ export async function saveDeal(formData: FormData, token: string | null) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      // Intenta parsear como JSON, si falla, usa el texto.
       try {
         const errorData = JSON.parse(errorText);
         throw new Error(errorData.message || `Error en ofertas: ${response.status}`);
