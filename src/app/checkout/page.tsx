@@ -56,7 +56,7 @@ export default function CheckoutPage() {
         const pedidoRequest = {
             usuarioId: user.id,
             items: cartItems.map(item => ({
-                productoId: item.id,
+                productoId: Number(item.id),
                 cantidad: item.quantity
             }))
         };
@@ -235,5 +235,6 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
 
 
