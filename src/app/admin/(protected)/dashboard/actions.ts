@@ -1,12 +1,70 @@
 
-
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import type { User } from '@/lib/types';
 
-// NOTA PARA EL DESARROLLADOR:
-// Este archivo contiene "Server Actions" de Next.js.
-// Este es el puente entre tu frontend y tu API para realizar cambios en la base de datos.
+// --- ACCIONES DE AUTENTICACIÓN ---
+
+export async function loginAction(email: string, password?: string, isAdminLogin: boolean = false): Promise<{user: User, token: string}> {
+    try {
+        const response = await fetch('https://apisahumerios.onrender.com/usuarios/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email, password: password || '' }),
+            cache: 'no-cache',
+        });
+        
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || data.mensaje || 'Error de autenticación.');
+        }
+
+        if (isAdminLogin && data.usuario.rol !== 'ADMIN') {
+            throw new Error('Acceso denegado. Se requiere rol de administrador.');
+        }
+
+        return { user: data.usuario, token: data.token };
+
+    } catch (err: any) {
+        throw new Error(err.message);
+    }
+}
+
+export async function signupAction(name: string, email: string, password: string): Promise<{user: User, token: string}> {
+    try {
+        const response = await fetch('https://apisahumerios.onrender.com/usuarios/registrar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nombre: name,
+                email: email,
+                password: password,
+                rol: 'USER',
+            }),
+            cache: 'no-cache',
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.mensaje || 'Ocurrió un error al registrarse.');
+        }
+        
+        return { user: data.usuario, token: data.token };
+
+    } catch(err: any) {
+        throw new Error(err.message);
+    }
+}
+
+
+// --- ACCIONES DE PRODUCTOS ---
 
 // Helper para construir el payload del producto con la estructura EXACTA que espera el backend.
 function buildProductPayload(formData: FormData) {
@@ -71,7 +129,7 @@ function buildProductPayload(formData: FormData) {
   return payload;
 }
 
-// --- ACCIONES DE PRODUCTOS ---
+
 export async function addProduct(formData: FormData, token: string | null) {
   const newProduct = buildProductPayload(formData);
   

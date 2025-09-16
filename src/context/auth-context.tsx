@@ -4,8 +4,11 @@
 import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { User } from "@/lib/types";
+import { loginAction, signupAction } from "@/app/admin/(protected)/dashboard/actions";
 
-// Define el tipo para el contexto de autenticación
+
+// --- React Context ---
+
 interface AuthContextType {
   user: User | null;
   token: string | null;
@@ -16,14 +19,12 @@ interface AuthContextType {
   logout: () => void;
 }
 
-// Crea el contexto de autenticación
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Define el proveedor del contexto de autenticación
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true); // Inicia en true para comprobar el estado inicial
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -62,25 +63,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://apisahumerios.onrender.com/usuarios/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: email, password: password || '' }),
-      });
-      
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || data.mensaje || 'Error de autenticación.');
-      }
-
-      if (isAdminLogin && data.usuario.rol !== 'ADMIN') {
-        throw new Error('Acceso denegado. Se requiere rol de administrador.');
-      }
-      
-      handleAuthSuccess(data.usuario, data.token);
+      // Ahora llama a la Server Action importada
+      const { user: userData, token: userToken } = await loginAction(email, password, isAdminLogin);
+      handleAuthSuccess(userData, userToken);
 
     } catch (err: any) {
       setError(err.message);
@@ -94,26 +79,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     setError(null);
     try {
-       const response = await fetch('https://apisahumerios.onrender.com/usuarios/registrar', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          nombre: name,
-          email: email,
-          password: password,
-          rol: 'user', 
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.mensaje || 'Ocurrió un error al registrarse.');
-      }
-
-      handleAuthSuccess(data.usuario, data.token);
+       // Ahora llama a la Server Action importada
+       const { user: userData, token: userToken } = await signupAction(name, email, password);
+       handleAuthSuccess(userData, userToken);
 
     } catch(err: any) {
         setError(err.message);
