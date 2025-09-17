@@ -5,11 +5,9 @@
 // SERVER ACTIONS
 // Este archivo contiene funciones que se ejecutan exclusivamente en el servidor.
 // MODIFICADO PARA AUTENTICACIÓN BASADA EN COOKIES:
-// Las funciones ya no reciben el token como parámetro. Se asume que el navegador
-// se encarga de enviar la cookie de sesión automáticamente en las peticiones
-// que se hacen desde el lado del cliente (ej. formularios).
-// Para peticiones `fetch` desde el servidor (como aquí), se requeriría un
-// manejo especial para pasar las cookies, pero lo mantenemos simple por ahora.
+// Las funciones ya no reciben el token como parámetro.
+// En su lugar, usan la función `getAuthHeaders` para leer la cookie de la
+// petición entrante y reenviarla a la API del backend.
 // =================================================================================
 
 
@@ -20,7 +18,7 @@ import { cookies } from 'next/headers';
 // --- ACCIONES DE AUTENTICACIÓN ---
 
 // CONEXIÓN CON EL BACKEND: Inicia sesión de usuario.
-// Devuelve solo el usuario, el token es manejado por cookies.
+// El backend establece la cookie, el frontend solo recibe los datos del usuario.
 export async function loginAction(email: string, password?: string): Promise<{user: User}> {
     try {
         const response = await fetch('https://apisahumerios.onrender.com/usuarios/login', {
@@ -38,8 +36,8 @@ export async function loginAction(email: string, password?: string): Promise<{us
             throw new Error(data.message || data.mensaje || 'Error de autenticación.');
         }
 
-        // El backend responde con un header `Set-Cookie` que el navegador almacena.
-        // La respuesta JSON solo contiene los datos del usuario.
+        // La respuesta del backend debe incluir una cabecera `Set-Cookie`.
+        // El navegador almacenará esta cookie automáticamente.
         return { user: data.usuario };
 
     } catch (err: any) {
@@ -76,6 +74,27 @@ export async function signupAction(name: string, email: string, password: string
     } catch(err: any) {
         throw new Error(err.message);
     }
+}
+
+
+// --- LÓGICA DE MANEJO DE COOKIES PARA SERVER ACTIONS ---
+
+/**
+ * Obtiene la cookie de sesión del navegador y la prepara para ser reenviada
+ * en una petición fetch desde el servidor a la API de backend.
+ * @returns {HeadersInit} Objeto de cabeceras con la cookie incluida.
+ */
+function getAuthHeaders() {
+    const cookieStore = cookies();
+    const tokenCookie = cookieStore.get('token'); // Asume que la cookie se llama 'token'
+    const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+    };
+    if (tokenCookie) {
+        // Formato correcto para reenviar una cookie en una petición fetch.
+        headers['Cookie'] = `token=${tokenCookie.value}`;
+    }
+    return headers;
 }
 
 
@@ -133,22 +152,8 @@ function buildProductPayload(formData: FormData) {
   return payload;
 }
 
-// Función genérica para reenviar la cookie de sesión desde una Server Action al backend.
-function getAuthHeaders() {
-    const cookieStore = cookies();
-    const tokenCookie = cookieStore.get('token'); // Asume que la cookie se llama 'token'
-    const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-    };
-    if (tokenCookie) {
-        headers['Cookie'] = `token=${tokenCookie.value}`;
-    }
-    return headers;
-}
-
-
 // CONEXIÓN CON EL BACKEND: Añade un nuevo producto.
-// Ya no necesita el parámetro `token`.
+// Utiliza `getAuthHeaders` para enviar la cookie de autenticación.
 export async function addProduct(formData: FormData) {
   const newProduct = buildProductPayload(formData);
   
@@ -395,3 +400,5 @@ export async function saveFragrance(formData: FormData) {
 export async function deleteFragrance(id: number) {
   return await deleteEntity('fragancias', id);
 }
+
+    
