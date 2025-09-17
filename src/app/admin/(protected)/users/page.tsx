@@ -24,7 +24,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useTransition, useState, useEffect } from 'react';
-import { useAuth } from '@/context/auth-context';
 import { deleteUser } from '../dashboard/actions';
 import { AdminUserForm } from './user-form';
 import { Badge } from '@/components/ui/badge';
@@ -34,25 +33,23 @@ export default function AdminUsersPage() {
     const [users, setUsers] = useState<User[]>([]);
     const [isPending, startTransition] = useTransition();
     const { toast } = useToast();
-    const { token } = useAuth();
 
+    // El token ya no se gestiona aquí.
+    // La carga de datos se hace del lado del servidor para evitar problemas de CORS y cookies.
     const fetchUsers = async () => {
-        if (token) {
-            const fetchedUsers = await getUsers(token);
-            setUsers(fetchedUsers);
-        }
+        // Se asume que el token(cookie) se maneja en el servidor al llamar getUSers
+        const fetchedUsers = await getUsers(null); // Pasamos null, la cookie se maneja en el servidor
+        setUsers(fetchedUsers);
     }
 
     useEffect(() => {
-        if (token) {
-            fetchUsers();
-        }
+        fetchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [token]);
+    }, []);
 
     const handleDelete = (userId: number) => {
         startTransition(async () => {
-            const result = await deleteUser(userId, token);
+            const result = await deleteUser(userId);
             if (result?.error) {
                 toast({
                     title: "Error al eliminar",

@@ -18,74 +18,56 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast"
 import type { User } from "@/lib/types"
 import React, { useTransition, useState } from "react"
-import { useAuth } from "@/context/auth-context"
 import { saveUser } from "../dashboard/actions"
 import { Eye, EyeOff } from "lucide-react"
 
-// =================================================================================
-// FORMULARIO DE USUARIO (AÑADIR/EDITAR)
-//
-// ¿QUÉ HACE?
-// 1. Se presenta como un diálogo modal.
-// 2. Sirve tanto para crear un nuevo usuario como para editar uno existente.
-// 3. Si se le pasa un prop `user`, se pre-llena con sus datos para edición.
-// 4. Al enviar, llama a la Server Action `saveUser` para persistir los cambios.
-// =================================================================================
-
 export function AdminUserForm({
-  user, // Prop opcional: si existe, el formulario está en modo "edición".
-  onUserSaved, // Callback para refrescar la lista de usuarios después de guardar.
+  user, 
+  onUserSaved,
 }: {
   user?: User,
   onUserSaved: () => void,
 }) {
-  const [isPending, startTransition] = useTransition() // Hook para manejar el estado de carga de la Server Action.
+  const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
   const [isDialogOpen, setDialogOpen] = useState(false)
   const formRef = React.useRef<HTMLFormElement>(null)
-  const { token } = useAuth(); // Obtiene el token del admin logueado para autorizar la petición.
+  // El token ya no se obtiene del contexto
   const [showPassword, setShowPassword] = useState(false)
 
-  // --- MANEJADOR DEL FORMULARIO ---
   const formAction = async (formData: FormData) => {
     const password = formData.get('password') as string;
 
-    // Validación del lado del cliente: la contraseña es obligatoria para nuevos usuarios.
     if (!user && !password) {
         toast({
             title: `Error al añadir usuario`,
             description: "La contraseña es obligatoria para nuevos usuarios.",
             variant: "destructive",
         });
-        return; // Detiene la ejecución si no se cumple la validación.
+        return;
     }
 
-    // `startTransition` envuelve la llamada a la Server Action.
-    // Esto evita que la UI se bloquee mientras la acción se ejecuta en el servidor.
     startTransition(async () => {
-      // --- LLAMADA A LA SERVER ACTION ---
-      const result = await saveUser(formData, token)
+      // La Server Action `saveUser` ya no requiere el token.
+      const result = await saveUser(formData)
       
       if (result?.error) {
-        // Muestra notificación de error si la Server Action devolvió un error.
         toast({
           title: `Error al ${user ? "editar" : "añadir"}`,
           description: result.error,
           variant: "destructive",
         })
       } else {
-        // Muestra notificación de éxito y actualiza la UI.
         toast({
           title: "Éxito",
           description: `Usuario ${user ? "editado" : "añadido"} correctamente.`,
         })
-        onUserSaved(); // Llama al callback para refrescar la tabla de usuarios.
-        setDialogOpen(false) // Cierra el diálogo modal.
+        onUserSaved();
+        setDialogOpen(false)
       }
     })
   }
 
-  // El texto del botón de activación cambia si es para editar o añadir.
   const triggerButton = user ? (
     <Button variant="outline" size="sm">
       Editar
@@ -94,7 +76,6 @@ export function AdminUserForm({
     <Button>Añadir Usuario</Button>
   )
 
-  // --- RENDERIZADO DEL DIÁLOGO Y FORMULARIO ---
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>{triggerButton}</DialogTrigger>
@@ -102,7 +83,6 @@ export function AdminUserForm({
         <form 
           ref={formRef}
           action={formAction}
-          // Se usa `onSubmit` para interceptar el envío y poder usar `startTransition`.
           onSubmit={(e) => {
             e.preventDefault();
             formAction(new FormData(e.currentTarget));
@@ -119,7 +99,6 @@ export function AdminUserForm({
             </DialogDescription>
           </DialogHeader>
             <div className="grid gap-4 py-4">
-              {/* Si es edición, incluye el ID del usuario en un campo oculto. */}
               {user && (
                 <Input type="hidden" name="id" defaultValue={user.id} />
               )}
@@ -134,7 +113,6 @@ export function AdminUserForm({
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="password" className="text-right">Contraseña</Label>
                 <div className="col-span-3 relative">
-                    {/* El campo no es requerido si se está editando un usuario. */}
                     <Input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder={user ? "Dejar en blanco para no cambiar" : ""} required={!user} />
                      <Button
                         type="button"

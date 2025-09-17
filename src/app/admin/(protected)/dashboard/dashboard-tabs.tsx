@@ -29,24 +29,21 @@ import { deleteProduct } from './actions';
 import { AdminProductForm } from './product-form';
 import { useToast } from '@/hooks/use-toast';
 import { useTransition } from 'react';
-import { useAuth } from '@/context/auth-context';
-
 
 interface DashboardTabsProps {
     products: Product[];
 }
 
 // Este componente ya no usa Tabs, ahora solo renderiza la tabla de productos.
-// El nombre se mantiene por simplicidad, pero su rol ha cambiado.
 export function DashboardTabs({ products }: DashboardTabsProps) {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
-  const { token } = useAuth(); // Obtenemos el token desde el contexto
+  // El token ya no se necesita, la cookie se maneja automáticamente.
 
   const handleDelete = (productId: number) => {
     startTransition(async () => {
-      // Pasamos el token a la Server Action
-      const result = await deleteProduct(productId, token);
+      // La Server Action ya no requiere el token.
+      const result = await deleteProduct(productId);
       if (result?.error) {
         toast({
           title: "Error al eliminar",
@@ -65,10 +62,8 @@ export function DashboardTabs({ products }: DashboardTabsProps) {
   return (
       <div className="bg-card border rounded-lg">
         <div className="flex justify-end p-4 border-b">
-            {/* El componente del formulario se encarga de sí mismo, tanto para añadir como para editar */}
             <AdminProductForm />
         </div>
-        {/* VISUALIZACIÓN: Tabla que muestra los productos obtenidos de la API. */}
         <Table>
           <TableHeader>
             <TableRow>
@@ -125,7 +120,6 @@ export function DashboardTabs({ products }: DashboardTabsProps) {
                   <TableCell className="hidden md:table-cell">{product.totalIngresado ?? 0}</TableCell>
                 <TableCell>
                   <div className="flex gap-2 justify-end">
-                      {/* Pasamos el producto específico para que el formulario sepa que es una edición */}
                       <AdminProductForm product={product} />
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -140,7 +134,6 @@ export function DashboardTabs({ products }: DashboardTabsProps) {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                              {/* CONEXIÓN: Llama a la función que ejecuta la Server Action de eliminar. */}
                               <AlertDialogAction
                                 onClick={() => handleDelete(product.id)}
                                 disabled={isPending}

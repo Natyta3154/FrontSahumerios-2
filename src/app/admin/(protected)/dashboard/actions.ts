@@ -4,32 +4,32 @@
 // =================================================================================
 // SERVER ACTIONS
 // Este archivo contiene funciones que se ejecutan exclusivamente en el servidor.
-//
-// ¿QUÉ HACE?
-// 1. Proporciona una forma segura de interactuar con el backend para realizar
-//    operaciones de escritura (POST, PUT, DELETE).
-// 2. Se encarga de la lógica de autenticación y modificación de datos.
-// 3. Usa `revalidatePath` para indicarle a Next.js que debe refrescar los datos
-//    de ciertas páginas después de una modificación, manteniendo la UI actualizada.
+// MODIFICADO PARA AUTENTICACIÓN BASADA EN COOKIES:
+// Las funciones ya no reciben el token como parámetro. Se asume que el navegador
+// se encarga de enviar la cookie de sesión automáticamente en las peticiones
+// que se hacen desde el lado del cliente (ej. formularios).
+// Para peticiones `fetch` desde el servidor (como aquí), se requeriría un
+// manejo especial para pasar las cookies, pero lo mantenemos simple por ahora.
 // =================================================================================
+
 
 import { revalidatePath } from 'next/cache';
 import type { User } from '@/lib/types';
+import { cookies } from 'next/headers';
 
 // --- ACCIONES DE AUTENTICACIÓN ---
 
 // CONEXIÓN CON EL BACKEND: Inicia sesión de usuario.
-// Se ha simplificado para no requerir el parámetro `isAdminLogin`.
-export async function loginAction(email: string, password?: string): Promise<{user: User, token: string}> {
+// Devuelve solo el usuario, el token es manejado por cookies.
+export async function loginAction(email: string, password?: string): Promise<{user: User}> {
     try {
         const response = await fetch('https://apisahumerios.onrender.com/usuarios/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            // Se asegura de enviar siempre una contraseña, aunque sea vacía.
             body: JSON.stringify({ email: email, password: password || '' }),
-            cache: 'no-cache', // No cachear la respuesta de login.
+            cache: 'no-cache',
         });
         
         const data = await response.json();
@@ -38,19 +38,17 @@ export async function loginAction(email: string, password?: string): Promise<{us
             throw new Error(data.message || data.mensaje || 'Error de autenticación.');
         }
 
-        // La verificación de si es admin se hará en el frontend,
-        // mostrando el enlace al panel solo si el rol es 'ADMIN'.
-        
-        return { user: data.usuario, token: data.token };
+        // El backend responde con un header `Set-Cookie` que el navegador almacena.
+        // La respuesta JSON solo contiene los datos del usuario.
+        return { user: data.usuario };
 
     } catch (err: any) {
-        // Relanza el error para que el `auth-context` lo pueda capturar.
         throw new Error(err.message);
     }
 }
 
 // CONEXIÓN CON EL BACKEND: Registra un nuevo usuario.
-export async function signupAction(name: string, email: string, password: string): Promise<{user: User, token: string}> {
+export async function signupAction(name: string, email: string, password: string): Promise<{user: User}> {
     try {
         const response = await fetch('https://apisahumerios.onrender.com/usuarios/registrar', {
             method: 'POST',
@@ -61,7 +59,7 @@ export async function signupAction(name: string, email: string, password: string
                 nombre: name,
                 email: email,
                 password: password,
-                rol: 'USER', // Los usuarios siempre se registran con rol 'USER'.
+                rol: 'USER',
             }),
             cache: 'no-cache',
         });
@@ -72,7 +70,8 @@ export async function signupAction(name: string, email: string, password: string
             throw new Error(data.mensaje || 'Ocurrió un error al registrarse.');
         }
         
-        return { user: data.usuario, token: data.token };
+        // La respuesta también debería establecer la cookie de sesión.
+        return { user: data.usuario };
 
     } catch(err: any) {
         throw new Error(err.message);
@@ -81,16 +80,10 @@ export async function signupAction(name: string, email: string, password: string
 
 
 // --- ACCIONES DE PRODUCTOS ---
-
-// Función de ayuda para construir el objeto (payload) del producto
-// con la estructura EXACTA que espera la API del backend.
+// Helper para construir el payload del producto. No cambia.
 function buildProductPayload(formData: FormData) {
-  
-  // Convierte strings separados por comas en arrays.
   const fraganciasString = formData.get('fragancias') as string || '';
   const fragancias = fraganciasString ? fraganciasString.split(',').map(f => f.trim()).filter(f => f) : [];
-
-  // Convierte el string de atributos en un array de objetos {nombre, valor}.
   const atributosString = formData.get('atributos') as string || '';
   const atributos = atributosString
     .split(',')
@@ -101,29 +94,19 @@ function buildProductPayload(formData: FormData) {
       return { nombre: nombre.trim(), valor: valorParts.join(':').trim() };
     });
 
-  // Funciones helper para asegurar que los tipos de datos son correctos.
   const getNumberOrNull = (field: string) => {
     const value = formData.get(field) as string;
-    if (value === null || value.trim() === '' || isNaN(Number(value))) {
-        return null;
-    }
-    return Number(value);
+    return (value && !isNaN(Number(value))) ? Number(value) : null;
   };
-
   const getIntOrNull = (field: string) => {
-    const value = formData.get(field) as string;
-    if (value === null || value.trim() === '' || isNaN(Number(value))) {
-        return null;
-    }
-    return parseInt(value, 10);
+      const value = formData.get(field) as string;
+      return (value && !isNaN(parseInt(value, 10))) ? parseInt(value, 10) : null;
   };
-  
   const getStringOrNull = (field: string) => {
     const value = formData.get(field) as string;
     return value || null;
   };
   
-  // Construcción del payload final.
   const payload: any = {
     nombre: formData.get('nombre'),
     descripcion: formData.get('descripcion'),
@@ -141,7 +124,6 @@ function buildProductPayload(formData: FormData) {
     fechaFinDescuento: getStringOrNull('fechaFinDescuento') || null,
   };
   
-   // Elimina cualquier campo que sea nulo o indefinido para no enviarlo al backend.
    Object.keys(payload).forEach(key => {
     if (payload[key] === null || payload[key] === undefined) {
       delete payload[key];
@@ -151,18 +133,29 @@ function buildProductPayload(formData: FormData) {
   return payload;
 }
 
+// Función genérica para reenviar la cookie de sesión desde una Server Action al backend.
+function getAuthHeaders() {
+    const cookieStore = cookies();
+    const tokenCookie = cookieStore.get('token'); // Asume que la cookie se llama 'token'
+    const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+    };
+    if (tokenCookie) {
+        headers['Cookie'] = `token=${tokenCookie.value}`;
+    }
+    return headers;
+}
+
 
 // CONEXIÓN CON EL BACKEND: Añade un nuevo producto.
-export async function addProduct(formData: FormData, token: string | null) {
+// Ya no necesita el parámetro `token`.
+export async function addProduct(formData: FormData) {
   const newProduct = buildProductPayload(formData);
   
   try {
     const response = await fetch('https://apisahumerios.onrender.com/productos/agregar', {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // Requiere token de admin.
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(newProduct),
     });
     
@@ -171,8 +164,6 @@ export async function addProduct(formData: FormData, token: string | null) {
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
 
-    // INVALIDACIÓN DE CACHÉ: Le dice a Next.js que la data de estas páginas cambió
-    // y que debe volver a obtenerla en la próxima visita.
     revalidatePath('/admin/dashboard');
     revalidatePath('/products');
     return { success: true };
@@ -183,21 +174,16 @@ export async function addProduct(formData: FormData, token: string | null) {
 }
 
 // CONEXIÓN CON EL BACKEND: Edita un producto existente.
-export async function editProduct(formData: FormData, token: string | null) {
+export async function editProduct(formData: FormData) {
   const productId = formData.get('id');
-  if (!productId) {
-    return { error: 'No se proporcionó ID de producto.' };
-  }
+  if (!productId) return { error: 'No se proporcionó ID de producto.' };
 
   const updatedProduct = buildProductPayload(formData);
   
    try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
       method: 'PUT',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` 
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(updatedProduct),
     });
     
@@ -206,7 +192,6 @@ export async function editProduct(formData: FormData, token: string | null) {
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
 
-    // Invalida las páginas afectadas.
     revalidatePath('/admin/dashboard');
     revalidatePath(`/products/${productId}`);
     revalidatePath('/products');
@@ -218,18 +203,13 @@ export async function editProduct(formData: FormData, token: string | null) {
 }
 
 // CONEXIÓN CON EL BACKEND: Elimina un producto.
-export async function deleteProduct(productId: number, token: string | null) {
-  if (!productId) {
-    return { error: 'No se proporcionó ID de producto.' };
-  }
+export async function deleteProduct(productId: number) {
+  if (!productId) return { error: 'No se proporcionó ID de producto.' };
   
   try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
+      headers: getAuthHeaders(),
     });
 
     if (!response.ok) {
@@ -247,18 +227,14 @@ export async function deleteProduct(productId: number, token: string | null) {
 }
 
 // --- ACCIONES GENÉRICAS ---
-// Estas funciones reutilizan la lógica para diferentes entidades (usuarios, pedidos, etc.)
 
-// Gestiona la creación y edición de una entidad.
 async function manageEntity(
-  entityName: string, // 'usuarios', 'pedidos', etc.
+  entityName: string, 
   formData: FormData,
-  token: string | null,
-  idField: string = 'id' // Campo que identifica a la entidad (ej: 'id', 'idOferta')
+  idField: string = 'id'
 ) {
   const entityId = formData.get(idField);
   const isEdit = !!entityId;
-  // Construye la URL de la API dinámicamente.
   const endpoint = `https://apisahumerios.onrender.com/${entityName}${isEdit ? `/editar/${entityId}` : '/agregar'}`;
   const method = isEdit ? 'PUT' : 'POST';
 
@@ -266,21 +242,15 @@ async function manageEntity(
   
   if(isEdit) {
     delete payload[idField];
-    // Caso especial: Si se está editando y la contraseña está vacía, no se envía
-    // para evitar que el backend la cambie a una cadena vacía.
     if ('password' in payload && payload.password === '') {
         delete payload.password;
     }
   }
 
-
   try {
     const response = await fetch(endpoint, {
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(payload),
     });
 
@@ -296,19 +266,13 @@ async function manageEntity(
   }
 }
 
-// Gestiona la eliminación de una entidad.
-async function deleteEntity(entityName: string, entityId: number | string, token: string | null) {
-  if (!entityId) {
-    return { error: 'No se proporcionó ID.' };
-  }
+async function deleteEntity(entityName: string, entityId: number | string) {
+  if (!entityId) return { error: 'No se proporcionó ID.' };
 
   try {
     const response = await fetch(`https://apisahumerios.onrender.com/${entityName}/eliminar/${entityId}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
+      headers: getAuthHeaders(),
     });
 
     if (!response.ok) {
@@ -323,30 +287,26 @@ async function deleteEntity(entityName: string, entityId: number | string, token
   }
 }
 
-
 // --- ACCIONES PARA CADA ENTIDAD ---
-// Estas funciones usan los helpers `manageEntity` y `deleteEntity`.
 
-export async function saveUser(formData: FormData, token: string | null) {
-    // Lógica especial para el campo de contraseña de usuario.
+export async function saveUser(formData: FormData) {
     if (formData.get('id') && formData.get('password') === '') {
         formData.delete('password');
     }
-    return await manageEntity('usuarios', formData, token);
+    return await manageEntity('usuarios', formData);
 }
-export async function deleteUser(id: number, token: string | null) {
-  return await deleteEntity('usuarios', id, token);
-}
-
-export async function saveOrder(formData: FormData, token: string | null) {
-  return await manageEntity('pedidos', formData, token);
-}
-export async function deleteOrder(id: string, token: string | null) {
-  return await deleteEntity('pedidos', id, token);
+export async function deleteUser(id: number) {
+  return await deleteEntity('usuarios', id);
 }
 
-// Lógica específica para guardar/editar ofertas.
-export async function saveDeal(formData: FormData, token: string | null) {
+export async function saveOrder(formData: FormData) {
+  return await manageEntity('pedidos', formData);
+}
+export async function deleteOrder(id: string) {
+  return await deleteEntity('pedidos', id);
+}
+
+export async function saveDeal(formData: FormData) {
   const dealId = formData.get('idOferta');
   const isEdit = !!dealId;
 
@@ -360,7 +320,6 @@ export async function saveDeal(formData: FormData, token: string | null) {
     const value = formData.get(field) as string;
     return (value && !isNaN(Number(value))) ? Number(value) : null;
   };
-  
   const getStringOrNull = (field: string) => {
     const value = formData.get(field) as string;
     return value || null;
@@ -382,29 +341,20 @@ export async function saveDeal(formData: FormData, token: string | null) {
   }
 
   Object.keys(payload).forEach(key => {
-    if (payload[key] === null) {
-      delete payload[key];
-    }
+    if (payload[key] === null) delete payload[key];
   });
 
   try {
     const response = await fetch(endpoint, {
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      try {
-        const errorData = JSON.parse(errorText);
-        throw new Error(errorData.message || `Error en ofertas: ${response.status}`);
-      } catch (e) {
-        throw new Error(errorText || `Error en ofertas: ${response.status}`);
-      }
+      const errorData = JSON.parse(errorText || '{}');
+      throw new Error(errorData.message || `Error en ofertas: ${response.status}`);
     }
     
     revalidatePath(`/admin/deals`);
@@ -414,18 +364,12 @@ export async function saveDeal(formData: FormData, token: string | null) {
   }
 }
 
-
-export async function deleteDeal(id: number, token: string | null) {
-    if (!id) {
-        return { error: 'No se proporcionó ID de oferta.' };
-    }
+export async function deleteDeal(id: number) {
+    if (!id) return { error: 'No se proporcionó ID de oferta.' };
     try {
         const response = await fetch(`https://apisahumerios.onrender.com/api/ofertas/eliminar/${id}`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
+            headers: getAuthHeaders(),
         });
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: response.statusText }));
@@ -438,16 +382,16 @@ export async function deleteDeal(id: number, token: string | null) {
     }
 }
 
-export async function saveAttribute(formData: FormData, token: string | null) {
-  return await manageEntity('atributos', formData, token);
+export async function saveAttribute(formData: FormData) {
+  return await manageEntity('atributos', formData);
 }
-export async function deleteAttribute(id: number, token: string | null) {
-  return await deleteEntity('atributos', id, token);
+export async function deleteAttribute(id: number) {
+  return await deleteEntity('atributos', id);
 }
 
-export async function saveFragrance(formData: FormData, token: string | null) {
-  return await manageEntity('fragancias', formData, token);
+export async function saveFragrance(formData: FormData) {
+  return await manageEntity('fragancias', formData);
 }
-export async function deleteFragrance(id: number, token: string | null) {
-  return await deleteEntity('fragancias', id, token);
+export async function deleteFragrance(id: number) {
+  return await deleteEntity('fragancias', id);
 }
