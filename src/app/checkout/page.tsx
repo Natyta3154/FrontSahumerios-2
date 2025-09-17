@@ -71,24 +71,37 @@ export default function CheckoutPage() {
             body: JSON.stringify(pedidoRequest)
         });
         
+        // MANEJO DE ERRORES MEJORADO
+        // Primero, verificamos si la respuesta no fue exitosa.
         if (!response.ok) {
+            // Intentamos leer el cuerpo del error como texto.
             const errorText = await response.text();
             try {
+                // Intentamos parsear el texto como JSON, puede que el backend devuelva un error estructurado.
                 const errorData = JSON.parse(errorText);
                 throw new Error(errorData.message || 'Error al crear el pedido.');
             } catch (e) {
+                // Si no es JSON, usamos el texto del error directamente.
+                // Esto previene el error "Unexpected token 'C'..." si el backend devuelve HTML o texto plano.
                 throw new Error(errorText || `Error del servidor: ${response.status}`);
             }
         }
         
+        // Si la respuesta fue exitosa, la procesamos como JSON.
         const data = await response.json();
+        
+        // REDIRECCIÓN A MERCADO PAGO
+        // Tomamos la URL completa que nos proporciona el backend.
         const paymentUrl = data.preferenciaId;
 
+        // Verificamos que la URL exista antes de redirigir.
         if (paymentUrl) {
             clearCart();
+            // Redirección directa del navegador a la pasarela de pago.
             window.location.href = paymentUrl;
         } else {
-             throw new Error("No se recibió la URL de pago.");
+             // Si la API responde OK pero no envía la URL, mostramos un error.
+             throw new Error("No se recibió la URL de pago desde el servidor.");
         }
 
     } catch (error) {
@@ -228,3 +241,5 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
+    
