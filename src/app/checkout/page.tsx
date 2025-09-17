@@ -68,6 +68,7 @@ export default function CheckoutPage() {
                 'Content-Type': 'application/json',
                 // No es necesario añadir el header 'Authorization'.
             },
+            credentials: 'include', // IMPORTANTE: Asegura que las cookies se envíen en peticiones cross-origin.
             body: JSON.stringify(pedidoRequest)
         });
         
