@@ -49,7 +49,7 @@ export default function AdminAttributesPage() {
 
   const handleDelete = (attributeId: number) => {
     startTransition(async () => {
-      const result = await deleteAttribute(attributeId, token);
+      const result = await deleteAttribute(attributeId);
       if (result?.error) {
         toast({
           title: "Error al eliminar",

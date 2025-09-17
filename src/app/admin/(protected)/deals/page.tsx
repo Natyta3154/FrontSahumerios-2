@@ -52,7 +52,7 @@ export default function AdminDealsPage() {
 
   const handleDelete = (dealId: number) => {
     startTransition(async () => {
-      const result = await deleteDeal(dealId, token);
+      const result = await deleteDeal(dealId);
       if (result?.error) {
         toast({
           title: "Error al eliminar",

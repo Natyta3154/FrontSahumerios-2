@@ -49,7 +49,7 @@ export default function AdminFragrancesPage() {
 
   const handleDelete = (fragranceId: number) => {
     startTransition(async () => {
-      const result = await deleteFragrance(fragranceId, token);
+      const result = await deleteFragrance(fragranceId);
       if (result?.error) {
         toast({
           title: "Error al eliminar",
@@ -126,4 +126,3 @@ export default function AdminFragrancesPage() {
     </>
   );
 }
-
