@@ -19,7 +19,8 @@ import type { User } from '@/lib/types';
 // --- ACCIONES DE AUTENTICACIÓN ---
 
 // CONEXIÓN CON EL BACKEND: Inicia sesión de usuario.
-export async function loginAction(email: string, password?: string, isAdminLogin: boolean = false): Promise<{user: User, token: string}> {
+// Se ha simplificado para no requerir el parámetro `isAdminLogin`.
+export async function loginAction(email: string, password?: string): Promise<{user: User, token: string}> {
     try {
         const response = await fetch('https://apisahumerios.onrender.com/usuarios/login', {
             method: 'POST',
@@ -37,11 +38,9 @@ export async function loginAction(email: string, password?: string, isAdminLogin
             throw new Error(data.message || data.mensaje || 'Error de autenticación.');
         }
 
-        // Si es un intento de login para el panel de admin, verifica el rol.
-        if (isAdminLogin && data.usuario.rol !== 'ADMIN') {
-            throw new Error('Acceso denegado. Se requiere rol de administrador.');
-        }
-
+        // La verificación de si es admin se hará en el frontend,
+        // mostrando el enlace al panel solo si el rol es 'ADMIN'.
+        
         return { user: data.usuario, token: data.token };
 
     } catch (err: any) {

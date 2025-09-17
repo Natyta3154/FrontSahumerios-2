@@ -87,6 +87,8 @@ export function AppHeader() {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  {/* COMENTARIO: Este es el punto clave. El enlace al panel de administración
+                      solo se renderiza si el 'rol' del usuario logueado es 'ADMIN'. */}
                   {user.rol === 'ADMIN' && (
                      <DropdownMenuItem asChild>
                        <Link href="/admin/dashboard">Panel de Admin</Link>

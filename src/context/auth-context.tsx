@@ -27,7 +27,7 @@ interface AuthContextType {
   token: string | null;       // Token JWT para autenticar las peticiones a la API.
   loading: boolean;           // Indica si hay una operación de autenticación en curso.
   error: string | null;       // Almacena mensajes de error si algo falla.
-  login: (email: string, password?: string, isAdminLogin?: boolean) => Promise<void>; // Función para iniciar sesión.
+  login: (email: string, password?: string) => Promise<void>; // Función para iniciar sesión (simplificada).
   signup: (name: string, email: string, password: string) => Promise<void>; // Función para registrar un nuevo usuario.
   logout: () => void;         // Función para cerrar sesión.
 }
@@ -92,12 +92,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   
   // --- FUNCIÓN DE LOGIN ---
   // Llama a la Server Action `loginAction` para comunicarse con el backend.
-  const login = useCallback(async (email: string, password?: string, isAdminLogin: boolean = false) => {
+  // Se ha eliminado el parámetro `isAdminLogin`.
+  const login = useCallback(async (email: string, password?: string) => {
     setLoading(true);
     setError(null);
     try {
-      // CONEXIÓN CON EL BACKEND: Llama a la Server Action.
-      const { user: userData, token: userToken } = await loginAction(email, password, isAdminLogin);
+      // CONEXIÓN CON EL BACKEND: Llama a la Server Action simplificada.
+      const { user: userData, token: userToken } = await loginAction(email, password);
       handleAuthSuccess(userData, userToken);
     } catch (err: any) {
       setError(err.message);

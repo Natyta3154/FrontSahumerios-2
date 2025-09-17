@@ -1,6 +1,17 @@
 
 "use client";
 
+// =================================================================================
+// PÁGINA DE LOGIN UNIFICADA
+//
+// ¿QUÉ HACE?
+// 1. Este es ahora el ÚNICO punto de entrada para todos los usuarios.
+// 2. Al enviar el formulario, llama a la función `login` del `AuthContext`.
+// 3. No necesita saber si el usuario es admin o no. El contexto y la API se encargan.
+// 4. Si el login es exitoso y el usuario es 'ADMIN', el header mostrará el enlace
+//    al panel de administración.
+// =================================================================================
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,7 +27,7 @@ import { Eye, EyeOff } from "lucide-react";
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login } = useAuth();
+  const { login, user } = useAuth(); // Se importa 'user' para la redirección.
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -29,9 +40,18 @@ export default function LoginPage() {
     const password = formData.get('password') as string;
 
     try {
-      await login(email, password, false);
+      // Llama a la función de login simplificada, sin el flag de admin.
+      await login(email, password);
       
       const next = searchParams.get('next');
+      
+      // COMENTARIO: Pequeña mejora: si el usuario es admin, lo redirigimos
+      // directamente al dashboard después del login.
+      if (user?.rol === 'ADMIN') {
+        router.push('/admin/dashboard');
+        return;
+      }
+
       if (next) {
         router.push(next);
       } else {
