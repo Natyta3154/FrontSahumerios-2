@@ -37,17 +37,18 @@ export default function AdminOrdersPage() {
 
   useEffect(() => {
     async function fetchOrders() {
+        // La cookie de autenticación se envía automáticamente desde el navegador
+        // para peticiones GET, por lo que no necesitamos el token aquí.
         const fetchedOrders = await getOrders(token);
         setOrders(fetchedOrders);
     }
-    if (token) {
-        fetchOrders();
-    }
+    fetchOrders();
   }, [token]);
 
   const handleDelete = (orderId: string) => {
     startTransition(async () => {
-      const result = await deleteOrder(orderId, token);
+      // La Server Action ya no necesita el token.
+      const result = await deleteOrder(orderId);
       if (result?.error) {
         toast({
           title: "Error al eliminar",
