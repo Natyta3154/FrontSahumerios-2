@@ -16,6 +16,7 @@
 
 
 import type { Product, BlogArticle, User, Order, Deal, ProductAttribute, Fragrance } from './types';
+import { cookies } from 'next/headers';
 
 // --- ADAPTADORES DE API A TIPO DE FRONTEND ---
 // Estas funciones son cruciales. Toman el objeto JSON que viene de tu API
@@ -106,26 +107,47 @@ function mapApiToDeal(apiDeal: any): Deal {
     }
 }
 
+
 // --- CONEXIONES AL BACKEND (FUNCIONES FETCH) ---
+
+/**
+ * Obtiene la cookie de sesión del navegador y la prepara para ser reenviada
+ * en una petición fetch desde el servidor a la API de backend.
+ * @returns {HeadersInit} Objeto de cabeceras con la cookie incluida.
+ */
+function getAuthHeaders(providedToken?: string | null) {
+    const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+    };
+
+    // Si se provee un token explícitamente (desde un componente de cliente), úsalo.
+    if (providedToken) {
+        headers['Authorization'] = `Bearer ${providedToken}`;
+        return headers;
+    }
+    
+    // Si no, intenta obtener la cookie del lado del servidor.
+    try {
+        const cookieStore = cookies();
+        const tokenCookie = cookieStore.get('token'); // Asume que la cookie se llama 'token'
+        if (tokenCookie) {
+            headers['Cookie'] = `token=${tokenCookie.value}`;
+        }
+    } catch (error) {
+        // Esto fallará en el lado del cliente, es esperado.
+        // No hacer nada, la petición irá sin la cabecera de cookie.
+    }
+
+    return headers;
+}
+
 
 // Función genérica para obtener datos.
 async function fetchData<T>(endpoint: string, token: string | null, mapper: (item: any) => T): Promise<T[]> {
   try {
-    
-    // Construye las cabeceras dinámicamente.
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-    };
-
-    // Solo añade la cabecera de autorización si hay un token.
-    // Esto evita enviar `Authorization: Bearer null` o `Authorization: ''`.
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
     const response = await fetch(`https://apisahumerios.onrender.com${endpoint}`, {
-      cache: 'no-cache', // Evita que Next.js cachee los datos, útil para datos que cambian con frecuencia.
-      headers,
+      cache: 'no-cache', 
+      headers: getAuthHeaders(token),
     });
 
     if (!response.ok) {
@@ -144,14 +166,12 @@ async function fetchData<T>(endpoint: string, token: string | null, mapper: (ite
   }
 }
 
-// Obtiene la lista pública de productos. No necesita token.
+// Obtiene la lista pública de productos.
 export async function getProducts(): Promise<Product[]> {
   try {
     const response = await fetch('https://apisahumerios.onrender.com/productos/listado', { 
       cache: 'no-cache',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(), // Usa las cabeceras con la cookie si está disponible
     });
     
     if (!response.ok) {
@@ -169,14 +189,12 @@ export async function getProducts(): Promise<Product[]> {
   }
 }
 
-// Obtiene un solo producto por su ID. Tampoco necesita token.
+// Obtiene un solo producto por su ID.
 export async function getProductById(id: string | number): Promise<Product | undefined> {
    try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/${id}`, { 
       cache: 'no-cache',
-       headers: {
-        'Content-Type': 'application/json',
-      },
+       headers: getAuthHeaders(), // Usa las cabeceras con la cookie si está disponible
     });
 
     if (!response.ok) {
@@ -210,7 +228,7 @@ export async function getProductsOnDeal(): Promise<Product[]> {
   return productsOnDeal.filter((p): p is Product => p !== undefined);
 }
 
-// --- Funciones para el Panel de Administración (requieren token) ---
+// --- Funciones para el Panel de Administración (requieren token/cookie) ---
 export const getUsers = (token: string | null) => fetchData('/usuarios', token, mapApiToUser);
 export const getOrders = (token: string | null) => fetchData('/pedidos', token, mapApiToOrder);
 export const getDeals = (token: string | null): Promise<Deal[]> => fetchData('/api/ofertas/listar', token, mapApiToDeal);
