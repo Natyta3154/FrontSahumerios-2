@@ -17,7 +17,6 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import type { ProductAttribute } from "@/lib/types"
 import React, { useTransition, useState } from "react"
-import { useAuth } from "@/context/auth-context"
 import { saveAttribute } from "../dashboard/actions"
 
 export function AdminAttributeForm({
@@ -31,11 +30,11 @@ export function AdminAttributeForm({
   const { toast } = useToast()
   const [isDialogOpen, setDialogOpen] = useState(false)
   const formRef = React.useRef<HTMLFormElement>(null)
-  const { token } = useAuth();
 
   const formAction = async (formData: FormData) => {
     startTransition(async () => {
-      const result = await saveAttribute(formData, token)
+      // Se elimina el paso del token, la Server Action usa la cookie.
+      const result = await saveAttribute(formData)
       
       if (result?.error) {
         toast({

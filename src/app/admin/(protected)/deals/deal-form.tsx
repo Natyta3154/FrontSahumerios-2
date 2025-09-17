@@ -17,7 +17,6 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import type { Deal } from "@/lib/types"
 import React, { useTransition, useState } from "react"
-import { useAuth } from "@/context/auth-context"
 import { saveDeal } from "../dashboard/actions"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Switch } from "@/components/ui/switch"
@@ -33,11 +32,11 @@ export function AdminDealForm({
   const { toast } = useToast()
   const [isDialogOpen, setDialogOpen] = useState(false)
   const formRef = React.useRef<HTMLFormElement>(null)
-  const { token } = useAuth();
 
   const formAction = async (formData: FormData) => {
     startTransition(async () => {
-      const result = await saveDeal(formData, token)
+      // Se elimina el paso del token, la Server Action usa la cookie.
+      const result = await saveDeal(formData)
       
       if (result?.error) {
         toast({
