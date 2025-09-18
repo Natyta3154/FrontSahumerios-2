@@ -13,11 +13,16 @@ import { HomeCarousel } from "./home-carousel";
 // Los datos ahora se obtienen directamente en el servidor.
 export default async function Home() {
 
-  // OBTENCIÓN DE DATOS EN EL SERVIDOR
-  // Se obtienen todos los productos y los que están en oferta de forma asíncrona.
-  const allProducts = await getProducts();
-  const saleProducts = (await getProductsOnDeal()).slice(0, 8);
+  // OBTENCIÓN DE DATOS OPTIMIZADA
+  // Se obtienen todos los productos y las ofertas en paralelo para mayor eficiencia.
+  const [allProducts, saleProducts] = await Promise.all([
+    getProducts(),
+    getProductsOnDeal()
+  ]);
+
   const featuredProducts = allProducts.slice(0, 3);
+  const saleProductsToShow = saleProducts.slice(0, 8);
+
 
   // Datos para la sección de testimonios. Idealmente, estos vendrían de tu base de datos.
   const testimonials = [
@@ -68,12 +73,12 @@ export default async function Home() {
           <Carousel
             opts={{
               align: "start",
-              loop: saleProducts.length > 4,
+              loop: saleProductsToShow.length > 4,
             }}
             className="w-full"
           >
             <CarouselContent>
-              {saleProducts.map((product) => (
+              {saleProductsToShow.map((product) => (
                 <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/4">
                   <div className="p-1 h-full">
                     <Card className="overflow-hidden group flex flex-col h-full">

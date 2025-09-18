@@ -195,23 +195,22 @@ export async function getProductById(id: string | number): Promise<Product | und
 }
 
 
-// Obtiene los productos en oferta.
-// NOTA: Esta implementación es ineficiente (problema N+1).
-// En un entorno de producción real, el backend debería proporcionar
-// un endpoint único que devuelva directamente los productos en oferta.
+// OPTIMIZADO: Obtiene los productos en oferta de manera eficiente.
 export async function getProductsOnDeal(): Promise<Product[]> {
   try {
-    const allDeals = await getDeals();
-    const activeDeals = allDeals.filter(deal => deal.estado);
+    // 1. Se obtienen todas las ofertas y todos los productos en paralelo.
+    const [deals, allProducts] = await Promise.all([
+      getDeals(),
+      getProducts()
+    ]);
 
-    // Creamos un array de promesas, una por cada producto que hay que buscar.
-    const productPromises = activeDeals.map(deal => getProductById(deal.productoId));
-    
-    // Esperamos a que todas las promesas se resuelvan.
-    const products = await Promise.all(productPromises);
+    // 2. Se crea un conjunto de IDs de productos en oferta para una búsqueda rápida.
+    const dealProductIds = new Set(deals.filter(d => d.estado).map(d => d.productoId));
 
-    // Filtramos los resultados por si algún producto no fue encontrado.
-    return products.filter((p): p is Product => p !== undefined);
+    // 3. Se filtra la lista completa de productos en memoria. Esto es muy rápido.
+    const dealProducts = allProducts.filter(p => dealProductIds.has(p.id));
+
+    return dealProducts;
   } catch (error) {
     console.error("No se pudieron obtener los productos en oferta:", error);
     return [];
