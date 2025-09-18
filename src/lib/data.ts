@@ -213,20 +213,11 @@ export async function getProductById(id: string | number): Promise<Product | und
 }
 
 
-// Obtiene los productos que están actualmente en oferta.
+// OPTIMIZADO: Obtiene los productos que están actualmente en oferta en una sola llamada.
 export async function getProductsOnDeal(): Promise<Product[]> {
-  const deals = await getDeals(); // Obtiene todas las ofertas.
-  const activeDeals = deals.filter(deal => deal.estado); // Filtra solo las activas.
-  
-  // Para cada oferta activa, busca los detalles completos del producto.
-  const productsOnDeal = await Promise.all(
-    activeDeals.map(async (deal) => {
-      const product = await getProductById(deal.productoId);
-      return product;
-    })
-  );
-  // Filtra cualquier resultado `undefined` (si un producto de una oferta no se encontrara).
-  return productsOnDeal.filter((p): p is Product => p !== undefined);
+  // Asumimos que existe un endpoint en el backend que devuelve directamente los productos en oferta.
+  // Esto es mucho más eficiente que obtener todas las ofertas y luego cada producto individualmente.
+  return fetchData('/productos/en-oferta', mapApiToProduct);
 }
 
 // --- Funciones para el Panel de Administración (requieren cookie en el servidor) ---
