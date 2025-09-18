@@ -117,18 +117,12 @@ function mapApiToDeal(apiDeal: any): Deal {
  * en una petición fetch desde el servidor a la API de backend.
  * @returns {HeadersInit} Objeto de cabeceras con la cookie incluida.
  */
-function getAuthHeaders(providedToken?: string | null) {
+function getAuthHeaders() {
     const headers: HeadersInit = {
         'Content-Type': 'application/json',
     };
-
-    // Si se provee un token explícitamente (desde un componente de cliente), úsalo.
-    if (providedToken) {
-        headers['Authorization'] = `Bearer ${providedToken}`;
-        return headers;
-    }
     
-    // Si no, intenta obtener la cookie del lado del servidor.
+    // Si se está en el servidor, se puede acceder a las cookies.
     try {
         const cookieStore = cookies();
         const tokenCookie = cookieStore.get('token'); // Asume que la cookie se llama 'token'
@@ -145,23 +139,28 @@ function getAuthHeaders(providedToken?: string | null) {
 
 
 // Función genérica para obtener datos.
-async function fetchData<T>(endpoint: string, token: string | null, mapper: (item: any) => T): Promise<T[]> {
+async function fetchData<T>(endpoint: string, mapper: (item: any) => T): Promise<T[]> {
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       cache: 'no-cache', 
-      headers: getAuthHeaders(token),
+      headers: getAuthHeaders(),
     });
 
     if (!response.ok) {
        const errorText = await response.text();
-       const errorJson = errorText ? JSON.parse(errorText) : {};
-       const errorMessage = errorJson.message || response.statusText || `HTTP error! status: ${response.status}`;
-      throw new Error(`Error al obtener datos de ${endpoint}: ${errorMessage}`);
+       try {
+        const errorJson = JSON.parse(errorText);
+        const errorMessage = errorJson.message || response.statusText || `HTTP error! status: ${response.status}`;
+        throw new Error(`Error al obtener datos de ${endpoint}: ${errorMessage}`);
+       } catch (e) {
+         throw new Error(`Error al obtener datos de ${endpoint}: ${errorText}`);
+       }
     }
     const data = await response.json();
     
     // La API a veces devuelve un solo objeto en lugar de un array, así que lo manejamos.
-    return Array.isArray(data) ? data.map(mapper) : [];
+    if (data === null || data === undefined) return [];
+    return Array.isArray(data) ? data.map(mapper) : [mapper(data)];
   } catch (error) {
     console.error(`No se pudieron obtener datos de ${endpoint}:`, error);
     return []; // Devuelve un array vacío en caso de error para evitar que la UI se rompa.
@@ -216,7 +215,7 @@ export async function getProductById(id: string | number): Promise<Product | und
 
 // Obtiene los productos que están actualmente en oferta.
 export async function getProductsOnDeal(): Promise<Product[]> {
-  const deals = await getDeals(null); // Obtiene todas las ofertas.
+  const deals = await getDeals(); // Obtiene todas las ofertas.
   const activeDeals = deals.filter(deal => deal.estado); // Filtra solo las activas.
   
   // Para cada oferta activa, busca los detalles completos del producto.
@@ -230,12 +229,12 @@ export async function getProductsOnDeal(): Promise<Product[]> {
   return productsOnDeal.filter((p): p is Product => p !== undefined);
 }
 
-// --- Funciones para el Panel de Administración (requieren token/cookie) ---
-export const getUsers = (token: string | null) => fetchData('/usuarios', token, mapApiToUser);
-export const getOrders = (token: string | null) => fetchData('/pedidos', token, mapApiToOrder);
-export const getDeals = (token: string | null): Promise<Deal[]> => fetchData('/api/ofertas/listar', token, mapApiToDeal);
-export const getAttributes = (token: string | null): Promise<ProductAttribute[]> => fetchData('/atributos/listado', token, item => item as ProductAttribute);
-export const getFragrances = (token: string | null): Promise<Fragrance[]> => fetchData('/fragancias', token, item => item as Fragrance);
+// --- Funciones para el Panel de Administración (requieren cookie en el servidor) ---
+export const getUsers = () => fetchData('/usuarios', mapApiToUser);
+export const getOrders = () => fetchData('/pedidos', mapApiToOrder);
+export const getDeals = (): Promise<Deal[]> => fetchData('/api/ofertas/listar', mapApiToDeal);
+export const getAttributes = (): Promise<ProductAttribute[]> => fetchData('/atributos/listado', item => item as ProductAttribute);
+export const getFragrances = (): Promise<Fragrance[]> => fetchData('/fragancias', item => item as Fragrance);
 
 
 // --- DATOS DE MUESTRA (MOCK DATA) ---

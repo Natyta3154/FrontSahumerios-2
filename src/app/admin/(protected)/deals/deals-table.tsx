@@ -1,0 +1,128 @@
+
+"use client";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
+import { Button } from '@/components/ui/button';
+import { getDeals } from "@/lib/data";
+import { Deal } from "@/lib/types";
+import { useState, useTransition } from "react";
+import { useToast } from '@/hooks/use-toast';
+import { deleteDeal } from '../dashboard/actions';
+import { AdminDealForm } from './deal-form';
+import { Badge } from '@/components/ui/badge';
+
+
+export function AdminDealsTable({ initialDeals }: { initialDeals: Deal[] }) {
+  const [deals, setDeals] = useState<Deal[]>(initialDeals);
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+
+  const fetchDeals = async () => {
+    const fetchedDeals = await getDeals();
+    setDeals(fetchedDeals);
+  }
+
+  const handleDelete = (dealId: number) => {
+    startTransition(async () => {
+      const result = await deleteDeal(dealId);
+      if (result?.error) {
+        toast({
+          title: "Error al eliminar",
+          description: result.error,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Éxito",
+          description: "Oferta eliminada correctamente.",
+        });
+        await fetchDeals();
+      }
+    });
+  };
+
+  return (
+    <>
+       <div className="flex items-center justify-end mb-6">
+        <AdminDealForm onDealSaved={fetchDeals} />
+      </div>
+      <div className="bg-card border rounded-lg">
+         <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>ID Oferta</TableHead>
+                    <TableHead>Nombre Producto</TableHead>
+                    <TableHead>Producto ID</TableHead>
+                    <TableHead>Valor Dto.</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead className="text-right">
+                        <span className="sr-only">Acciones</span>
+                    </TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {deals.map((deal) => (
+                    <TableRow key={deal.idOferta}>
+                        <TableCell className="font-mono text-xs">{deal.idOferta}</TableCell>
+                        <TableCell className="font-medium">{deal.nombreProducto}</TableCell>
+                        <TableCell>{deal.productoId}</TableCell>
+                        <TableCell>{deal.valorDescuento}</TableCell>
+                         <TableCell>
+                          <Badge variant={deal.estado ? "default" : "destructive"} className="capitalize">
+                            {deal.estado ? 'Activo' : 'Inactivo'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                            <div className="flex gap-2 justify-end">
+                                <AdminDealForm deal={deal} onDealSaved={fetchDeals} />
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button variant="destructive" size="sm" disabled={isPending}>Eliminar</Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                        <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Esta acción no se puede deshacer. Esto eliminará permanentemente la oferta.
+                                        </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => handleDelete(deal.idOferta)}
+                                            disabled={isPending}
+                                        >
+                                            {isPending ? "Eliminando..." : "Eliminar"}
+                                        </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </div>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+         </Table>
+      </div>
+    </>
+  );
+}
