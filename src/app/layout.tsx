@@ -9,7 +9,6 @@ import Script from 'next/script';
 
 // =================================================================================
 // LAYOUT RAÍZ (ROOT LAYOUT)
-// Este es el componente principal que envuelve a TODA la aplicación.
 //
 // ¿QUÉ HACE?
 // 1. Define la estructura HTML base (<html>, <body>).
@@ -18,7 +17,6 @@ import Script from 'next/script';
 // 4. Incluye el SDK de Mercado Pago.
 // 5. Envuelve la aplicación en los "Proveedores de Contexto" (`AuthProvider`, `CartProvider`),
 //    haciendo que el estado de autenticación y del carrito esté disponible en todas las páginas.
-// 6. Renderiza el Header, el Footer y el `Toaster` (para notificaciones).
 // =================================================================================
 
 
@@ -50,19 +48,14 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         {/* --- PROVEEDORES DE CONTEXTO --- */}
-        {/* `AuthProvider` gestiona el estado del usuario (login, logout). */}
+        {/* Se envuelven los componentes en el orden correcto. */}
         <AuthProvider>
-          {/* `CartProvider` gestiona el estado del carrito de compras. */}
           <CartProvider>
             <div className="flex min-h-screen flex-col">
-              {/* Componente de cabecera */}
               <AppHeader />
-              {/* `main` contendrá el contenido principal de cada página. */}
               <main className="flex-grow">{children}</main>
-              {/* Componente de pie de página */}
               <AppFooter />
             </div>
-            {/* `Toaster` es el componente que renderiza las notificaciones emergentes (toasts). */}
             <Toaster />
           </CartProvider>
         </AuthProvider>

@@ -2,36 +2,35 @@
 "use client";
 
 // =================================================================================
-// PÁGINA DE LOGIN UNIFICADA
+// PÁGINA DE LOGIN UNIFICADA (REFACTORIZADA PARA USAR SERVER ACTIONS DIRECTAMENTE)
 //
 // ¿QUÉ HACE?
-// 1. Este es ahora el ÚNICO punto de entrada para todos los usuarios.
-// 2. Al enviar el formulario, llama a la función `login` del `AuthContext`.
-// 3. No necesita saber si el usuario es admin o no. El contexto y la API se encargan.
-// 4. Si el login es exitoso y el usuario es 'ADMIN', el header mostrará el enlace
-//    al panel de administración.
+// 1. Ya no depende del `useAuth` hook para la función de login.
+// 2. Llama directamente a la `Server Action` `loginAction`.
+// 3. Al tener éxito, guarda los datos del usuario en localStorage y refresca la página
+//    para que el `AuthProvider` en el layout raíz detecte al nuevo usuario.
 // =================================================================================
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/context/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-
+import { loginAction } from "../admin/(protected)/dashboard/actions";
+import type { User } from "@/lib/types";
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, user } = useAuth(); // Se importa 'user' para la redirección.
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // MANEJADOR: Llama a la Server Action directamente
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -40,23 +39,27 @@ export default function LoginPage() {
     const password = formData.get('password') as string;
 
     try {
-      // Llama a la función de login simplificada, sin el flag de admin.
-      await login(email, password);
+      // Llama a la Server Action
+      const { user: userData } = await loginAction(email, password);
       
+      // Guarda el usuario en localStorage
+      localStorage.setItem("authUser", JSON.stringify(userData));
+
       const next = searchParams.get('next');
       
-      // COMENTARIO: Pequeña mejora: si el usuario es admin, lo redirigimos
-      // directamente al dashboard después del login.
-      if (user?.rol === 'ADMIN') {
-        router.push('/admin/dashboard');
-        return;
-      }
-
+      // Redirige o refresca
+      // Un `router.refresh()` es importante para que los componentes de servidor
+      // se vuelvan a renderizar con el nuevo estado de autenticación (cookie).
       if (next) {
         router.push(next);
+      } else if (userData.rol === 'ADMIN') {
+        router.push('/admin/dashboard');
       } else {
         router.push('/');
       }
+      // Forzamos un refresh para que el layout raíz y el header se actualicen.
+      router.refresh();
+
     } catch(error) {
       toast({
         title: "Error de Inicio de Sesión",

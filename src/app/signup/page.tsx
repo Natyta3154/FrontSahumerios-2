@@ -5,23 +5,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/context/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { signupAction } from "../admin/(protected)/dashboard/actions";
+
+// =================================================================================
+// PÁGINA DE SIGNUP (REFACTORIZADA PARA USAR SERVER ACTIONS DIRECTAMENTE)
+// =================================================================================
 
 export default function SignupPage() {
   const router = useRouter();
-  const { signup } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // MANEJADOR: Se ejecuta cuando el usuario envía el formulario de registro.
+  // MANEJADOR: Llama a la Server Action directamente
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -43,7 +46,10 @@ export default function SignupPage() {
     }
 
     try {
-      await signup(name, email, password);
+      const { user: userData } = await signupAction(name, email, password);
+
+      // Guarda el usuario en localStorage para una experiencia de usuario fluida
+      localStorage.setItem("authUser", JSON.stringify(userData));
 
       toast({
         title: "¡Registro Exitoso!",
@@ -51,6 +57,7 @@ export default function SignupPage() {
       });
 
       router.push('/'); // Redirige al inicio después de registrarse
+      router.refresh(); // Refresca para que el header muestre el estado de login
 
     } catch (error) {
        toast({
@@ -65,7 +72,6 @@ export default function SignupPage() {
 
 
   return (
-    // VISUALIZACIÓN: Renderiza el formulario de registro.
     <div className="relative flex items-center justify-center min-h-[calc(100vh-14rem)] py-12">
       <Image
         src="https://picsum.photos/1920/1080"
