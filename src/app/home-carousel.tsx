@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -16,7 +17,7 @@ export function HomeCarousel() {
         plugins={[Autoplay({ delay: 4000, stopOnInteraction: true })]}
       >
         <CarouselContent className="h-full">
-          <CarouselItem className="h-full">
+          <CarouselItem className="relative h-full">
             <div className="relative h-full w-full">
               <Image
                 src="https://picsum.photos/1600/900"
@@ -30,7 +31,7 @@ export function HomeCarousel() {
               <div className="absolute inset-0 bg-black/50" />
             </div>
           </CarouselItem>
-          <CarouselItem className="h-full">
+          <CarouselItem className="relative h-full">
             <div className="relative h-full w-full">
               <Image
                 src="https://picsum.photos/1600/901"
@@ -43,7 +44,7 @@ export function HomeCarousel() {
               <div className="absolute inset-0 bg-black/50" />
             </div>
           </CarouselItem>
-          <CarouselItem className="h-full">
+          <CarouselItem className="relative h-full">
             <div className="relative h-full w-full">
               <Image
                 src="https://picsum.photos/1600/902"
