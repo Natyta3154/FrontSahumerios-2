@@ -1,5 +1,5 @@
 
-import { getProductById, getProducts } from '@/lib/data';
+import { getProducts } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
@@ -15,14 +15,19 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
   if (typeof params.id !== 'string') {
     notFound();
   }
-
-  const product = await getProductById(params.id);
+  
+  // --- OPTIMIZACIÓN ---
+  // Se obtiene la lista completa de productos UNA SOLA VEZ.
+  const allProducts = await getProducts();
+  
+  // Se busca el producto principal en la lista ya cargada.
+  const product = allProducts.find(p => p.id.toString() === params.id);
 
   if (!product) {
     notFound();
   }
 
-  const allProducts = await getProducts();
+  // Se filtran los productos relacionados de la misma lista.
   const relatedProducts = allProducts
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
