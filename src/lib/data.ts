@@ -169,25 +169,7 @@ async function fetchData<T>(endpoint: string, mapper: (item: any) => T): Promise
 
 // Obtiene la lista pública de productos.
 export async function getProducts(): Promise<Product[]> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/productos/listado`, { 
-      cache: 'no-cache',
-      headers: getAuthHeaders(), // Usa las cabeceras con la cookie si está disponible
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Error al obtener los productos: ${response.statusText}`);
-    }
-
-    const apiProducts = await response.json();
-    const mappedProducts = Array.isArray(apiProducts) ? apiProducts.map(mapApiToProduct) : [];
-    
-    return mappedProducts;
-
-  } catch (error) {
-    console.error("No se pudieron obtener los productos:", error);
-    return [];
-  }
+  return fetchData('/productos/listado', mapApiToProduct);
 }
 
 // Obtiene un solo producto por su ID.
@@ -213,11 +195,27 @@ export async function getProductById(id: string | number): Promise<Product | und
 }
 
 
-// OPTIMIZADO: Obtiene los productos que están actualmente en oferta en una sola llamada.
+// Obtiene los productos en oferta.
+// NOTA: Esta implementación es ineficiente (problema N+1).
+// En un entorno de producción real, el backend debería proporcionar
+// un endpoint único que devuelva directamente los productos en oferta.
 export async function getProductsOnDeal(): Promise<Product[]> {
-  // Asumimos que existe un endpoint en el backend que devuelve directamente los productos en oferta.
-  // Esto es mucho más eficiente que obtener todas las ofertas y luego cada producto individualmente.
-  return fetchData('/productos/en-oferta', mapApiToProduct);
+  try {
+    const allDeals = await getDeals();
+    const activeDeals = allDeals.filter(deal => deal.estado);
+
+    // Creamos un array de promesas, una por cada producto que hay que buscar.
+    const productPromises = activeDeals.map(deal => getProductById(deal.productoId));
+    
+    // Esperamos a que todas las promesas se resuelvan.
+    const products = await Promise.all(productPromises);
+
+    // Filtramos los resultados por si algún producto no fue encontrado.
+    return products.filter((p): p is Product => p !== undefined);
+  } catch (error) {
+    console.error("No se pudieron obtener los productos en oferta:", error);
+    return [];
+  }
 }
 
 // --- Funciones para el Panel de Administración (requieren cookie en el servidor) ---
