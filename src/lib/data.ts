@@ -18,6 +18,8 @@
 import type { Product, BlogArticle, User, Order, Deal, ProductAttribute, Fragrance } from './types';
 import { cookies } from 'next/headers';
 
+const API_BASE_URL = 'https://appsahumerio-600919214176.us-central1.run.app';
+
 // --- ADAPTADORES DE API A TIPO DE FRONTEND ---
 // Estas funciones son cruciales. Toman el objeto JSON que viene de tu API
 // y lo convierten en el objeto `Product` que usa el frontend.
@@ -145,7 +147,7 @@ function getAuthHeaders(providedToken?: string | null) {
 // Función genérica para obtener datos.
 async function fetchData<T>(endpoint: string, token: string | null, mapper: (item: any) => T): Promise<T[]> {
   try {
-    const response = await fetch(`https://apisahumerios.onrender.com${endpoint}`, {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       cache: 'no-cache', 
       headers: getAuthHeaders(token),
     });
@@ -169,7 +171,7 @@ async function fetchData<T>(endpoint: string, token: string | null, mapper: (ite
 // Obtiene la lista pública de productos.
 export async function getProducts(): Promise<Product[]> {
   try {
-    const response = await fetch('https://apisahumerios.onrender.com/productos/listado', { 
+    const response = await fetch(`${API_BASE_URL}/productos/listado`, { 
       cache: 'no-cache',
       headers: getAuthHeaders(), // Usa las cabeceras con la cookie si está disponible
     });
@@ -192,7 +194,7 @@ export async function getProducts(): Promise<Product[]> {
 // Obtiene un solo producto por su ID.
 export async function getProductById(id: string | number): Promise<Product | undefined> {
    try {
-    const response = await fetch(`https://apisahumerios.onrender.com/productos/${id}`, { 
+    const response = await fetch(`${API_BASE_URL}/productos/${id}`, { 
       cache: 'no-cache',
        headers: getAuthHeaders(), // Usa las cabeceras con la cookie si está disponible
     });
@@ -268,5 +270,3 @@ export const blogArticles: BlogArticle[] = [
     content: '<p>The ritual of burning incense has been used for centuries across various cultures to sanctify spaces and elevate consciousness. The simple act of lighting an incense stick and watching the smoke curl can be a powerful anchor for mindfulness.</p><h3>Choosing Your Scent</h3><p>Different scents evoke different moods. For a calming space, try Sandalwood or Lavender. For an energizing and cleansing atmosphere, Palo Santo or Sage are excellent choices. Experiment to find what resonates with you.</p><h3>The Ritual</h3><p>Find a quiet corner in your home. Place your incense in a proper holder. As you light it, set an intention for your practice, whether it\'s for meditation, creative work, or simply to unwind. Allow the aroma to fill your space and your senses, bringing you into the present moment.</p>'
   },
 ];
-
-    

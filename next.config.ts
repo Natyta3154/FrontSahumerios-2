@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'onrender.com', // Para las imágenes de tu API
+        hostname: 'appsahumerio-600919214176.us-central1.run.app', // Para las imágenes de tu API
         port: '',
         pathname: '/**',
       },

@@ -19,6 +19,8 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
+const API_BASE_URL = 'https://appsahumerio-600919214176.us-central1.run.app';
+
 export default function CheckoutPage() {
   const { cartItems, total, clearCart } = useCart();
   // El token ya no se obtiene del contexto
@@ -62,7 +64,7 @@ export default function CheckoutPage() {
 
         // --- CONEXIÓN CON EL BACKEND ---
         // La petición fetch desde el navegador enviará automáticamente la cookie de sesión.
-        const response = await fetch('https://apisahumerios.onrender.com/pedidos/realizarPedidoConPago', {
+        const response = await fetch(`${API_BASE_URL}/pedidos/realizarPedidoConPago`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -242,5 +244,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-
-    

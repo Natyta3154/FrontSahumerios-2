@@ -16,13 +16,15 @@ import { revalidatePath } from 'next/cache';
 import type { User } from '@/lib/types';
 import { cookies } from 'next/headers';
 
+const API_BASE_URL = 'https://appsahumerio-600919214176.us-central1.run.app';
+
 // --- ACCIONES DE AUTENTICACIÓN ---
 
 // CONEXIÓN CON EL BACKEND: Inicia sesión de usuario.
 // El backend establece la cookie, el frontend solo recibe los datos del usuario.
 export async function loginAction(email: string, password?: string): Promise<{user: User}> {
     try {
-        const response = await fetch('https://apisahumerios.onrender.com/usuarios/login', {
+        const response = await fetch(`${API_BASE_URL}/usuarios/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,7 +51,7 @@ export async function loginAction(email: string, password?: string): Promise<{us
 // CONEXIÓN CON EL BACKEND: Registra un nuevo usuario.
 export async function signupAction(name: string, email: string, password: string): Promise<{user: User}> {
     try {
-        const response = await fetch('https://apisahumerios.onrender.com/usuarios/registrar', {
+        const response = await fetch(`${API_BASE_URL}/usuarios/registrar`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -159,7 +161,7 @@ export async function addProduct(formData: FormData) {
   const newProduct = buildProductPayload(formData);
   
   try {
-    const response = await fetch('https://apisahumerios.onrender.com/productos/agregar', {
+    const response = await fetch(`${API_BASE_URL}/productos/agregar`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(newProduct),
@@ -187,7 +189,7 @@ export async function editProduct(formData: FormData) {
   const updatedProduct = buildProductPayload(formData);
   
    try {
-    const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
+    const response = await fetch(`${API_BASE_URL}/productos/editar/${productId}`, {
       method: 'PUT',
       headers: getAuthHeaders(),
       body: JSON.stringify(updatedProduct),
@@ -213,7 +215,7 @@ export async function deleteProduct(productId: number) {
   if (!productId) return { error: 'No se proporcionó ID de producto.' };
   
   try {
-    const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
+    const response = await fetch(`${API_BASE_URL}/productos/eliminar/${productId}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
     });
@@ -241,7 +243,7 @@ async function manageEntity(
 ) {
   const entityId = formData.get(idField);
   const isEdit = !!entityId;
-  const endpoint = `https://apisahumerios.onrender.com/${entityName}${isEdit ? `/editar/${entityId}` : '/agregar'}`;
+  const endpoint = `${API_BASE_URL}/${entityName}${isEdit ? `/editar/${entityId}` : '/agregar'}`;
   const method = isEdit ? 'PUT' : 'POST';
 
   const payload: {[k: string]: any} = Object.fromEntries(formData.entries());
@@ -276,7 +278,7 @@ async function deleteEntity(entityName: string, entityId: number | string) {
   if (!entityId) return { error: 'No se proporcionó ID.' };
 
   try {
-    const response = await fetch(`https://apisahumerios.onrender.com/${entityName}/eliminar/${entityId}`, {
+    const response = await fetch(`${API_BASE_URL}/${entityName}/eliminar/${entityId}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
     });
@@ -317,8 +319,8 @@ export async function saveDeal(formData: FormData) {
   const isEdit = !!dealId;
 
   const endpoint = isEdit
-    ? `https://apisahumerios.onrender.com/api/ofertas/editar/${dealId}`
-    : 'https://apisahumerios.onrender.com/api/ofertas/crearOferta';
+    ? `${API_BASE_URL}/api/ofertas/editar/${dealId}`
+    : `${API_BASE_URL}/api/ofertas/crearOferta`;
   
   const method = isEdit ? 'PUT' : 'POST';
 
@@ -373,7 +375,7 @@ export async function saveDeal(formData: FormData) {
 export async function deleteDeal(id: number) {
     if (!id) return { error: 'No se proporcionó ID de oferta.' };
     try {
-        const response = await fetch(`https://apisahumerios.onrender.com/api/ofertas/eliminar/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/ofertas/eliminar/${id}`, {
             method: 'DELETE',
             headers: getAuthHeaders(),
         });
@@ -401,9 +403,3 @@ export async function saveFragrance(formData: FormData) {
 export async function deleteFragrance(id: number) {
   return await deleteEntity('fragancias', id);
 }
-
-    
-
-    
-
-

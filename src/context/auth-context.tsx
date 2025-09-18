@@ -18,6 +18,7 @@ import { loginAction, signupAction } from "@/app/admin/(protected)/dashboard/act
 // 5. `logout` llama a un endpoint del backend para invalidar la cookie de sesión.
 // =================================================================================
 
+const API_BASE_URL = 'https://appsahumerio-600919214176.us-central1.run.app';
 
 // --- Definición del Tipo de Contexto ---
 // Se elimina `token` de la interfaz.
@@ -112,7 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
         // Llama a un endpoint de logout en tu backend.
         // Es importante que este endpoint elimine la cookie.
-        await fetch('https://apisahumerios.onrender.com/usuarios/logout', {
+        await fetch(`${API_BASE_URL}/usuarios/logout`, {
             method: 'POST',
             // El navegador enviará la cookie automáticamente.
         });
