@@ -41,7 +41,8 @@ export function CartSheet() {
                           variant="outline"
                           size="icon"
                           className="h-6 w-6"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.id.toString(), Math.max(1, item.quantity - 1))}
+
                         >
                           <Minus className="h-4 w-4" />
                         </Button>
@@ -50,7 +51,7 @@ export function CartSheet() {
                           variant="outline"
                           size="icon"
                           className="h-6 w-6"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.id.toString(), item.quantity + 1)}
                         >
                           <Plus className="h-4 w-4" />
                         </Button>
@@ -60,7 +61,7 @@ export function CartSheet() {
                       variant="ghost"
                       size="icon"
                       className="text-muted-foreground hover:text-destructive"
-                      onClick={() => removeFromCart(item.id)}
+                      onClick={() => removeFromCart(item.id.toString())}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

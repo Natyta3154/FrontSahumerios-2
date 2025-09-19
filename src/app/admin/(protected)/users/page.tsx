@@ -100,7 +100,7 @@ export default function AdminUsersPage() {
                             {user.rol}
                         </Badge>
                     </TableCell>
-                    <TableCell>{new Date(user.fechaRegistro).toLocaleDateString()}</TableCell>
+                    <TableCell>{user.fechaRegistro ? new Date(user.fechaRegistro).toLocaleDateString() : 'Fecha no disponible'}</TableCell>
                     <TableCell>
                         <div className="flex gap-2 justify-end">
                             <AdminUserForm user={user} onUserSaved={fetchUsers} />

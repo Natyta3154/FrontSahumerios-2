@@ -115,7 +115,7 @@ function mapApiToDeal(apiDeal: any): Deal {
  * en una petición fetch desde el servidor a la API de backend.
  * @returns {HeadersInit} Objeto de cabeceras con la cookie incluida.
  */
-function getAuthHeaders(providedToken?: string | null) {
+async function getAuthHeaders(providedToken?: string | null) {
     const headers: HeadersInit = {
         'Content-Type': 'application/json',
     };
@@ -128,8 +128,8 @@ function getAuthHeaders(providedToken?: string | null) {
     
     // Si no, intenta obtener la cookie del lado del servidor.
     try {
-        const cookieStore = cookies();
-        const tokenCookie = cookieStore.get('token'); // Asume que la cookie se llama 'token'
+        const cookieStore = await cookies();
+        const tokenCookie = await cookieStore.get('token'); // Asume que la cookie se llama 'token'
         if (tokenCookie) {
             headers['Cookie'] = `token=${tokenCookie.value}`;
         }
@@ -147,7 +147,7 @@ async function fetchData<T>(endpoint: string, token: string | null, mapper: (ite
   try {
     const response = await fetch(`https://apisahumerios.onrender.com${endpoint}`, {
       cache: 'no-cache', 
-      headers: getAuthHeaders(token),
+      headers: await getAuthHeaders(token),
     });
 
     if (!response.ok) {
@@ -171,7 +171,7 @@ export async function getProducts(): Promise<Product[]> {
   try {
     const response = await fetch('https://apisahumerios.onrender.com/productos/listado', { 
       cache: 'no-cache',
-      headers: getAuthHeaders(), // Usa las cabeceras con la cookie si está disponible
+      headers: await getAuthHeaders(), // Usa las cabeceras con la cookie si está disponible
     });
     
     if (!response.ok) {
@@ -194,7 +194,7 @@ export async function getProductById(id: string | number): Promise<Product | und
    try {
     const response = await fetch(`https://apisahumerios.onrender.com/productos/${id}`, { 
       cache: 'no-cache',
-       headers: getAuthHeaders(), // Usa las cabeceras con la cookie si está disponible
+       headers: await getAuthHeaders(), // Usa las cabeceras con la cookie si está disponible
     });
 
     if (!response.ok) {
@@ -232,7 +232,8 @@ export async function getProductsOnDeal(): Promise<Product[]> {
 export const getUsers = (token: string | null) => fetchData('/usuarios', token, mapApiToUser);
 export const getOrders = (token: string | null) => fetchData('/pedidos', token, mapApiToOrder);
 export const getDeals = (token: string | null): Promise<Deal[]> => fetchData('/api/ofertas/listar', token, mapApiToDeal);
-export const getAttributes = (token: string | null): Promise<ProductAttribute[]> => fetchData('/atributos/listado', token, item => item as ProductAttribute);
+export const getAttributes = (token?: string | null): Promise<ProductAttribute[]> =>
+  fetchData('/atributos/listado', token ?? null, item => item as ProductAttribute);
 export const getFragrances = (token: string | null): Promise<Fragrance[]> => fetchData('/fragancias', token, item => item as Fragrance);
 
 

@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
@@ -8,18 +9,119 @@ import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { HomeCarousel } from "./home-carousel";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Componente para manejar la carga de productos con Suspense
+async function FeaturedProducts() {
+  const allProducts = await getProducts();
+  const featuredProducts = allProducts.slice(0, 3);
+  
+  return (
+    <>
+      {featuredProducts.map((product, index) => (
+        <Card key={product.id} className="overflow-hidden group flex flex-col">
+          <CardHeader className="p-0">
+            <Link href={`/products/${product.id}`} className="block overflow-hidden aspect-square relative">
+              <Image
+                src={product.image}
+                alt={product.name}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                priority={index === 0} // Solo priorizar la primera imagen
+              />
+            </Link>
+          </CardHeader>
+          <CardContent className="p-4 flex-grow">
+            <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
+              <CardTitle className="font-headline text-xl mb-2 h-14 line-clamp-2">{product.name}</CardTitle>
+            </Link>
+            <div className="flex items-baseline gap-2">
+              <p className={`font-bold text-lg ${product.onSale ? 'text-destructive' : 'text-foreground'}`}>
+                ${product.price.toFixed(2)}
+              </p>
+              {product.onSale && product.originalPrice && (
+                <p className="text-sm text-muted-foreground line-through">
+                  ${product.originalPrice.toFixed(2)}
+                </p>
+              )}
+            </div>
+          </CardContent>
+          <CardFooter className="p-4 pt-0">
+            <Button asChild className="w-full">
+              <Link href={`/products/${product.id}`}>Ver Detalles</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      ))}
+    </>
+  );
+}
+
+// Componente para productos en oferta con Suspense
+async function SaleProducts() {
+  const saleProducts = (await getProductsOnDeal()).slice(0, 8);
+  
+  return (
+    <CarouselContent>
+      {saleProducts.map((product, index) => (
+        <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/4">
+          <div className="p-1 h-full">
+            <Card className="overflow-hidden group flex flex-col h-full">
+              <CardHeader className="p-0">
+                <Link href={`/products/${product.id}`} className="block overflow-hidden aspect-square relative">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    data-ai-hint="aromatherapy product"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    priority={index < 4} // Priorizar solo las primeras 4 imágenes visibles
+                  />
+                  <Badge variant="destructive" className="absolute top-3 right-3">OFERTA</Badge>
+                </Link>
+              </CardHeader>
+              <CardContent className="p-4 flex-grow">
+                <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
+                  <CardTitle className="font-headline text-xl mb-2 h-14 line-clamp-2">{product.name}</CardTitle>
+                </Link>
+                <div className="flex items-baseline gap-2">
+                  <p className="font-bold text-lg text-destructive">
+                    ${product.price.toFixed(2)}
+                  </p>
+                  {product.onSale && product.originalPrice && (
+                    <p className="text-sm text-muted-foreground line-through">
+                      ${product.originalPrice.toFixed(2)}
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+              <CardFooter className="p-4 pt-0">
+                <Button asChild className="w-full">
+                  <Link href={`/products/${product.id}`}>Ver Producto</Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+        </CarouselItem>
+      ))}
+    </CarouselContent>
+  );
+}
 
 // CONVERTIDO A COMPONENTE DE SERVIDOR
 // Los datos ahora se obtienen directamente en el servidor.
 export default async function Home() {
+  // OBTENCIÓN DE DATOS EN EL SERVIDOR en paralelo
+  const [allProducts, saleProductsData] = await Promise.all([
+    getProducts(),
+    getProductsOnDeal()
+  ]);
 
-  // OBTENCIÓN DE DATOS EN EL SERVIDOR
-  // Se obtienen todos los productos y los que están en oferta de forma asíncrona.
-  const allProducts = await getProducts();
-  const saleProducts = (await getProductsOnDeal()).slice(0, 8);
-  const featuredProducts = allProducts.slice(0, 3);
+  const saleProducts = saleProductsData.slice(0, 8);
 
-  // Datos para la sección de testimonios. Idealmente, estos vendrían de tu base de datos.
+  // Datos para la sección de testimonios
   const testimonials = [
     {
       name: "Ana L.",
@@ -72,49 +174,25 @@ export default async function Home() {
             }}
             className="w-full"
           >
-            <CarouselContent>
-              {saleProducts.map((product) => (
-                <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/4">
-                  <div className="p-1 h-full">
-                    <Card className="overflow-hidden group flex flex-col h-full">
-                      <CardHeader className="p-0">
-                        <Link href={`/products/${product.id}`} className="block overflow-hidden aspect-square relative">
-                          <Image
-                            src={product.image}
-                            alt={product.name}
-                            data-ai-hint="aromatherapy product"
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          />
-                          <Badge variant="destructive" className="absolute top-3 right-3">OFERTA</Badge>
-                        </Link>
-                      </CardHeader>
-                      <CardContent className="p-4 flex-grow">
-                        <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
-                          <CardTitle className="font-headline text-xl mb-2 h-14 line-clamp-2">{product.name}</CardTitle>
-                        </Link>
-                        <div className="flex items-baseline gap-2">
-                          <p className="font-bold text-lg text-destructive">
-                            ${product.price.toFixed(2)}
-                          </p>
-                          {product.onSale && product.originalPrice && (
-                            <p className="text-sm text-muted-foreground line-through">
-                              ${product.originalPrice.toFixed(2)}
-                            </p>
-                          )}
-                        </div>
-                      </CardContent>
-                      <CardFooter className="p-4 pt-0">
-                        <Button asChild className="w-full">
-                          <Link href={`/products/${product.id}`}>Ver Producto</Link>
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
+            <Suspense fallback={
+              <CarouselContent>
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/4">
+                    <div className="p-1 h-full">
+                      <Card className="overflow-hidden group flex flex-col h-full">
+                        <Skeleton className="aspect-square w-full" />
+                        <CardContent className="p-4 flex-grow">
+                          <Skeleton className="h-6 w-3/4 mb-2" />
+                          <Skeleton className="h-4 w-1/2" />
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            }>
+              <SaleProducts />
+            </Suspense>
             <CarouselPrevious className="hidden sm:flex" />
             <CarouselNext className="hidden sm:flex" />
           </Carousel>
@@ -129,41 +207,22 @@ export default async function Home() {
             <p className="mt-2 text-lg text-muted-foreground">Explora nuestros productos más populares.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredProducts.map((product) => (
-              <Card key={product.id} className="overflow-hidden group flex flex-col">
-                <CardHeader className="p-0">
-                  <Link href={`/products/${product.id}`} className="block overflow-hidden aspect-square relative">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </Link>
-                </CardHeader>
-                <CardContent className="p-4 flex-grow">
-                  <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
-                    <CardTitle className="font-headline text-xl mb-2 h-14 line-clamp-2">{product.name}</CardTitle>
-                  </Link>
-                  <div className="flex items-baseline gap-2">
-                    <p className={`font-bold text-lg ${product.onSale ? 'text-destructive' : 'text-foreground'}`}>
-                      ${product.price.toFixed(2)}
-                    </p>
-                    {product.onSale && product.originalPrice && (
-                      <p className="text-sm text-muted-foreground line-through">
-                        ${product.originalPrice.toFixed(2)}
-                      </p>
-                    )}
-                  </div>
-                </CardContent>
-                <CardFooter className="p-4 pt-0">
-                   <Button asChild className="w-full">
-                    <Link href={`/products/${product.id}`}>Ver Detalles</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+            <Suspense fallback={
+              Array.from({ length: 3 }).map((_, i) => (
+                <Card key={i} className="overflow-hidden group flex flex-col">
+                  <Skeleton className="aspect-square w-full" />
+                  <CardContent className="p-4 flex-grow">
+                    <Skeleton className="h-6 w-3/4 mb-2" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </CardContent>
+                  <CardFooter className="p-4 pt-0">
+                    <Skeleton className="h-10 w-full" />
+                  </CardFooter>
+                </Card>
+              ))
+            }>
+              <FeaturedProducts />
+            </Suspense>
           </div>
         </div>
       </section>
@@ -176,7 +235,7 @@ export default async function Home() {
             <p className="mt-2 text-lg text-muted-foreground">Ideas e historias del mundo de la aromaterapia.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogArticles.slice(0, 3).map((article) => (
+            {blogArticles.slice(0, 3).map((article, index) => (
               <Card key={article.slug} className="overflow-hidden group">
                 <Link href={`/blog/${article.slug}`}>
                   <CardHeader className="p-0">
@@ -187,6 +246,7 @@ export default async function Home() {
                       width={600}
                       height={400}
                       className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                      priority={index === 0} // Priorizar solo la primera imagen
                     />
                   </CardHeader>
                   <CardContent className="p-6">
@@ -221,6 +281,7 @@ export default async function Home() {
                   width={80}
                   height={80}
                   className="rounded-full"
+                  loading={index > 0 ? "lazy" : "eager"} // Lazy loading para imágenes que no son prioritarias
                 />
                 <div className="flex mt-4 mb-2">
                   {[...Array(5)].map((_, i) => (
