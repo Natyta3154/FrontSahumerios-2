@@ -18,6 +18,11 @@
 import type { Product, BlogArticle, User, Order, Deal, ProductAttribute, Fragrance } from './types';
 import { cookies } from 'next/headers';
 
+
+const API_BASE_URL_GOOGLE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+
+
 // --- ADAPTADORES DE API A TIPO DE FRONTEND ---
 // Estas funciones son cruciales. Toman el objeto JSON que viene de tu API
 // y lo convierten en el objeto `Product` que usa el frontend.
@@ -145,7 +150,7 @@ async function getAuthHeaders(providedToken?: string | null) {
 // Función genérica para obtener datos.
 async function fetchData<T>(endpoint: string, token: string | null, mapper: (item: any) => T): Promise<T[]> {
   try {
-    const response = await fetch(`https://apisahumerios.onrender.com${endpoint}`, {
+    const response = await fetch(`${API_BASE_URL_GOOGLE}${endpoint}`, {
       cache: 'no-cache', 
       headers: await getAuthHeaders(token),
     });
@@ -169,7 +174,7 @@ async function fetchData<T>(endpoint: string, token: string | null, mapper: (ite
 // Obtiene la lista pública de productos.
 export async function getProducts(): Promise<Product[]> {
   try {
-    const response = await fetch('https://apisahumerios.onrender.com/productos/listado', { 
+    const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/listado`, { 
       cache: 'no-cache',
       headers: await getAuthHeaders(), // Usa las cabeceras con la cookie si está disponible
     });
@@ -192,7 +197,7 @@ export async function getProducts(): Promise<Product[]> {
 // Obtiene un solo producto por su ID.
 export async function getProductById(id: string | number): Promise<Product | undefined> {
    try {
-    const response = await fetch(`https://apisahumerios.onrender.com/productos/${id}`, { 
+    const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/${id}`, { 
       cache: 'no-cache',
        headers: await getAuthHeaders(), // Usa las cabeceras con la cookie si está disponible
     });

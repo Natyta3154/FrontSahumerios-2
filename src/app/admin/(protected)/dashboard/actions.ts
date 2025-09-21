@@ -5,15 +5,18 @@ import type { User, ProductAttribute } from '@/lib/types';
 import { cookies } from 'next/headers';
 import { getAuthHeaders } from "@/lib/auth";
 
+
+const API_BASE_URL_GOOGLE = process.env.URL_BASE_GOOGLE;
+
 // ============================================================================
 // UTILS: Manejo de cookies y headers para fetch
 // ============================================================================
 export async function fetchProtectedData() {
   const headers = getAuthHeaders(); // ya te resuelve cookies o token
 
-  const res = await fetch("http://localhost:9002/api/protegido", {
+  const res = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/perfil`, {
     method: "GET",
-    headers,
+   credentials: "include",
   });
 
   if (!res.ok) {
@@ -27,7 +30,7 @@ export async function fetchProtectedData() {
 // ACCIONES DE AUTENTICACIÓN
 // ============================================================================
 export async function loginAction(email: string, password?: string): Promise<{ user: User }> {
-  const response = await fetch('https://apisahumerios.onrender.com/usuarios/login', {
+  const response = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password: password || '' }),
@@ -40,7 +43,7 @@ export async function loginAction(email: string, password?: string): Promise<{ u
 }
 
 export async function signupAction(name: string, email: string, password: string): Promise<{ user: User }> {
-  const response = await fetch('https://apisahumerios.onrender.com/usuarios/registrar', {
+  const response = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/registrar`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ nombre: name, email, password, rol: 'USER' }),
@@ -110,9 +113,9 @@ function buildProductPayload(formData: FormData) {
 
 export async function addProduct(formData: FormData) {
   const payload = buildProductPayload(formData);
-  const response = await fetch('https://apisahumerios.onrender.com/productos/agregar', {
+  const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/agregar`, {
     method: 'POST',
-    headers: getAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(payload),
   });
 
@@ -131,11 +134,16 @@ export async function editProduct(formData: FormData) {
   if (!productId) return { error: 'No se proporcionó ID de producto.' };
 
   const payload = buildProductPayload(formData);
-  const response = await fetch(`https://apisahumerios.onrender.com/productos/editar/${productId}`, {
-    method: 'PUT',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
-  });
+
+const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/editar/${productId}`, {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  credentials: "include", // 👈 manda la cookie automáticamente
+  body: JSON.stringify(payload),
+});
+
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ message: response.statusText }));
@@ -148,12 +156,14 @@ export async function editProduct(formData: FormData) {
   return { success: true };
 }
 
-export async function deleteProduct(productId: number) {
-  if (!productId) return { error: 'No se proporcionó ID de producto.' };
 
-  const response = await fetch(`https://apisahumerios.onrender.com/productos/eliminar/${productId}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
+
+export async function deleteProduct(productId: number) {
+  if (!productId) return { error: "No se proporcionó ID de producto." };
+
+  const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/eliminar/${productId}`, {
+    method: "DELETE",
+    credentials: "include", // 👈 ahora viaja la cookie automáticamente
   });
 
   if (!response.ok) {
@@ -161,8 +171,10 @@ export async function deleteProduct(productId: number) {
     throw new Error(errorData.message || `Error del servidor: ${response.status}`);
   }
 
-  revalidatePath('/admin/dashboard');
-  revalidatePath('/products');
+  // Forzar que Next.js refresque datos cacheados
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/products");
+
   return { success: true };
 }
 
@@ -172,7 +184,7 @@ export async function deleteProduct(productId: number) {
 async function manageEntity(entityName: string, formData: FormData, idField: string = 'id') {
   const entityId = formData.get(idField);
   const isEdit = !!entityId;
-  const endpoint = `https://apisahumerios.onrender.com/${entityName}${isEdit ? `/editar/${entityId}` : '/agregar'}`;
+  const endpoint = `${API_BASE_URL_GOOGLE}/${entityName}${isEdit ? `/editar/${entityId}` : '/agregar'}`;
   const method = isEdit ? 'PUT' : 'POST';
 
   const payload: { [k: string]: any } = Object.fromEntries(formData.entries());
@@ -181,11 +193,15 @@ async function manageEntity(entityName: string, formData: FormData, idField: str
     if ('password' in payload && payload.password === '') delete payload.password;
   }
 
-  const response = await fetch(endpoint, {
-    method,
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
-  });
+const response = await fetch(endpoint, {
+  method,
+  credentials: "include", // 👈 esto hace que viaje la cookie con el token
+  headers: {
+    "Content-Type": "application/json", // solo content-type
+  },
+  body: JSON.stringify(payload),
+});
+
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ message: response.statusText }));
@@ -199,10 +215,11 @@ async function manageEntity(entityName: string, formData: FormData, idField: str
 async function deleteEntity(entityName: string, entityId: number | string) {
   if (!entityId) return { error: 'No se proporcionó ID.' };
 
-  const response = await fetch(`https://apisahumerios.onrender.com/${entityName}/eliminar/${entityId}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
-  });
+ const response = await fetch(`${API_BASE_URL_GOOGLE}/${entityName}/eliminar/${entityId}`, {
+  method: "DELETE",
+  credentials: "include", // 👈 envía la cookie automáticamente
+});
+
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ message: response.statusText }));
@@ -232,8 +249,8 @@ export async function saveDeal(formData: FormData) {
   const dealId = formData.get('idOferta');
   const isEdit = !!dealId;
   const endpoint = isEdit
-    ? `https://apisahumerios.onrender.com/api/ofertas/editar/${dealId}`
-    : 'https://apisahumerios.onrender.com/api/ofertas/crearOferta';
+    ? `${API_BASE_URL_GOOGLE}/api/ofertas/editar/${dealId}`
+    : `${API_BASE_URL_GOOGLE}/api/ofertas/crearOferta`;
   const method = isEdit ? 'PUT' : 'POST';
 
   const getNumberOrNull = (field: string) => {
@@ -260,10 +277,14 @@ export async function saveDeal(formData: FormData) {
   Object.keys(payload).forEach(k => { if (payload[k] === null) delete payload[k]; });
 
   const response = await fetch(endpoint, {
-    method,
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
-  });
+  method,
+  credentials: "include",       // 👈 envía la cookie automáticamente
+  headers: {
+    "Content-Type": "application/json", // si estás enviando JSON
+  },
+  body: JSON.stringify(payload),
+});
+
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -278,10 +299,10 @@ export async function saveDeal(formData: FormData) {
 export async function deleteDeal(id: number) {
   if (!id) return { error: 'No se proporcionó ID de oferta.' };
 
-  const response = await fetch(`https://apisahumerios.onrender.com/api/ofertas/eliminar/${id}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
-  });
+  const response = await fetch(`${API_BASE_URL_GOOGLE}/api/ofertas/eliminar/${id}`, {
+  method: "DELETE",
+  credentials: "include", // 👈 manda la cookie automáticamente
+});
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ message: response.statusText }));

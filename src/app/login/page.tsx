@@ -23,6 +23,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
+  
+const API_BASE_URL_GOOGLE = process.env.URL_BASE_GOOGLE; // Cambia esto si tu API está en otra URL.
+
 
 export default function LoginPage() {
   const router = useRouter();

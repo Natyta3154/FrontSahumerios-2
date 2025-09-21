@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import type { User } from "@/lib/types";
 import { loginAction, signupAction } from "@/app/admin/(protected)/dashboard/actions";
 
+const API_BASE_URL_GOOGLE = process.env.URL_BASE_GOOGLE;
+
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -70,7 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      await fetch('https://apisahumerios.onrender.com/usuarios/logout', { method: 'POST' });
+      await fetch(`${API_BASE_URL_GOOGLE}/usuarios/logout`, { method: 'POST' });
     } catch (e) {
       console.error("Error logout backend", e);
     } finally {
