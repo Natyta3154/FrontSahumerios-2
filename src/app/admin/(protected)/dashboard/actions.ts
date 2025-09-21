@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 import { getAuthHeaders } from "@/lib/auth";
 
 
-const API_BASE_URL_GOOGLE = process.env.URL_BASE_GOOGLE;
+const API_BASE_URL_GOOGLE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // ============================================================================
 // UTILS: Manejo de cookies y headers para fetch
@@ -29,7 +29,7 @@ export async function fetchProtectedData() {
 // ============================================================================
 // ACCIONES DE AUTENTICACIÓN
 // ============================================================================
-export async function loginAction(email: string, password?: string): Promise<{ user: User }> {
+export async function loginAction(email: string, password?: string): Promise<{ user: User; token: string }> {
   const response = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -37,23 +37,42 @@ export async function loginAction(email: string, password?: string): Promise<{ u
     cache: 'no-cache',
   });
 
+  if (!response.ok) {
+    const errorText = await response.text();
+    const errorJson = errorText ? JSON.parse(errorText) : {};
+    throw new Error(errorJson.message || response.statusText || 'Error en login');
+  }
+
   const data = await response.json();
-  if (!response.ok) throw new Error(data.message || data.mensaje || 'Error de autenticación.');
-  return { user: data.usuario };
+  // Asegurate que tu backend devuelva algo así: { user: {...}, token: "jwt-token" }
+  return {
+    user: data.user,
+    token: data.token
+  };
 }
 
-export async function signupAction(name: string, email: string, password: string): Promise<{ user: User }> {
-  const response = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/registrar`, {
+// signupAction: registra usuario y devuelve {user, token}
+export async function signupAction(name: string, email: string, password: string): Promise<{ user: User; token: string }> {
+  const response = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/signup`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nombre: name, email, password, rol: 'USER' }),
+    body: JSON.stringify({ nombre: name, email, password }),
     cache: 'no-cache',
+    credentials: 'include', // envía cookie si backend lo setea
   });
 
+  if (!response.ok) {
+    const errorText = await response.text();
+    const errorJson = errorText ? JSON.parse(errorText) : {};
+    throw new Error(errorJson.message || response.statusText || 'Error en signup');
+  }
+
   const data = await response.json();
-  if (!response.ok) throw new Error(data.mensaje || 'Error al registrarse.');
-  return { user: data.usuario };
+  return { user: data.user, token: data.token };
 }
+
+
+
 
 // ============================================================================
 // ACCIONES DE PRODUCTOS

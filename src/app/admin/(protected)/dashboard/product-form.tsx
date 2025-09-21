@@ -42,12 +42,13 @@ export function AdminProductForm({
         ? await editProduct(formData)
         : await addProduct(formData)
       
-      if (result?.error) {
-        toast({
-          title: `Error al ${product ? "editar" : "añadir"}`,
-          description: result.error,
-          variant: "destructive",
-        })
+    if ('error' in result) {
+  // Aquí TypeScript sabe que result tiene la propiedad `error`
+  toast({
+    title: `Error al ${product ? "editar" : "añadir"}`,
+    description: result.error,
+    variant: "destructive",
+  });
       } else {
         toast({
           title: "Éxito",

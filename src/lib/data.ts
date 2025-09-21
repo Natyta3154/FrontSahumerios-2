@@ -19,8 +19,7 @@ import type { Product, BlogArticle, User, Order, Deal, ProductAttribute, Fragran
 import { cookies } from 'next/headers';
 
 
-const API_BASE_URL_GOOGLE = process.env.NEXT_PUBLIC_API_BASE_URL;
-
+const API_BASE_URL_GOOGLE = process.env.NEXT_PUBLIC_API_BASE_URL; // Cambia esto si tu API está en otra URL.
 
 
 // --- ADAPTADORES DE API A TIPO DE FRONTEND ---
