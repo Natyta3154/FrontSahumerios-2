@@ -42,9 +42,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [toast]);
 
   const removeFromCart = useCallback((productId: string) => {
-    setCartItems((prevItems) =>
-      prevItems.filter((item) => item.id !== productId)
-    );
+   setCartItems((prevItems) =>
+  prevItems.filter((item) => item.id.toString() !== productId)
+);
+
     toast({
       title: "Artículo eliminado",
       description: "El artículo ha sido eliminado de tu carrito.",
@@ -56,11 +57,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       removeFromCart(productId);
       return;
     }
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === productId ? { ...item, quantity } : item
-      )
-    );
+   setCartItems((prevItems) =>
+  prevItems.map((item) =>
+    item.id.toString() === productId ? { ...item, quantity } : item
+  )
+);
+
   }, [removeFromCart]);
 
   const clearCart = useCallback(() => {
