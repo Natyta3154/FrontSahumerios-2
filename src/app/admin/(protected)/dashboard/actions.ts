@@ -35,6 +35,7 @@ export async function loginAction(email: string, password?: string): Promise<{ u
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password: password || '' }),
     cache: 'no-cache',
+    credentials: 'include',
   });
 
   if (!response.ok) {

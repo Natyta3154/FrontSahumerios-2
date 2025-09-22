@@ -141,11 +141,30 @@ export const getFragrances = (token?: string): Promise<Fragrance[]> =>
 export const getProductsOnDeal = async (token?: string): Promise<Product[]> => {
   const deals = await getDeals(token);
   const activeDeals = deals.filter(deal => deal.estado);
+
+  // Traemos solo los productos de las ofertas activas
   const productsOnDeal = await Promise.all(
-    activeDeals.map(async deal => await getProductById(deal.productoId, token))
+    activeDeals.map(async deal => {
+      const p = await getProductById(deal.productoId, token);
+      if (!p) return null;
+
+      // Reducir payload a lo que se necesita en la UI
+      return {
+        id: p.id,
+        name: p.nombre,
+        description: p.descripcion,
+        price: p.precioFinal,
+        originalPrice: p.precioFinal < p.precio ? p.precio : undefined,
+        image: p.imagenurl,
+        brand: p.brand,
+        onSale: p.precioFinal < p.precio,
+      } as Product;
+    })
   );
-  return productsOnDeal.filter((p): p is Product => p !== undefined);
+
+  return productsOnDeal.filter((p): p is Product => p !== null);
 };
+
 
 // ------------------
 // MOCK DATA (blog)

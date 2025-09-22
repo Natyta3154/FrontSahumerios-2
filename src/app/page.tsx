@@ -71,43 +71,54 @@ function SaleProducts({ products }: { products: Product[] }) {
   return (
     <CarouselContent>
       {products.length
-        ? products.map((product, index) => (
-            <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/4">
-              <div className="p-1 h-full">
-                <Card className="overflow-hidden group flex flex-col h-full">
-                  <CardHeader className="p-0">
-                    <Link href={`/products/${product.id}`} className="block overflow-hidden aspect-square relative">
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        priority={index < 4}
-                      />
-                      <Badge variant="destructive" className="absolute top-3 right-3">OFERTA</Badge>
-                    </Link>
-                  </CardHeader>
-                  <CardContent className="p-4 flex-grow">
-                    <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
-                      <CardTitle className="font-headline text-xl mb-2 h-14 line-clamp-2">{product.name}</CardTitle>
-                    </Link>
-                    <div className="flex items-baseline gap-2">
-                      <p className="font-bold text-lg text-destructive">${product.price.toFixed(2)}</p>
-                      {product.onSale && product.originalPrice && (
-                        <p className="text-sm text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</p>
-                      )}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="p-4 pt-0">
-                    <Button asChild className="w-full">
-                      <Link href={`/products/${product.id}`}>Ver Producto</Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </div>
-            </CarouselItem>
-          ))
+        ? products.map((product, index) => {
+            // ✅ Fallback si product.image viene vacío o null
+            const imageSrc = product.image && product.image.trim() !== ""
+              ? product.image
+              : `https://picsum.photos/600/600?random=${product.id}`;
+
+            return (
+              <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/4">
+                <div className="p-1 h-full">
+                  <Card className="overflow-hidden group flex flex-col h-full">
+                    <CardHeader className="p-0">
+                      <Link href={`/products/${product.id}`} className="block overflow-hidden aspect-square relative">
+                        <Image
+                          src={imageSrc}
+                          alt={product.name || "Producto"}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          priority={index < 4}
+                        />
+                        <Badge variant="destructive" className="absolute top-3 right-3">OFERTA</Badge>
+                      </Link>
+                    </CardHeader>
+                    <CardContent className="p-4 flex-grow">
+                      <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
+                        <CardTitle className="font-headline text-xl mb-2 h-14 line-clamp-2">
+                          {product.name}
+                        </CardTitle>
+                      </Link>
+                      <div className="flex items-baseline gap-2">
+                        <p className="font-bold text-lg text-destructive">${product.price.toFixed(2)}</p>
+                        {product.onSale && product.originalPrice && (
+                          <p className="text-sm text-muted-foreground line-through">
+                            ${product.originalPrice.toFixed(2)}
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                    <CardFooter className="p-4 pt-0">
+                      <Button asChild className="w-full">
+                        <Link href={`/products/${product.id}`}>Ver Producto</Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </div>
+              </CarouselItem>
+            );
+          })
         : Array.from({ length: 4 }).map((_, i) => (
             <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/4">
               <div className="p-1 h-full">
@@ -127,6 +138,8 @@ function SaleProducts({ products }: { products: Product[] }) {
     </CarouselContent>
   );
 }
+
+
 
 
 // HOME PAGE SERVER COMPONENT

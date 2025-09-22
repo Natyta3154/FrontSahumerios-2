@@ -16,7 +16,8 @@ interface ProductPageProps {
 // ✅ La clave es desestructurar `params` **dentro del componente async**
 export default async function ProductDetailPage({ params }: ProductPageProps) {
   // Esperamos el valor real de id
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const resolvedParams = await params;
+  const id = Array.isArray(resolvedParams.id) ? resolvedParams.id[0] : resolvedParams.id;
 
   if (!id) {
     notFound();
