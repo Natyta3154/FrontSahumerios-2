@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
-import type { Fragrance } from "@/lib/types"
+import type { Fragrance } from "@/app/lib/types"
 import React, { useTransition, useState } from "react"
 import { saveFragrance } from "../dashboard/actions"
 

@@ -24,7 +24,7 @@ import {
 
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import type { Product } from '@/lib/types';
+import type { Product } from '@/app/lib/types';
 import { deleteProduct } from './actions';
 import { AdminProductForm } from './product-form';
 import { useToast } from '@/hooks/use-toast';

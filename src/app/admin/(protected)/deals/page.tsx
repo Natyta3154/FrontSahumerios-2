@@ -22,8 +22,8 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import { Button } from '@/components/ui/button';
-import { getDeals } from "@/lib/data";
-import { Deal } from "@/lib/types";
+import { getDeals } from "@/app/lib/data";
+import { Deal } from "@/app/lib/types";
 import { useAuth } from "@/context/auth-context";
 import { useEffect, useState, useTransition } from "react";
 import { useToast } from '@/hooks/use-toast';

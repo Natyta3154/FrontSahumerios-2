@@ -1,4 +1,4 @@
-import { blogArticles } from '@/lib/data';
+import { blogArticles } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Calendar, User } from 'lucide-react';

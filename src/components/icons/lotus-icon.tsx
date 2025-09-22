@@ -1,5 +1,5 @@
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/lib/utils";
 import React from "react";
 
 export function LotusIcon({ className, ...props }: React.HTMLAttributes<SVGElement>) {

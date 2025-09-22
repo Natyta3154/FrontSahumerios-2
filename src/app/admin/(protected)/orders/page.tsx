@@ -1,7 +1,7 @@
 
 'use client';
-import { getOrders } from '@/lib/data';
-import type { Order } from '@/lib/types';
+import { getOrders } from '@/app/lib/data';
+import type { Order } from '@/app/lib/types';
 import {
   Table,
   TableBody,

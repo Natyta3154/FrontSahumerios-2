@@ -1,7 +1,7 @@
 
 'use client';
-import { getUsers } from '@/lib/data';
-import type { User } from '@/lib/types';
+import { getUsers } from '@/app/lib/data';
+import type { User } from '@/app/lib/types';
 import {
   Table,
   TableBody,

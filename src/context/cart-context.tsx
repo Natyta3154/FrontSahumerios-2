@@ -1,7 +1,7 @@
 "use client";
 
 import { useToast } from "@/hooks/use-toast";
-import type { CartItem, Product } from "@/lib/types";
+import type { CartItem, Product } from "@/app/lib/types";
 import React, { createContext, useContext, useState, useMemo, useCallback } from "react";
 
 interface CartContextType {

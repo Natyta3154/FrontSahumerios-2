@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import type { User } from "@/lib/types";
+import type { User } from "@/app/lib/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 

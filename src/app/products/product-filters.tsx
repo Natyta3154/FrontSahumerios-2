@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState, useMemo } from "react";
-import type { Product } from "@/lib/types";
+import type { Product } from "@/app/lib/types";
 import { useSearchParams } from "next/navigation";
 
 type Category = Product['category'] | 'all';
