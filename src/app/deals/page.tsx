@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Product } from "@/lib/types";
-
+export const dynamic = "force-dynamic";
 // CONVERTIDO A COMPONENTE DE SERVIDOR
 // Los datos ahora se obtienen en el servidor antes de que la página se envíe al cliente.
 export default async function DealsPage() {
