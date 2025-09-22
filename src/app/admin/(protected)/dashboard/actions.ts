@@ -53,7 +53,7 @@ export async function loginAction(email: string, password?: string): Promise<{ u
 
 // signupAction: registra usuario y devuelve {user, token}
 export async function signupAction(name: string, email: string, password: string): Promise<{ user: User; token: string }> {
-  const response = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/signup`, {
+  const response = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/registrar`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ nombre: name, email, password }),
