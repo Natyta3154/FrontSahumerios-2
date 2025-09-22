@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
-import type { User } from "@/app/lib/types"
+import type { User } from "@/lib/types"
 import React, { useTransition, useState } from "react"
 import { saveUser } from "../dashboard/actions"
 import { Eye, EyeOff } from "lucide-react"
@@ -26,7 +26,7 @@ export function AdminUserForm({
   onUserSaved,
 }: {
   user?: User,
-  onUserSaved: () => void,
+   onUserSaved: (user?: User) => void,
 }) {
   const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
@@ -35,38 +35,40 @@ export function AdminUserForm({
   // El token ya no se obtiene del contexto
   const [showPassword, setShowPassword] = useState(false)
 
-  const formAction = async (formData: FormData) => {
-    const password = formData.get('password') as string;
+const formAction = async (formData: FormData) => {
+  const password = formData.get('password') as string;
 
-    if (!user && !password) {
-        toast({
-            title: `Error al añadir usuario`,
-            description: "La contraseña es obligatoria para nuevos usuarios.",
-            variant: "destructive",
-        });
-        return;
-    }
-
-    startTransition(async () => {
-      // La Server Action `saveUser` ya no requiere el token.
-      const result = await saveUser(formData)
-      
-      if (result?.error) {
-        toast({
-          title: `Error al ${user ? "editar" : "añadir"}`,
-          description: result.error,
-          variant: "destructive",
-        })
-      } else {
-        toast({
-          title: "Éxito",
-          description: `Usuario ${user ? "editado" : "añadido"} correctamente.`,
-        })
-        onUserSaved();
-        setDialogOpen(false)
-      }
-    })
+  if (!user && !password) {
+    toast({
+      title: `Error al añadir usuario`,
+      description: "La contraseña es obligatoria para nuevos usuarios.",
+      variant: "destructive",
+    });
+    return;
   }
+
+  startTransition(async () => {
+    // La Server Action `saveUser` devuelve el usuario creado/actualizado
+    const result = await saveUser(formData);
+
+if (!result.success) {
+  toast({
+    title: `Error al ${user ? "editar" : "añadir"}`,
+    description: "No se pudo guardar el usuario.",
+    variant: "destructive",
+  });
+} else {
+  toast({
+    title: "Éxito",
+    description: `Usuario ${user ? "editado" : "añadido"} correctamente.`,
+  });
+  onUserSaved(); // ⚠️ ya no pasa usuario, solo refresca la lista
+  setDialogOpen(false);
+}
+
+  });
+};
+
 
   const triggerButton = user ? (
     <Button variant="outline" size="sm">

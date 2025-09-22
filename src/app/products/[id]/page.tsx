@@ -1,5 +1,5 @@
 // src/app/products/[id]/page.tsx
-import { getProductById, getProducts } from '@/app/lib/data';
+import { getProductById, getProducts } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import Link from 'next/link';
 import { ProductDetails } from './product-details';
 import { Button } from '@/components/ui/button';
-import type { Product } from '@/app/lib/types';
+import type { Product } from '@/lib/types';
 
 interface ProductPageProps {
   params: { id: string | string[] };

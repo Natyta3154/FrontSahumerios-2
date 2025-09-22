@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
-import type { Deal } from "@/app/lib/types"
+import type { Deal } from "@/lib/types"
 import React, { useTransition, useState } from "react"
 import { saveDeal } from "../dashboard/actions"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -38,10 +38,10 @@ export function AdminDealForm({
       // Se elimina el paso del token, la Server Action usa la cookie.
       const result = await saveDeal(formData)
       
-      if (result?.error) {
+      if (result?.success) {
         toast({
           title: `Error al ${deal ? "editar" : "añadir"} oferta`,
-          description: result.error,
+          description: result.success,
           variant: "destructive",
         })
       } else {

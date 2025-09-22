@@ -20,8 +20,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from '@/components/ui/button';
-import { getAttributes } from "@/app/lib/data";
-import { ProductAttribute } from "@/app/lib/types";
+import { getAttributes } from "@/lib/data";
+import { ProductAttribute } from "@/lib/types";
 import { useEffect, useState, useTransition } from "react";
 import { useToast } from '@/hooks/use-toast';
 import { deleteAttribute } from '../dashboard/actions';

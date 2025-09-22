@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
-import type { Fragrance } from "@/app/lib/types"
+import type { Fragrance } from "@/lib/types"
 import React, { useTransition, useState } from "react"
 import { saveFragrance } from "../dashboard/actions"
 
@@ -36,10 +36,10 @@ export function AdminFragranceForm({
       // Se elimina el paso del token, la Server Action usa la cookie.
       const result = await saveFragrance(formData)
       
-      if (result?.error) {
+      if (result?.success) {
         toast({
           title: `Error al ${fragrance ? "editar" : "añadir"} fragancia`,
-          description: result.error,
+          description: result.success,
           variant: "destructive",
         })
       } else {

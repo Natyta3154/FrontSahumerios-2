@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/context/cart-context';
-import type { Product } from '@/app/lib/types';
+import type { Product } from '@/lib/types';
 
 function ProductRating({ rating, reviews }: { rating: number; reviews: number }) {
   const fullStars = Math.floor(rating);

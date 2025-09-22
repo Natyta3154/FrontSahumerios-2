@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 
 // Este es el layout principal para toda la sección de administración.
 // Define la barra lateral y el contenedor para el contenido de la página.

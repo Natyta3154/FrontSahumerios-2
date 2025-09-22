@@ -1,5 +1,5 @@
 
-import { getProducts } from '@/app/lib/data';
+import { getProducts } from '@/lib/data';
 import { DashboardTabs } from './dashboard-tabs';
 
 // Esta página ahora solo muestra el contenido principal del dashboard.

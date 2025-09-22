@@ -2,12 +2,13 @@
 
 import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import type { User } from "@/app/lib/types";
+import type { User } from "@/lib/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 interface AuthContextType {
   user: User | null;
+  token?: string;
   loading: boolean;
   error: string | null;
   login: (email: string, password?: string) => Promise<void>;

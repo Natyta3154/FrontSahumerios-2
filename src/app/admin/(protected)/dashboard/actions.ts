@@ -1,9 +1,9 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import type { User, ProductAttribute } from '@/app/lib/types';
+import type { User, ProductAttribute } from '@/lib/types';
 import { cookies } from 'next/headers';
-import { getAuthHeaders } from "@/app/lib/auth";
+import { getAuthHeaders } from "@/lib/auth";
 
 
 const API_BASE_URL_GOOGLE = process.env.NEXT_PUBLIC_API_BASE_URL;

@@ -6,9 +6,9 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import Link from "next/link";
-import { getProducts, getProductsOnDeal, blogArticles } from "@/app/lib/data";
+import { getProducts, getProductsOnDeal, blogArticles } from "@/lib/data";
 import { ArrowRight, Star } from "lucide-react";
-import type { Product } from "@/app/lib/types";
+import type { Product } from "@/lib/types";
 
 // COMPONENTE PRODUCTOS DESTACADOS
 function FeaturedProducts({ products }: { products: Product[] }) {

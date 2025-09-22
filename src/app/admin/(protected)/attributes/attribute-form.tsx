@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
-import type { ProductAttribute } from "@/app/lib/types"
+import type { ProductAttribute } from "@/lib/types"
 import React, { useTransition, useState } from "react"
 import { saveAttribute } from "../dashboard/actions"
 
@@ -36,10 +36,10 @@ export function AdminAttributeForm({
       // Se elimina el paso del token, la Server Action usa la cookie.
       const result = await saveAttribute(formData)
       
-      if (result?.error) {
+      if (result?.success) {
         toast({
           title: `Error al ${attribute ? "editar" : "añadir"} atributo`,
-          description: result.error,
+          description: result.success,
           variant: "destructive",
         })
       } else {

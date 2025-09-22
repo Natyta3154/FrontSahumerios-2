@@ -1,7 +1,7 @@
 
-import { getProducts } from "@/app/lib/data";
+import { getProducts } from "@/lib/data";
 import { ProductFilters } from "./product-filters";
-import type { Product } from "@/app/lib/types";
+import type { Product } from "@/lib/types";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 

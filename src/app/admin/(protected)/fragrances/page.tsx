@@ -21,8 +21,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from '@/components/ui/button';
-import { getFragrances } from "@/app/lib/data";
-import { Fragrance } from "@/app/lib/types";
+import { getFragrances } from "@/lib/data";
+import { Fragrance } from "@/lib/types";
 import { useAuth } from "@/context/auth-context";
 import { useEffect, useState, useTransition } from "react";
 import { useToast } from '@/hooks/use-toast';
