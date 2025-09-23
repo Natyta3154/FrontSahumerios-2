@@ -95,17 +95,26 @@ function mapApiToDeal(apiDeal: any): Deal {
 // FETCH GENÉRICO (SERVER ONLY)
 // ------------------
 
-async function fetchData<T>(endpoint: string, token?: string, mapper?: (item: any) => T): Promise<T[]> {
+async function fetchData<T>(
+  endpoint: string,
+  token?: string,
+  mapper?: (item: any) => T
+): Promise<T[]> {
   const headers: HeadersInit = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
   try {
-    const res = await fetch(`${API_BASE_URL_GOOGLE}${endpoint}`, { headers, cache: 'no-cache' });
+    const res = await fetch(`${API_BASE_URL_GOOGLE}${endpoint}`, {
+      headers,
+      cache: 'no-store' // <- evita errores de dynamic server usage
+    });
+
     if (!res.ok) {
       const text = await res.text();
       const json = text ? JSON.parse(text) : {};
       throw new Error(json.message || res.statusText || `HTTP ${res.status}`);
     }
+
     const data = await res.json();
     return Array.isArray(data) ? (mapper ? data.map(mapper) : data) : [];
   } catch (error) {
@@ -113,6 +122,7 @@ async function fetchData<T>(endpoint: string, token?: string, mapper?: (item: an
     return [];
   }
 }
+
 
 // ------------------
 // FUNCIONES PÚBLICAS (SERVER COMPONENTS)
