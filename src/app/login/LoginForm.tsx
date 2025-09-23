@@ -37,11 +37,7 @@ export default function LoginForm() {
         return;
       }
 
-      if (next) {
-        router.push(next);
-      } else {
-        router.push("/");
-      }
+      router.push(next || "/");
     } catch (error) {
       toast({
         title: "Error de Inicio de Sesión",
@@ -73,7 +69,13 @@ export default function LoginForm() {
                   ¿Olvidaste tu contraseña?
                 </Link>
               </div>
-              <Input id="password" name="password" type={showPassword ? "text" : "password"} required disabled={isLoading} />
+              <Input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                disabled={isLoading}
+              />
               <Button
                 type="button"
                 variant="ghost"

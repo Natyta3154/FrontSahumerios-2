@@ -1,10 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import type { User, ProductAttribute } from '@/lib/types';
-import { cookies } from 'next/headers';
-import { getAuthHeaders } from "@/lib/auth";
-
+import type { User } from '@/lib/types';
 
 const API_BASE_URL_GOOGLE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -12,11 +9,10 @@ const API_BASE_URL_GOOGLE = process.env.NEXT_PUBLIC_API_BASE_URL;
 // UTILS: Manejo de cookies y headers para fetch
 // ============================================================================
 export async function fetchProtectedData() {
-  const headers = getAuthHeaders(); // ya te resuelve cookies o token
-
   const res = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/perfil`, {
     method: "GET",
-   credentials: "include",
+    credentials: "include", // 👈 importante
+    cache: "no-cache",
   });
 
   if (!res.ok) {
@@ -29,61 +25,62 @@ export async function fetchProtectedData() {
 // ============================================================================
 // ACCIONES DE AUTENTICACIÓN
 // ============================================================================
-export async function loginAction(email: string, password?: string): Promise<{ user: User; token: string }> {
+export async function loginAction(email: string, password?: string): Promise<{ user: User }> {
   const response = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password: password || '' }),
     cache: 'no-cache',
-    credentials: 'include',
+    credentials: 'include', // 👈 cookie HttpOnly viaja sola
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    const errorJson = errorText ? JSON.parse(errorText) : {};
-    throw new Error(errorJson.message || response.statusText || 'Error en login');
+    let errorJson = {};
+    try {
+      errorJson = JSON.parse(errorText);
+    } catch {
+      /* ignore */
+    }
+    throw new Error((errorJson as any).message || response.statusText || 'Error en login');
   }
 
-  const data = await response.json();
-  // Asegurate que tu backend devuelva algo así: { user: {...}, token: "jwt-token" }
-  return {
-    user: data.user,
-    token: data.token
-  };
+  return response.json(); // backend ya setea cookie
 }
 
-// signupAction: registra usuario y devuelve {user, token}
-export async function signupAction(name: string, email: string, password: string): Promise<{ user: User; token: string }> {
+export async function signupAction(name: string, email: string, password: string): Promise<{ user: User }> {
   const response = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/registrar`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ nombre: name, email, password }),
     cache: 'no-cache',
-    credentials: 'include', // envía cookie si backend lo setea
+    credentials: 'include', // 👈 cookie viaja sola
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    const errorJson = errorText ? JSON.parse(errorText) : {};
-    throw new Error(errorJson.message || response.statusText || 'Error en signup');
+    let errorJson = {};
+    try {
+      errorJson = JSON.parse(errorText);
+    } catch {
+      /* ignore */
+    }
+    throw new Error((errorJson as any).message || response.statusText || 'Error en signup');
   }
 
-  const data = await response.json();
-  return { user: data.user, token: data.token };
+  return response.json();
 }
 
-
-
-
 // ============================================================================
-// ACCIONES DE PRODUCTOS
+// PRODUCTOS
 // ============================================================================
 function buildProductPayload(formData: FormData) {
-  const fraganciasString = (formData.get('fragancias') as string) || '';
-  const fragancias = fraganciasString.split(',').map(f => f.trim()).filter(f => f);
+  const fragancias = ((formData.get('fragancias') as string) || '')
+    .split(',')
+    .map(f => f.trim())
+    .filter(f => f);
 
-  const atributosString = (formData.get('atributos') as string) || '';
-  const atributos = atributosString
+  const atributos = ((formData.get('atributos') as string) || '')
     .split(',')
     .map(a => a.trim())
     .filter(a => a.includes(':'))
@@ -102,11 +99,6 @@ function buildProductPayload(formData: FormData) {
     return value && !isNaN(parseInt(value, 10)) ? parseInt(value, 10) : null;
   };
 
-  const getStringOrNull = (field: string) => {
-    const value = formData.get(field) as string;
-    return value || null;
-  };
-
   const payload: any = {
     nombre: formData.get('nombre'),
     descripcion: formData.get('descripcion'),
@@ -120,8 +112,8 @@ function buildProductPayload(formData: FormData) {
     totalIngresado: getIntOrNull('totalIngresado'),
     precioMayorista: getNumberOrNull('precioMayorista'),
     porcentajeDescuento: getNumberOrNull('porcentajeDescuento'),
-    fechaInicioDescuento: getStringOrNull('fechaInicioDescuento') || null,
-    fechaFinDescuento: getStringOrNull('fechaFinDescuento') || null,
+    fechaInicioDescuento: formData.get('fechaInicioDescuento') || null,
+    fechaFinDescuento: formData.get('fechaFinDescuento') || null,
   };
 
   Object.keys(payload).forEach(key => {
@@ -135,6 +127,7 @@ export async function addProduct(formData: FormData) {
   const payload = buildProductPayload(formData);
   const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/agregar`, {
     method: 'POST',
+    headers: { "Content-Type": "application/json" },
     credentials: "include",
     body: JSON.stringify(payload),
   });
@@ -155,15 +148,12 @@ export async function editProduct(formData: FormData) {
 
   const payload = buildProductPayload(formData);
 
-const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/editar/${productId}`, {
-  method: "PUT",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  credentials: "include", // 👈 manda la cookie automáticamente
-  body: JSON.stringify(payload),
-});
-
+  const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/editar/${productId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(payload),
+  });
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ message: response.statusText }));
@@ -176,14 +166,12 @@ const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/editar/${productI
   return { success: true };
 }
 
-
-
 export async function deleteProduct(productId: number) {
   if (!productId) return { error: "No se proporcionó ID de producto." };
 
   const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/eliminar/${productId}`, {
     method: "DELETE",
-    credentials: "include", // 👈 ahora viaja la cookie automáticamente
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -191,7 +179,6 @@ export async function deleteProduct(productId: number) {
     throw new Error(errorData.message || `Error del servidor: ${response.status}`);
   }
 
-  // Forzar que Next.js refresque datos cacheados
   revalidatePath("/admin/dashboard");
   revalidatePath("/products");
 
@@ -199,7 +186,7 @@ export async function deleteProduct(productId: number) {
 }
 
 // ============================================================================
-// ACCIONES GENERALES DE ENTIDADES
+// ENTIDADES GENERALES
 // ============================================================================
 async function manageEntity(entityName: string, formData: FormData, idField: string = 'id') {
   const entityId = formData.get(idField);
@@ -213,15 +200,12 @@ async function manageEntity(entityName: string, formData: FormData, idField: str
     if ('password' in payload && payload.password === '') delete payload.password;
   }
 
-const response = await fetch(endpoint, {
-  method,
-  credentials: "include", // 👈 esto hace que viaje la cookie con el token
-  headers: {
-    "Content-Type": "application/json", // solo content-type
-  },
-  body: JSON.stringify(payload),
-});
-
+  const response = await fetch(endpoint, {
+    method,
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ message: response.statusText }));
@@ -235,11 +219,10 @@ const response = await fetch(endpoint, {
 async function deleteEntity(entityName: string, entityId: number | string) {
   if (!entityId) return { error: 'No se proporcionó ID.' };
 
- const response = await fetch(`${API_BASE_URL_GOOGLE}/${entityName}/eliminar/${entityId}`, {
-  method: "DELETE",
-  credentials: "include", // 👈 envía la cookie automáticamente
-});
-
+  const response = await fetch(`${API_BASE_URL_GOOGLE}/${entityName}/eliminar/${entityId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ message: response.statusText }));
@@ -251,7 +234,7 @@ async function deleteEntity(entityName: string, entityId: number | string) {
 }
 
 // ============================================================================
-// ACCIONES POR ENTIDAD
+// ENTIDADES ESPECÍFICAS
 // ============================================================================
 export async function saveUser(formData: FormData) { return manageEntity('usuarios', formData); }
 export async function deleteUser(id: number) { return deleteEntity('usuarios', id); }
@@ -277,7 +260,7 @@ export async function saveDeal(formData: FormData) {
     const value = formData.get(field) as string;
     return value && !isNaN(Number(value)) ? Number(value) : null;
   };
-  const getStringOrNull = (field: string) => formData.get(field) as string || null;
+  const getStringOrNull = (field: string) => (formData.get(field) as string) || null;
 
   const payload: any = {
     productoId: getNumberOrNull('producto_id'),
@@ -297,18 +280,18 @@ export async function saveDeal(formData: FormData) {
   Object.keys(payload).forEach(k => { if (payload[k] === null) delete payload[k]; });
 
   const response = await fetch(endpoint, {
-  method,
-  credentials: "include",       // 👈 envía la cookie automáticamente
-  headers: {
-    "Content-Type": "application/json", // si estás enviando JSON
-  },
-  body: JSON.stringify(payload),
-});
-
+    method,
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
   if (!response.ok) {
     const errorText = await response.text();
-    const errorData = JSON.parse(errorText || '{}');
+    let errorData: any = {};
+    try {
+      errorData = JSON.parse(errorText);
+    } catch { /* ignore */ }
     throw new Error(errorData.message || `Error en ofertas: ${response.status}`);
   }
 
@@ -320,9 +303,9 @@ export async function deleteDeal(id: number) {
   if (!id) return { error: 'No se proporcionó ID de oferta.' };
 
   const response = await fetch(`${API_BASE_URL_GOOGLE}/api/ofertas/eliminar/${id}`, {
-  method: "DELETE",
-  credentials: "include", // 👈 manda la cookie automáticamente
-});
+    method: "DELETE",
+    credentials: "include",
+  });
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ message: response.statusText }));
