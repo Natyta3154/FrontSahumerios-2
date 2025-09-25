@@ -4,12 +4,13 @@ import { revalidatePath } from 'next/cache';
 import type { User } from '@/lib/types';
 
 const API_BASE_URL_GOOGLE = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL_RENDER = process.env.NEXT_PUBLIC_API_BASE_URL_RRENDER;
 
 // ============================================================================
 // UTILS: Manejo de cookies y headers para fetch
 // ============================================================================
 export async function fetchProtectedData() {
-  const res = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/perfil`, {
+  const res = await fetch(`${API_BASE_URL_RENDER}/usuarios/login`, {
     method: "GET",
     credentials: "include", // 👈 importante
     cache: "no-cache",
@@ -26,7 +27,7 @@ export async function fetchProtectedData() {
 // ACCIONES DE AUTENTICACIÓN
 // ============================================================================
 export async function loginAction(email: string, password?: string): Promise<{ user: User }> {
-  const response = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/login`, {
+  const response = await fetch(`${API_BASE_URL_RENDER}/usuarios/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password: password || '' }),
@@ -49,7 +50,7 @@ export async function loginAction(email: string, password?: string): Promise<{ u
 }
 
 export async function signupAction(name: string, email: string, password: string): Promise<{ user: User }> {
-  const response = await fetch(`${API_BASE_URL_GOOGLE}/usuarios/registrar`, {
+  const response = await fetch(`${API_BASE_URL_RENDER}/usuarios/registrar`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ nombre: name, email, password }),
@@ -125,7 +126,7 @@ function buildProductPayload(formData: FormData) {
 
 export async function addProduct(formData: FormData) {
   const payload = buildProductPayload(formData);
-  const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/agregar`, {
+  const response = await fetch(`${API_BASE_URL_RENDER}/productos/agregar`, {
     method: 'POST',
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -148,7 +149,7 @@ export async function editProduct(formData: FormData) {
 
   const payload = buildProductPayload(formData);
 
-  const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/editar/${productId}`, {
+  const response = await fetch(`${API_BASE_URL_RENDER}/productos/editar/${productId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -169,7 +170,7 @@ export async function editProduct(formData: FormData) {
 export async function deleteProduct(productId: number) {
   if (!productId) return { error: "No se proporcionó ID de producto." };
 
-  const response = await fetch(`${API_BASE_URL_GOOGLE}/productos/eliminar/${productId}`, {
+  const response = await fetch(`${API_BASE_URL_RENDER}/productos/eliminar/${productId}`, {
     method: "DELETE",
     credentials: "include",
   });
@@ -252,8 +253,8 @@ export async function saveDeal(formData: FormData) {
   const dealId = formData.get('idOferta');
   const isEdit = !!dealId;
   const endpoint = isEdit
-    ? `${API_BASE_URL_GOOGLE}/api/ofertas/editar/${dealId}`
-    : `${API_BASE_URL_GOOGLE}/api/ofertas/crearOferta`;
+    ? `${API_BASE_URL_RENDER}/api/ofertas/editar/${dealId}`
+    : `${API_BASE_URL_RENDER}/api/ofertas/crearOferta`;
   const method = isEdit ? 'PUT' : 'POST';
 
   const getNumberOrNull = (field: string) => {
@@ -302,7 +303,7 @@ export async function saveDeal(formData: FormData) {
 export async function deleteDeal(id: number) {
   if (!id) return { error: 'No se proporcionó ID de oferta.' };
 
-  const response = await fetch(`${API_BASE_URL_GOOGLE}/api/ofertas/eliminar/${id}`, {
+  const response = await fetch(`${API_BASE_URL_RENDER}/api/ofertas/eliminar/${id}`, {
     method: "DELETE",
     credentials: "include",
   });

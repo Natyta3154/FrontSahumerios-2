@@ -7,7 +7,8 @@
 
 import type { Product, BlogArticle, User, Order, Deal, ProductAttribute, Fragrance } from './types';
 
-const API_BASE_URL_GOOGLE = process.env.NEXT_PUBLIC_API_BASE_URL;
+//const API_BASE_URL_GOOGLE = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL_RENDER = process.env.NEXT_PUBLIC_API_BASE_URL_RENDER 
 
 // ------------------
 // ADAPTADORES
@@ -104,7 +105,7 @@ async function fetchData<T>(
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
   try {
-    const res = await fetch(`${API_BASE_URL_GOOGLE}${endpoint}`, {
+    const res = await fetch(`${API_BASE_URL_RENDER}${endpoint}`, {
       headers,
       cache: 'no-store' // <- evita errores de dynamic server usage
     });
@@ -131,7 +132,7 @@ async function fetchData<T>(
 export const getProducts = (token?: string) => fetchData('/productos/listado', token, mapApiToProduct);
 export const getProductById = async (id: string | number, token?: string): Promise<Product | undefined> => {
   try {
-    const res = await fetch(`${API_BASE_URL_GOOGLE}/productos/${id}`, { headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, cache: 'no-cache' });
+    const res = await fetch(`${API_BASE_URL_RENDER}/productos/${id}`, { headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, cache: 'no-cache' });
     if (!res.ok) return undefined;
     const apiProduct = await res.json();
     return mapApiToProduct(apiProduct);

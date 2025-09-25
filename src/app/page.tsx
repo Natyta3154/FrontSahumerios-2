@@ -78,7 +78,8 @@ function SaleProducts({ products }: { products: Product[] }) {
               : `https://picsum.photos/600/600?random=${product.id}`;
 
             return (
-              <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/4">
+              <CarouselItem key={`${product.id}-${index}`} className="md:basis-1/2 lg:basis-1/4">
+
                 <div className="p-1 h-full">
                   <Card className="overflow-hidden group flex flex-col h-full">
                     <CardHeader className="p-0">

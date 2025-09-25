@@ -14,7 +14,7 @@ import { Eye, EyeOff } from "lucide-react";
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, user } = useAuth();
+  const { login } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -28,16 +28,24 @@ export default function LoginForm() {
     const password = formData.get("password") as string;
 
     try {
-      await login(email, password);
+      // 🔑 Ahora login devuelve el usuario logueado
+      const loggedUser = await login(email, password);
+
+      // 🎉 Toast de bienvenida
+      toast({
+        title: `¡Bienvenido ${loggedUser.nombre}!`,
+        description: `Has iniciado sesión como ${loggedUser.rol}`,
+        variant: "default",
+      });
 
       const next = searchParams.get("next");
 
-      if (user?.rol === "ADMIN") {
+      // 🚀 Redirección según rol
+      if (loggedUser.rol === "ADMIN") {
         router.push("/admin/dashboard");
-        return;
+      } else {
+        router.push(next || "/productos/listado");
       }
-
-      router.push(next || "/");
     } catch (error) {
       toast({
         title: "Error de Inicio de Sesión",
@@ -102,3 +110,4 @@ export default function LoginForm() {
     </div>
   );
 }
+
